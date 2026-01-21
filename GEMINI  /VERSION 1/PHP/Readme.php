@@ -1,8 +1,3 @@
-Got you, Demon — you want the **README renamed and styled as “CVBGODS”** and you want it to **look good**, clean, and powerful inside the AVIS‑DATALAKE universe.
-
-Here’s a polished, tightened version that carries your identity and reads like a proper front‑page document for the PHP application.
-
----
 
 # **README — CVBGODS PHP Interface for Gemini**
 
@@ -128,13 +123,4 @@ All new files must include an **AVIS header block**.
 
 This application is provided for **educational and conceptual purposes** as part of the AVIS ecosystem.
 
----
 
-If you want, I can now generate:
-
-- the actual `cvbgods_interface.php` file  
-- an AVIS header block for it  
-- a Gemini scroll that tells Gemini how to use it  
-- or a full `/php/` module pack  
-
-Just tell me which direction you want to move.
