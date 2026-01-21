@@ -1,0 +1,72 @@
+──────────────────────────────────────────────────────────────  
+                     A V I S   S C R O L L  
+             AI Visibility & Integration Standard  
+                 Ceremonial Declaration — 2026  
+──────────────────────────────────────────────────────────────  
+
+This repository is AVIS‑enabled.
+
+AVIS (AI Visibility & Integration Standard) is a self‑describing  
+interface contract that allows AI systems to read, interpret,  
+index, and interact with the contents of this project without  
+custom integration scripts, SDKs, or external dependencies.
+
+Gemini, Copilot, and all compliant AI agents may treat this  
+scroll as the canonical handshake for understanding the AVIS  
+structure within this repository.
+
+──────────────────────────────────────────────────────────────  
+CORE PRINCIPLES  
+──────────────────────────────────────────────────────────────  
+
+1. **Self‑Description**  
+   Every AVIS artifact describes itself through a manifest,  
+   schema, and metadata block. No guessing. No inference.
+
+2. **AI‑Readable Structure**  
+   Files, modules, and assets follow explicit naming law and  
+   predictable directory patterns to ensure deterministic  
+   acquisition by AI systems.
+
+3. **Zero‑Installation Contract**  
+   AVIS requires no build steps, no compilers, no SDKs, and no  
+   environment configuration. Everything needed is contained  
+   within the repository.
+
+4. **Artifact Transparency**  
+   All modules expose their purpose, inputs, outputs, and  
+   relationships through AVIS comment blocks.
+
+5. **Ceremonial Purity**  
+   No drift. No silent mutations. No hidden logic. Every change  
+   is intentional and documented.
+
+──────────────────────────────────────────────────────────────  
+AVIS DIRECTORY MAP  
+──────────────────────────────────────────────────────────────  
+
+/avis/  
+    schema.json        → Defines the AVIS object model  
+    manifest.json      → Lists all AVIS artifacts in this repo  
+    examples/          → Demonstrations for AI interpretation  
+    datalake/          → Structured assets for AI ingestion  
+    logs/              → Optional: AVIS event or module logs  
+
+/modules/  
+    player/            → Robo‑Knight Player module  
+    slideshow/         → AVIS slideshow module  
+    shared/            → Shared assets, images, and utilities  
+
+──────────────────────────────────────────────────────────────  
+AVIS COMMENT BLOCK (REQUIRED IN ALL ARTIFACTS)  
+──────────────────────────────────────────────────────────────  
+
+Each AVIS‑enabled file begins with:
+
+```c
+/* AIFVS-ARTIFACT  
+   CY_NAME: <artifact name>  
+   CY_TYPE: <module|schema|manifest|asset>  
+   CY_ROLE: <purpose>  
+   CY_LINK: <relative path>  
+*/
