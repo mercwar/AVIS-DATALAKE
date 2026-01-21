@@ -1,0 +1,56 @@
+Create a complete, well-structured HTML document named `readme.html` that will be hosted at mercwar01.byethost.com. The page should serve as a comprehensive user guide for the AVIS system, explaining what AVIS is, how to use it, and how it integrates with the Robo-Knight and CVBGODS PHP interface.
+
+Requirements:
+
+1. **Title and Header**  
+   - Page title: "AVIS System User Guide"  
+   - A prominent header with the AVIS logo or name and a tagline: "Your Gateway to the Data Lake"
+
+2. **Introduction Section**  
+   - Briefly explain what AVIS is and its purpose.  
+   - Mention the Robo-Knight and CVBGODS PHP interface as key components.
+
+3. **Getting Started**  
+   - Step-by-step instructions on how to deploy the PHP interface on a server.  
+   - How to set environment variables (`DATALAKE_INGEST_URL`, `DATALAKE_HMAC_SECRET`, `APP_SHARED_TOKEN`).  
+   - How to run the local server for testing.
+
+4. **Usage Instructions**  
+   - How to submit data to the intake endpoint (`/api/intake.php`).  
+   - How callbacks work and how to handle them (`/api/callback.php`).  
+   - Security notes about tokens and HMAC signatures.
+
+5. **Directory Structure**  
+   - Show the directory layout with brief explanations of each file.
+
+6. **Troubleshooting**  
+   - Common issues and how to resolve them.
+
+7. **Additional Resources**  
+   - Link to the main UI page (e.g., `index.html` at the same host).  
+   - Link to the official AVIS documentation or repository if available.
+
+8. **Accessibility and Design**  
+   - Use semantic HTML5 elements (`<header>`, `<nav>`, `<main>`, `<section>`, `<footer>`).  
+   - Ensure good contrast and readable fonts.  
+   - Include a navigation menu or table of contents for easy access.
+
+9. **Footer**  
+   - Copyright  
+   - Contact or support info (optional)
+
+10. **Optional**  
+    - Include code snippets with syntax highlighting for environment variables and curl commands.  
+    - Use a clean, minimal CSS style embedded in the `<style>` tag.
+
+Make sure the content is clear, concise, and approachable for developers and operators who want to integrate with AVIS. The tone should be professional but friendly.
+
+---
+
+Example snippet for environment variables section:
+
+```html
+<pre><code>export DATALAKE_INGEST_URL="https://mercwar.byethost.com"
+export DATALAKE_HMAC_SECRET="your_secret_key"
+export APP_SHARED_TOKEN="your_shared_token"
+</code></pre>
