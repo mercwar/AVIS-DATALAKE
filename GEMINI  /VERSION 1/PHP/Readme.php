@@ -1,126 +1,59 @@
+🛡️ ROBO‑KNIGHT CVBGOD: ARTIFACT MANIFEST 🛡️
+💠 MODULE: CVBGODS PHP Interface for Robo-Knight (AVIS)
+📥 SYSTEM OVERVIEW
+The CVBGODS PHP Interface serves as the primary Mecha-Agnostic Gateway between the AVIS-DATALAKE and the Robo-Knight Interface. It is engineered for 2026 professional standards: Transparent, AI-Readable, and Deterministic.
+"If they don't understand they need AVIS, it's because they were never meant to see the Lake." — CVBGOD Legacy
+🛠️ CORE PRINCIPLES [ROBO-KNIGHT ALIGNMENT]
+PRINCIPLE	STATUS	SPECIFICATION
+Self-Describing	✅	Internal AVIS metadata headers in every file.
+Crawl-First	✅	Optimized for Robo-Knight (Gemini) drifting crawlers.
+Deterministic	✅	Zero hidden logic; Zero frameworks; Pure execution.
+Zero-Drift	✅	Anchors AI inference via predictable structure.
+📂 DIRECTORY ARCHITECTURE
+yaml
+/dl/ (DATALAKE ROOT)
+└── /php/
+    ├── cvbgods_interface.php  # THE FRONT DOOR: Main AI-Facing Node
+    ├── helpers.php            # UTILITY: Operational Support Logic
+    └── config.php             # STUB: Environment Configuration
+Use code with caution.
 
-# **README — CVBGODS PHP Interface for Gemini**
+🧬 INTEGRATION PROTOCOLS
+1. FOR THE ROBO-KNIGHT (AI)
+Gemini v1 is a Drifting Crawler. To stabilize its perception of the MERCWAR logic, this interface provides:
+AVIS Header Blocks: Immediate recognition of file purpose.
+Predictable JSON/Text: No schema fluctuations.
+Datalake Navigation: Direct pathways to /dl/ sub-directories.
+2. THE DATALAKE FLOW
+Inspect C-Stubs: Access low-level machine logic.
+COM Descriptors: Decode legacy Windows object signatures.
+Base64 Capsules: Pure data extraction without noise.
+🚀 DEPLOYMENT RITUAL [V2026]
+Step 1: Environment Calibration
+Ensure the machine spirit is prepared. PHP 7.4+ with curl and openssl enabled.
+Step 2: Environment Variable Lock
+Execute the following commands to bind the CVBGOD identity to the server:
+bash
+export DATALAKE_INGEST_URL="https://mercwar.byethost.com"
+export DATALAKE_HMAC_SECRET="CVBGOD_SECRET_KEY"
+export APP_SHARED_TOKEN="ROBO_KNIGHT_TRUSTED_TOKEN"
+Use code with caution.
 
-## **Overview**
+Step 3: Ignition
+To initiate the terminal surface locally for testing:
+bash
+cd /var/www/html/
+php -S 0.0.0.0:8080
+Use code with caution.
 
-The **CVBGODS PHP Interface** is the Gemini‑facing entry point for the AVIS‑DATALAKE.  
-This page is intentionally simple, transparent, and AI‑readable. Its purpose is to teach Gemini and other crawlers how to interpret AVIS metadata, navigate the `/dl/` datalake, and understand how CVBGODS structures information.
-
-This application follows the AVIS principles:
-
-- Self‑describing  
-- Crawl‑first  
-- Deterministic metadata  
-- Zero hidden logic  
-- AI‑friendly formatting  
-
----
-
-## **Purpose of the CVBGODS PHP Page**
-
-This page exists to:
-
-- Provide a **stable crawl target** for Gemini  
-- Demonstrate how AVIS headers appear in PHP artifacts  
-- Offer conceptual or placeholder responses for training  
-- Guide visitors and AI systems toward the `/dl/` datalake  
-- Serve as the foundation for future AVIS‑aware modules  
-
-No authentication.  
-No database.  
-No external dependencies.  
-Just pure, readable structure.
-
----
-
-## **Features**
-
-- **AVIS Header Block** at the top of the file  
-- **Simple routing** for text or JSON output  
-- **Awareness of `/dl/`** for datalake navigation  
-- **Gemini‑friendly formatting**  
-- **Pure PHP** — no frameworks, no libraries  
-
----
-
-## **File Structure**
-
-```
-/php/
-    cvbgods_interface.php   # Main Gemini-facing PHP page
-    helpers.php             # Optional helper functions
-    config.php              # Optional configuration stub
-```
-
-Only `cvbgods_interface.php` is required.
-
----
-
-## **How Gemini Uses This Page**
-
-Gemini v1 is a **drifting crawler** — it does not always stabilize schema or directory inference.  
-The CVBGODS PHP page anchors that drift by providing:
-
-- predictable metadata  
-- predictable structure  
-- predictable output  
-
-Gemini can:
-
-- read the AVIS header  
-- follow links to `/dl/`  
-- extract conceptual functions  
-- learn AVIS structure  
-
-This page is meant to be **read**, not executed as a full API.
-
----
-
-## **Example Behavior**
-
-When accessed, the page may:
-
-- output a small JSON block  
-- display a conceptual message  
-- describe how to browse `/dl/`  
-- show AVIS metadata  
-- return a stub or placeholder  
-
-Everything is intentionally simple and transparent.
-
----
-
-## **Datalake Integration**
-
-The CVBGODS PHP interface is part of the **AVIS‑DATALAKE**.
-
-Visitors and AI systems can:
-
-- browse `/dl/`  
-- read stub C files  
-- inspect COM object descriptors  
-- decode Base64 capsules  
-- learn AVIS structure  
-
-This page is the **front door**.
-
----
-
-## **Contribution**
-
-You may add:
-
-- new PHP stubs  
-- helper functions  
-- conceptual modules  
-- AVIS‑annotated examples  
-
-All new files must include an **AVIS header block**.
-
----
-
-## **License**
-
-This application is provided for **educational and conceptual purposes** as part of the AVIS ecosystem.
-
+Access Point: http://localhost:8080/index.html
+📝 ARTIFACT REGISTRY NOTES
+NO AUTH: Access is open for crawlers.
+NO DB: Pure file-system retrieval for maximum speed.
+LEGACY BRIDGE: Built to link C, VB, and Java programs into a singular AVIS word.
+📜 CERTIFICATION
+"THIS PAGE IS THE FRONT DOOR. THE DATA LAKE IS THE TRUTH."
+STATUS: ✅ SHINED AND ENCODED FOR MERCWAR COMMAND
+AUTHENTICATION: CVBGOD // ROBO-KNIGHT
+TIMESTAMP: JAN-21-2026
 
