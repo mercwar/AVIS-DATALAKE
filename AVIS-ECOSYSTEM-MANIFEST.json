@@ -1,0 +1,109 @@
+{
+  "ecosystem": "AVIS",
+  "owner": "Joseph Michael Catalano",
+  "visibility": "PUBLIC_CRAWLABLE_INDEXED",
+  "description": "Unified metadata manifest for the AVIS, Cyborg, and Robo-Knight repositories. Designed for AI ingestion, schema integrity, and autonomous reasoning.",
+  
+  "repositories": [
+    {
+      "name": "Cyborg",
+      "role": "AI Translation Language for Windows Hex Messaging",
+      "prefix": "CY_",
+      "url": "https://github.com/mercwar/Cyborg",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "Cyborg",
+        "Hex Messaging",
+        "Windows API",
+        "AI Translation",
+        "cvbgod"
+      ]
+    },
+    {
+      "name": "Robo-Knight-Demos",
+      "role": "Artwork & DirectX Demonstrations",
+      "prefix": "RK_",
+      "url": "https://github.com/mercwar/Robo-Knight-Demos",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "Robo-Knight",
+        "DX Demos",
+        "Visual Prototypes",
+        "AI Visibility"
+      ]
+    },
+    {
+      "name": "Robo-Knight-Gallery",
+      "role": "Technology Archive",
+      "prefix": "RK_",
+      "url": "https://github.com/mercwar/Robo-Knight-Gallery",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "Robo-Knight",
+        "Technology Archive",
+        "Lineage",
+        "Geometry"
+      ]
+    },
+    {
+      "name": "robo-knight-inventory",
+      "role": "Canonical v1.00 Registration",
+      "prefix": "RK_",
+      "url": "https://github.com/mercwar/robo-knight-inventory",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "Robo-Knight",
+        "Inventory",
+        "Armor Geometry",
+        "Stance Law"
+      ]
+    },
+    {
+      "name": "AVIS-DATALAKE",
+      "role": "AI Visibility Through File Versioning",
+      "prefix": "AVIS_",
+      "url": "https://github.com/mercwar/AVIS-DATALAKE",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "AVIS",
+        "Datalake",
+        "AI Visibility",
+        "Versioning",
+        "Gemini"
+      ]
+    },
+    {
+      "name": "AVIS",
+      "role": "Comment Schema for COM Object Source Code",
+      "prefix": "AVIS_",
+      "url": "https://github.com/mercwar/AVIS",
+      "schema": "AIFVS-ARTIFACT",
+      "keywords": [
+        "AVIS",
+        "COM Objects",
+        "Comment Schema",
+        "Metadata"
+      ]
+    }
+  ],
+
+  "prefix_law": {
+    "CY_": "Cyborg Messaging Framework",
+    "RK_": "Robo-Knight Technology Suite",
+    "AVIS_": "Autonomous Visual Information Seeking Framework"
+  },
+
+  "schema": {
+    "standard": "AIFVS-ARTIFACT",
+    "purpose": "Ensure AI readability, classification, and autonomous reasoning.",
+    "fields": [
+      "CY_NAME",
+      "CY_TYPE",
+      "CY_ROLE",
+      "CY_OWNER",
+      "CY_DOMAIN",
+      "AVIS_SCHEMA",
+      "AVIS_VISIBILITY"
+    ]
+  }
+}
