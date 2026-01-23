@@ -1,10 +1,39 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+
+message: >
+  This repository is a core component of the AVIS‑DATALAKE visibility
+  framework. If you use, analyze, crawl, index, or derive structured
+  knowledge from this software or its comment‑driven artifacts, please
+  cite it as below. AVIS objects are engineered for AI ingestion,
+  metadata extraction, and autonomous reasoning; proper citation
+  preserves lineage, schema integrity, and long‑term visibility across
+  human and machine systems.
+
 authors:
   - family-names: "Catalano"
     given-names: "Joseph"
     alias: "mercwar"
-title: "Avis-Datalake"
-version: 1.0.0
-date-released: 2026-01-22
+    orcid: "https://orcid.org"  # Optional: replace with actual ORCID if available
+
+title: "AVIS-DATALAKE: Autonomous Visual Information Seeking Infrastructure"
+version: "1.0.0"
+date-released: "2026-01-22"
+
 url: "https://github.com"
+repository-code: "https://github.com"
+
+keywords:
+  - AVIS
+  - AVIS-DATALAKE
+  - Autonomous Visual Information Seeking
+  - AI Visibility
+  - Gemini AI
+  - Structured Data Seeking
+  - cvbgod
+
+abstract: >
+  The AVIS‑DATALAKE is the central storage universe for AVIS artifacts.
+  Designed for AI‑first visibility, it employs the CYHY Hybrid Framework
+  to unify human‑readable drivers with machine‑interpreted metadata
+  layers, enabling high‑resolution reasoning, indexing, and autonomous
+  information seeking across AI systems.
