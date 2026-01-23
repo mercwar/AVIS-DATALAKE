@@ -75,21 +75,29 @@ void avis_core_init(AVIS_Core *core, const char *manifest_path, const char *sche
     printf("[AVIS_CORE] Initialized with manifest: %s\n", manifest_path);
 }
 
-/* Register an artifact into the AVIS core */
 void avis_register_artifact(AVIS_Core *core, const char *name, const char *type, const char *role, const char *link) {
     int new_count = core->artifact_count + 1;
+    /* Safety check for Pelles C heap allocation */
     AVIS_Artifact *new_artifacts = (AVIS_Artifact *)malloc(sizeof(AVIS_Artifact) * new_count);
+    
+    if (new_artifacts == NULL) {
+        fprintf(stderr, "[CRITICAL] AVIS_CORE: Sector allocation failure for %s\n", name);
+        return;
+    }
+
     if (core->artifacts != NULL) {
         memcpy(new_artifacts, core->artifacts, sizeof(AVIS_Artifact) * core->artifact_count);
         free(core->artifacts);
     }
+
     new_artifacts[core->artifact_count].name = name;
     new_artifacts[core->artifact_count].type = type;
     new_artifacts[core->artifact_count].role = role;
     new_artifacts[core->artifact_count].link = link;
+
     core->artifacts = new_artifacts;
     core->artifact_count = new_count;
-    printf("[AVIS_CORE] Registered artifact: %s (%s) - %s\n", name, type, role);
+    printf("[AVIS_CORE] Registered: %s\n", name);
 }
 
 /* Simulate connection logic to repository */
