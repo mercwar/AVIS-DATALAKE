@@ -62,3 +62,25 @@
 1. **Clone the repository:**
    ```bash
    git clone https://github.com.git
+# AVIS-DATALAKE: AI Visibility Through File Versioning
+
+The AVIS-DATALAKE is the central storage universe for Autonomous Visual
+Information Seeking. Every artifact is a comment‑driven object engineered
+for AI ingestion, classification, and reasoning.
+
+## 🌐 Purpose
+- Provide high‑resolution AI visibility  
+- Maintain versioned datalake structures  
+- Support Gemini 1.5 / 2.0 visual reasoning  
+
+## 🧠 Architecture
+- **CYHY Hybrid Framework**  
+- **AIFVS‑ARTIFACT Schema**  
+- **Cyborg PHP Data Lake Engine**  
+
+## 📂 Structure
+- `/GEMINI-V1/` — model metadata  
+- `/PHP/` — backend engine  
+- `/AVIS-DATALAKE/` — artifact surfaces  
+
+*AVIS Law: Visibility is the primary metric.*
