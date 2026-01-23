@@ -1,0 +1,97 @@
+AIFVS-HEADER.txt
+AVIS-ECOSYSTEM-MANIFEST.json
+CHATGPT
+CHATGPT/HYCY.zip
+CHATGPT/HYCY
+CHATGPT/HYCY/README_AVIS_BIG_LIBS.txt
+CHATGPT/HYCY/c
+CHATGPT/HYCY/c/comment_emitter_1.c
+CHATGPT/HYCY/c/comment_emitter_2.c
+CHATGPT/HYCY/c/comment_emitter_3.c
+CHATGPT/HYCY/cbord
+CHATGPT/HYCY/cbord/cbord_core.h
+CHATGPT/HYCY/cyhy
+CHATGPT/HYCY/cyhy/CYHY_module_1.bas
+CHATGPT/HYCY/cyhy/CYHY_module_2.bas
+CHATGPT/HYCY/cyhy/CYHY_module_3.bas
+CHATGPT/HYCY/js
+CHATGPT/HYCY/js/meta_lib_1.js
+CHATGPT/HYCY/js/meta_lib_2.js
+CHATGPT/HYCY/js/meta_lib_3.js
+CHATGPT/HYCY/perl
+CHATGPT/HYCY/perl/meta_sink_1.pl
+CHATGPT/HYCY/perl/meta_sink_2.pl
+CHATGPT/HYCY/schema
+CHATGPT/HYCY/schema/CGO_comment.h
+CITATION.cff
+CONTRIBUTING.md
+COPILOT
+COPILOT/CYHY.SCHEMA..C.TXT
+COPILOT/Readme.md
+COPILOT/Readme.txt.md
+COPILOT/dl
+COPILOT/dl/CYHY_CORE_VB6.bas
+COPILOT/dl/cbord_core.h
+COPILOT/dl/cbord_wrapper.h
+GEMINI
+GEMINI/AVIS_SCROLL.md
+GEMINI/README.md
+GEMINI/VERSION 1
+GEMINI/VERSION 1/CYHY
+GEMINI/VERSION 1/CYHY/Readme.md
+GEMINI/VERSION 1/CYHY/avis_gemini_core.c
+GEMINI/VERSION 1/CYHY/dl_stub_security_monitor.c
+GEMINI/VERSION 1/PHP
+GEMINI/VERSION 1/PHP/AVIS.html
+GEMINI/VERSION 1/PHP/CYBORG.AVIS.DL.PHP
+GEMINI/VERSION 1/PHP/Demo CVBGOD.html
+GEMINI/VERSION 1/PHP/Readme.md
+GEMINI/VERSION 1/PHP/Readme.php
+GEMINI/VERSION 1/PHP/md.txt
+GEMINI/VERSION 1/Readme.md
+GEMINI/VERSION 1/avis_comment_class_c.c
+GEMINI/VERSION 1/dl
+GEMINI/VERSION 1/dl/dl_stub_code_refactor.c
+GEMINI/VERSION 1/dl/dl_stub_configuration_manager.c
+GEMINI/VERSION 1/dl/dl_stub_data_access_control.c
+GEMINI/VERSION 1/dl/dl_stub_data_archiving.c
+GEMINI/VERSION 1/dl/dl_stub_data_auditing.c
+GEMINI/VERSION 1/dl/dl_stub_data_backup.c
+GEMINI/VERSION 1/dl/dl_stub_data_caching.c
+GEMINI/VERSION 1/dl/dl_stub_data_compression.c
+GEMINI/VERSION 1/dl/dl_stub_data_encryption.c
+GEMINI/VERSION 1/dl/dl_stub_data_integrity.c
+GEMINI/VERSION 1/dl/dl_stub_data_lineage.c
+GEMINI/VERSION 1/dl/dl_stub_data_masking.c
+GEMINI/VERSION 1/dl/dl_stub_data_quality.c
+GEMINI/VERSION 1/dl/dl_stub_data_retention.c
+GEMINI/VERSION 1/dl/dl_stub_data_synchronization.c
+GEMINI/VERSION 1/dl/dl_stub_data_transform.c
+GEMINI/VERSION 1/dl/dl_stub_data_transformation.c
+GEMINI/VERSION 1/dl/dl_stub_data_validation.c
+GEMINI/VERSION 1/dl/dl_stub_datalake_ingestion.c
+GEMINI/VERSION 1/dl/dl_stub_event_dispatcher.c
+GEMINI/VERSION 1/dl/dl_stub_logging_framework.c
+GEMINI/VERSION 1/dl/dl_stub_metadata_introspection.c
+GEMINI/VERSION 1/dl/dl_stub_network_core.c
+GEMINI/VERSION 1/dl/dl_stub_network_environment.c
+GEMINI/VERSION 1/dl/dl_stub_op_code_bridge.c
+GEMINI/VERSION 1/dl/dl_stub_protocol_parser.c
+GEMINI/VERSION 1/dl/dl_stub_security_monitor.c
+GEMINI/VERSION 1/dl/l_stub_artifact_indexer.c
+GEMINI/VERSION 1/dl_path_union_struct.c
+INDEX.CBORD
+INDEX.md
+LICENSE
+PREFIX-LAW.md
+README.md
+REPO-LINKS.txt
+SECURITY.md
+VBGOD
+VBGOD/COM.md
+VBGOD/Readme.md
+avis_installer.c
+avis_installer_v1.ppj
+avis_manifest.json
+google77a4b19e8f99751c.html
+sitemap.xml
