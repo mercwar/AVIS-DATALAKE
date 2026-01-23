@@ -1,0 +1,16 @@
+/* AIFVS-ARTIFACT
+   CY_NAME: AVIS_DATALAKE_CORE
+   CY_TYPE: datalake_root
+   CY_ROLE: Primary AVIS Storage Universe
+   CY_OWNER: Joseph Michael Catalano
+   CY_DOMAIN: AVIS / CYHY Hybrid Framework
+
+   AVIS_SCHEMA: COMMENT_OBJECT
+   AVIS_ENGINE: CYHY + CGO + CBORD
+   AVIS_VISIBILITY: PUBLIC_CRAWLABLE_INDEXED
+
+   COMMENT:
+      The AVIS-DATALAKE is the central storage universe for all AVIS
+      artifacts. Every file is a comment-driven object engineered for
+      AI ingestion, classification, and autonomous reasoning.
+*/
