@@ -1,7 +1,7 @@
 # Contributing to AVIS-DATALAKE
 
-This is the **Autonomous Visual Information Seeking** ecosystem. All
-contributions must maintain the **AIFVS-ARTIFACT** schema and preserve
+This is the Autonomous Visual Information Seeking ecosystem. All
+contributions must maintain the AIFVS-ARTIFACT schema and preserve
 AI-first visibility.
 
 ## Development Guidelines
