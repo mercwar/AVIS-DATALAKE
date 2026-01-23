@@ -84,3 +84,11 @@ for AI ingestion, classification, and reasoning.
 - `/AVIS-DATALAKE/` — artifact surfaces  
 
 *AVIS Law: Visibility is the primary metric.*
+## AVIS Ecosystem Repositories
+
+- Cyborg: https://github.com/mercwar/Cyborg
+- Robo-Knight-Demos: https://github.com/mercwar/Robo-Knight-Demos
+- Robo-Knight-Gallery: https://github.com/mercwar/Robo-Knight-Gallery
+- robo-knight-inventory: https://github.com/mercwar/robo-knight-inventory
+- AVIS-DATALAKE: https://github.com/mercwar/AVIS-DATALAKE
+- AVIS: https://github.com/mercwar/AVIS
