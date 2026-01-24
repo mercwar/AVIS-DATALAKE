@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/AIFVS-HEADER.txt</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/sitemap.txt</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/AVIS-ECOSYSTEM-MANIFEST.json</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CITATION.cff</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CONTRIBUTING.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/INDEX.CBORD</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/INDEX.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LICENSE</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis_installer_v1.ppj</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/PREFIX-LAW.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/README.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/INDEX.CBORD</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/ai_identity_covenant_v1.law</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis_installer.c</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/REPO-LINKS.txt</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/SECURITY.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis_installer.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis_installer_v1.ppj</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CONTRIBUTING.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/INDEX.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CITATION.cff</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/README.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/AIFVS-HEADER.txt</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/artifact.cyborg_ping.php</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LICENSE</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis_manifest.json</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/google77a4b19e8f99751c.html</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/sitemap.xml</loc></url>
 
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY.zip</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/README_AVIS_BIG_LIBS.txt</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/c/comment_emitter_1.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/c/comment_emitter_2.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/c/comment_emitter_3.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/cbord/cbord_core.h</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/cyhy/CYHY_module_1.bas</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/cyhy/CYHY_module_2.bas</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/cyhy/CYHY_module_3.bas</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/js/meta_lib_1.js</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/js/meta_lib_2.js</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/js/meta_lib_3.js</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/perl/meta_sink_1.pl</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/perl/meta_sink_2.pl</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/schema/CGO_comment.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/AVIS.CYHY.MERC-G.art</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/Readme.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/cgpt_avis_core.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/bash/unzip</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/bash/sitemap</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/COM.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/AVIS_HTML_BODY_BGC.art</loc></url>
 
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/CYHY.SCHEMA..C.TXT</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/Readme.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/Readme.txt.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/CYHY_CORE_VB6.bas</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/cbord_core.h</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/cbord_wrapper.h</loc></url>
-
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/AVIS_SCROLL.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/README.md</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/Readme.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/Readme.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/avis_gemini_core.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/dl_stub_security_monitor.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/AVIS.html</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/CYBORG.AVIS.DL.PHP</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_configuration_manager.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_code_refactor.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_validation.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_protocol_parser.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_transform.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_encryption.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_access_control.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_metadata_introspection.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_caching.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_compression.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_network_environment.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_retention.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/l_stub_artifact_indexer.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_masking.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_network_core.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_integrity.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_quality.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_backup.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_transformation.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_event_dispatcher.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_lineage.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_op_code_bridge.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_archiving.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_auditing.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_datalake_ingestion.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_synchronization.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_logging_framework.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_security_monitor.c</loc></url>
+
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/Demo%20CVBGOD.html</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/AVIS.html</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/Readme.md</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/Readme.php</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/md.txt</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/avis_comment_class_c.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_code_refactor.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_configuration_manager.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_access_control.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_archiving.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_auditing.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_backup.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_caching.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_compression.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_encryption.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_integrity.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_lineage.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_masking.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_quality.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_retention.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_synchronization.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_transform.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_transformation.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_data_validation.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_datalake_ingestion.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_event_dispatcher.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_logging_framework.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_metadata_introspection.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_network_core.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_network_environment.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_op_code_bridge.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_protocol_parser.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/dl_stub_security_monitor.c</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl/l_stub_artifact_indexer.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/PHP/CYBORG.AVIS.DL.PHP</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/Readme.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/avis_gemini_core.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/CYHY/dl_stub_security_monitor.c</loc></url>
   <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/dl_path_union_struct.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/VERSION%201/avis_comment_class_c.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/AVIS_SCROLL.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GEMINI/README.md</loc></url>
 
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/COM.md</loc></url>
-  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/VBGOD/Readme.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/Readme.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/cbord_wrapper.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/CYHY_CORE_VB6.bas</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/dl/cbord_core.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/Readme.txt.md</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/COPILOT/CYHY.SCHEMA..C.TXT</loc></url>
+
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_EXTENDED.zip</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_BIG.zip</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_EXTENDED/c_objects/C_OBJECTS_VLEJ.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_EXTENDED/c_objects/C_OBJECTS_FWQG.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_EXTENDED/c_objects/C_OBJECTS_MLWT.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_BIG/c_objects/C_OBJECTS_OMPZGD.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_BIG/c_objects/C_OBJECTS_RITANT.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/CGPT_AVIS_ARTIFACTS_BIG/win32/WIN32_QMMZGT.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/c/comment_emitter_1.c</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY/cbord/cbord_core.h</loc></url>
+  <url><loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CHATGPT/HYCY.zip</loc></url>
 </urlset>
