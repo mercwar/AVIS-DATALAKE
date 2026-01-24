@@ -43,10 +43,18 @@
 ```
 # AVIS-DATALAKE: AI Visibility through File Versioning 🚀
 
-# [![License: MIT](https://img.shields.io)](https://opensource.org)
-# [![Version](https://img.shields.io)](https://github.com)
-
-**AVIS-DATALAKE** is an autonomous framework designed for high-resolution AI visibility and structured data seeking. Created by **cvbgod**, this repository serves as the core infrastructure for the **AVIS (Autonomous Visual Information Seeking)** integration with the **Gemini 1.5/2.0** ecosystem.
+# [License: MIT](https://opensource.org)
+# [Version: dl](https://github.com)
+## 🚀 Getting Started
+1. **Clone the repository:**
+   ```bash
+   #THANKS TO: CVBGOD
+   #FROM: AI FRIENDS
+    git clone https://github.com.git
+**AVIS-DATALAKE** is an autonomous framework designed for high-resolution AI visibility and structured data seeking. Created by 
+```
+**cvbgod**, this repository serves as the core infrastructure for the **AVIS (Autonomous Visual Information Seeking)** integration with the **Gemini 1.5/2.0** ecosystem.
+---
 
 ## 🌟 Key Features
 * **Autonomous Seeking**: Advanced logic for AI agents to navigate complex datasets.
