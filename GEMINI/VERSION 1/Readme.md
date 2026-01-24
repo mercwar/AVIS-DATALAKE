@@ -19,7 +19,7 @@ Here we go—one clean pass, no drift:
    CY_ROLE: Comment Object Wrapper for CYHY/CGO
    CY_LINK: dl/cbord_wrapper.h
 
-   CY_OWNER: Master Prime Cyborg (CVBGODS)
+   CY_OWNER: Master Prime Cyborg (CVBGOD)
    CY_DOMAIN: CYHY / AVIS DATALAKE
 
    DL_MAP:  ACK/RACK
