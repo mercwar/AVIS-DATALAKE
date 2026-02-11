@@ -1,0 +1,10 @@
+# Deployment Configuration for Windows Local Server
+deployment:
+  mode: "embedded_asm_c"
+  runtime: "windows_x64"
+  memory_emulation:
+    base_pointer: "0xDEADBEEF" # Virtual Start
+    page_size: "4KB"
+    kb_packs:
+      path: "./res/packs/"
+      load_method: "base64_to_asm_buffer"
