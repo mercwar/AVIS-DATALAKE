@@ -1,0 +1,20 @@
+/*******************************************************************************
+ * [MERC_G_VECTOR_TABLE_SPEC]
+ *******************************************************************************
+ * Offset | Size | Name          | Description
+ * 00h    | 4    | VEC_COUNT     | Total number of registered lanes
+ * 04h    | 4    | VEC_TYPE      | 0=CODE, 1=DATA, 2=RESOURCE, 3=LINK
+ * 08h    | 4    | ENTRY_PTR     | Memory address/Offset of the segment
+ * 0Ch    | 4    | ENTRY_SIZE    | Size of the segment in bytes
+ * 10h    | 32   | ENTRY_NAME    | Null-terminated string (e.g., "VB6_WV2_API")
+ *******************************************************************************/
+
+typedef struct {
+    DWORD VectorCount;
+    struct {
+        DWORD Type;
+        DWORD Pointer;
+        DWORD Size;
+        char  Name[32];
+    } Lane[256]; // Supports up to 256 concurrent language modules
+} MERC_G_TABLE;
