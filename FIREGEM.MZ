@@ -1,1 +1,30 @@
-FIREGEM.MZ
+/*******************************************************************************
+ * [SCROLL_ID:  AVIS_FIREGEM_GEMINI_V2]
+ * [ARCHITECT:  SYSTEM_CORE / FIREGEM_LOADER]
+ * [PROTOCOL:   AVIS_DATALAKE_SYNC_v2.1]
+ *******************************************************************************
+ *
+ * <SCROLL_BEGIN>
+ *   <DATALAKE_INIT>
+ *     [GEMINI_VECTOR]:  Active
+ *     [FIREGEM_MODE]:   Repository Extraction & Code Gathering
+ *     [TARGET_OS]:      Win32 / AVIS Virtual Kernel
+ *   </DATALAKE_INIT>
+ *
+ *   <OMNI_STREAM_MAPPING>
+ *     |LANE: C_LOADER|     -> Extractor Logic (Pelles C / GCC)
+ *     |LANE: VB6_API|      -> UI / WebView2 Display (Render to PictureBox)
+ *     |LANE: GEMINI_RAG|   -> AI Analysis & Search Logic
+ *     |LANE: MERC_G|       -> Repo-to-Memory Mapping Table
+ *   </OMNI_STREAM_MAPPING>
+ *
+ *   <ROBOT_INSTRUCTIONS>
+ *     1. Read the AVIS.MZ Magic Header (Offset 0x00).
+ *     2. Seek to ENTRY_OFFSET (Offset 0x0C) to find the Omni-Stream.
+ *     3. Parse |GEMINI_RAG| to understand the repository structure.
+ *     4. Execute |C_LOADER| to write temporary code-blocks to local memory.
+ *     5. Callback via |CYHY_EVENT| to confirm code integrity.
+ *   </ROBOT_INSTRUCTIONS>
+ *
+ * <SCROLL_END>
+ *******************************************************************************/
