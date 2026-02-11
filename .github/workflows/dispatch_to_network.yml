@@ -4,7 +4,7 @@ dispatch_to_network:
     strategy:
       fail-fast: false
       matrix:
-        target_repo: ['NEXUS', 'repo-alpha', 'repo-beta']
+        target_repo: ['NEXUS', 'Sentinel', 'Cyborg','Robo-Knight-Demos','AVIS']
     steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
