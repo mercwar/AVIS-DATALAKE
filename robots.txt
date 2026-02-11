@@ -1,5 +1,12 @@
+# Block for all crawlers
 User-agent: *
 Allow: /
-
 # Directs Googlebot and other compatible crawlers to your sitemap
 Sitemap: https://mercwar.github.io/AVIS-DATALAKE/sitemap.xml
+
+# Specific AVIS block
+User-agent: sitemap.avis
+Sitemap: https://mercwar.github.io
+
+# Custom Configuration (Global)
+X-Datalake-Config: https://mercwar.github.io
