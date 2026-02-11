@@ -8,9 +8,8 @@ jobs:
   signal_others:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        # List all your other repos here to connect them in parallel
-        target_repo: ['repo-alpha', 'repo-beta', 'legacy-vb6-assets']
+       matrix:
+        target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
     steps:
       - name: Emit Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
