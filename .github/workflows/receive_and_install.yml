@@ -19,3 +19,4 @@ jobs:
         run: |
           echo "Updating from verified SHA: ${{ github.event.client_payload.sha }}"
           # Call your sitemap.sh or update scripts here
+if: github.event.client_payload.sha != github.sha
