@@ -1,0 +1,11 @@
+dispatch_to_network:
+    needs: binary_validation # Only fire if the EXE/DLL actually builds!
+    runs-on: ubuntu-latest
+    steps:
+      - name: Signal Verified Binary to Network
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MERC_G_PAT }}
+          repository: ${{ github.repository_owner }}/repo-alpha
+          event-type: nexus_binary_ready
+          client-payload: '{"status": "compiled", "version": "v6.5"}'
