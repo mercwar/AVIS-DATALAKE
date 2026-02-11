@@ -11,12 +11,13 @@ jobs:
       fail-fast: false
       matrix:
         target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
-    steps:
+steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
-          # Calling secret directly from the vault
+          # Use your GEMINI token (stored as MERC_G_PAT)
+          # NOT the default GITHUB_TOKEN
           token: ${{ secrets.MERC_G_PAT }}
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
-          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}", "fvs_vector": "0xF"}'
+          client-payload: '{"status": "compiled", "fvs_vector": "0xF"}'
