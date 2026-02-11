@@ -1,23 +1,23 @@
 name: AVIS_NETWORK_DISPATCH
 
-# This tells the robot WHEN to run
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
-  dispatch_to_network:
+  signal_others:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: false  # <--- CRITICAL: Keeps the pulse alive if one repo fails
       matrix:
         target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
-steps:
+    steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.MERC_G_PAT }} # <--- THIS MUST BE HERE
+          # This MUST match the name in Settings > Secrets > Actions
+          token: ${{ secrets.MERC_G_PAT }} 
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
-          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}"}'
+          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}", "vector": "0xF"}'
