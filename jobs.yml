@@ -1,0 +1,42 @@
+# [SCROLL_ID: AVIS_FIREGEM_JOBS_v2]
+# [PROTOCOL: AVIS_DATALAKE_SYNC_v2.1]
+
+avis_datalake:
+  version: 2.1
+  kernel: CYHY_ABI_v2
+  vector_table: MERC-G
+
+  # Global defaults for all AVIS jobs
+  defaults:
+    working_dir: ./bin
+    timeout: 300s
+    notify: CYHY_SIG_INIT
+
+  # Defined Job Lanes for extraction and execution
+  jobs:
+    - name: extract_loader
+      lane: CORE_C
+      action: extract_binary
+      output: ./avis_loader.dll
+      on_success: start_kernel
+
+    - name: build_ui
+      lane: VB6_GUI
+      action: compile_vbp
+      compiler: "C:\Program Files (x86)\Microsoft Visual Studio\VB98\VB6.EXE"
+      flags: ["/MAKE", "/OUTDIR", "./bin"]
+      on_success: load_webview
+
+    - name: render_view
+      lane: WV2_API
+      action: render_to_hdc
+      target: "PictureBox1"
+      signal: CYHY_SIG_RENDER
+      use_gdi: true
+
+  # Workflow dependencies (The Linker Contract)
+  workflows:
+    full_ignition:
+      - extract_loader
+      - build_ui
+      - render_view
