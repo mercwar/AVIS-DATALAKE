@@ -1,11 +1,15 @@
 dispatch_to_network:
-    needs: binary_validation # Only fire if the EXE/DLL actually builds!
+    needs: binary_validation
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # REMOVED: legacy-vb6-assets (Non-Existent)
+        target_repo: ['NEXUS', 'repo-alpha', 'repo-beta'] 
     steps:
-      - name: Signal Verified Binary to Network
+      - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.MERC_G_PAT }}
-          repository: ${{ github.repository_owner }}/repo-alpha
-          event-type: nexus_binary_ready
-          client-payload: '{"status": "compiled", "version": "v6.5"}'
+          repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
+          event-type: nexus_update_signal
+          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}"}'
