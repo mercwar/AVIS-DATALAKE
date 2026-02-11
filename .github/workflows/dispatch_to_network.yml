@@ -4,12 +4,13 @@ dispatch_to_network:
     strategy:
       matrix:
         # REMOVED: legacy-vb6-assets (Non-Existent)
-        target_repo: ['NEXUS', 'repo-alpha', 'repo-beta'] 
-    steps:
+        target_repo: ['NEXUS', 'Cyborg', 'AVIS','Sentinel','Robo-Knight-Demos'] 
+steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.MERC_G_PAT }}
+          # Ensure this EXACT name is in your GitHub Secrets
+          token: ${{ secrets.MERC_G_PAT }} 
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
           client-payload: '{"status": "compiled", "sha": "${{ github.sha }}"}'
