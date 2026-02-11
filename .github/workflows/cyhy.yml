@@ -1,0 +1,11 @@
+ - name: Execute VB6 Compile Test
+        run: |
+          # Redirect Wine output to a file for the pulse
+          wine ./compiler/VB6.EXE /make ./src/NEXUS_CORE.vbp /outdir ./build > build_log.txt 2>&1 || true
+          
+          # Call the pulse script and pass the exit code
+          chmod +x log_pulse.sh
+          ./log_pulse.sh $?
+        env:
+          MERC_G_PHP_URL: ${{ secrets.MERC_G_PHP_URL }}
+          MERC_G_TOKEN: ${{ secrets.MERC_G_TOKEN }}
