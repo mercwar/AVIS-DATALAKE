@@ -1,22 +1,21 @@
-# Block for all crawlers
-User-agent: *
-Allow: /
-# Directs Googlebot and other compatible crawlers to your sitemap
-Sitemap: https://mercwar.github.io/AVIS-DATALAKE/sitemap.xml
+# ===========================================================
+# MERCWAR // AVIS-DATALAKE // CRAWLER CONFIGURATION
+# ===========================================================
 
-# Specific AVIS block
-User-agent: sitemap.avis
-Sitemap: https://mercwar.github.io
-
-# Custom Configuration (Global)
+# Global Configuration
 X-Datalake-Config: https://mercwar.github.io
 User-agent: *
 Allow: /
-Sitemap: https://mercwar.github.io
+Disallow: /snapshots/ # Protect raw memory states
+Disallow: /meta/      # Protect knowledge graph metadata
+Disallow: /logs/      # Protect system logs
 
-# AVIS Specific Logic
+# AVIS Specific Logic (Internal AI Crawler)
 User-agent: sitemap.avis
 Disallow: /private/
 Allow: /NEXUS/TABS/
 Crawl-delay: 0
 
+# Sitemaps
+Sitemap: https://mercwar.github.io/AVIS-DATALAKE/sitemap.xml
+Sitemap: https://github.com/mercwar/AVIS-DATALAKE/sitemap.xml
