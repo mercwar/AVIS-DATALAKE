@@ -1,0 +1,55 @@
+# ===========================================================
+# MERCWAR // AVIS ENVIRONMENT MANIFEST
+# DEPLOYMENT_ID: MERC-AVIS-ALPHA-2026
+# ROLE: Orchestrate RAMD/FVS/DATALAKE Linkage
+# ===========================================================
+
+version: "3.8"
+
+services:
+  avis-engine:
+    image: mercwar/cyborg-core:latest
+    container_name: AVIS_CORE_VARIANT
+    environment:
+      # --- AVIS ENGINE STATE ---
+      - AVIS_ID=AI.VARIANT.ON
+      - AVIS_VARIANT_STATE=ENABLED
+      
+      # --- MEMORY BLOCK CONFIG (DL.RAMD) ---
+      - MEMBLOCK_MODE=VOLATILE
+      - MEMBLOCK_ACCESS=READ_WRITE
+      - MEMBLOCK_SIZE=AUTO
+      
+      # --- FVS LINKAGE & SNAPSHOTS ---
+      - FVS_SOURCE=DL.RAMD.AVIS
+      - FVS_TARGET=FVS.AI
+      - FVS_SYNC_MODE=SYNC_ATOMIC
+      - FVS_EXPORTABLE=TRUE
+
+      # --- DATALAKE PATHING (AIFVS-HEADER REFS) ---
+      - DL_ROOT=/var/www/html/datalake
+      - DL_MAP_ACK_RACK=ENABLED
+      
+    volumes:
+      - ./datalake:/var/www/html/datalake
+      - ./headers/AIFVS-HEADER.h:/usr/include/avis/AIFVS-HEADER.h
+      - ./logs/avis_trace.log:/var/log/avis_trace.log
+
+    networks:
+      - mercwar-bus
+
+# CALLBACK EXPANSION HOOKS
+# These triggers align with the FVS.AI.EXPORT.CALLBACK.EXPAND logic
+hooks:
+  on_snapshot:
+    - trigger: "FVS_AI_EXPORT"
+      action: "DYNAMIC_EXPAND"
+      priority: "CRITICAL"
+
+networks:
+  mercwar-bus:
+    driver: bridge
+
+# ===========================================================
+# STATUS: MANIFEST_READY // TARGET: DOCKER_CYBORG_ENV
+# ===========================================================
