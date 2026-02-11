@@ -1,0 +1,28 @@
+' --- GDI+ Declarations ---
+Private Declare Function GdipCreateBitmapFromStream Lib "gdiplus" (ByVal stream As Long, bitmap As Long) As Long
+Private Declare Function GdipGetImageWidth Lib "gdiplus" (ByVal image As Long, Width As Long) As Long
+Private Declare Function GdipGetImageHeight Lib "gdiplus" (ByVal image As Long, Height As Long) As Long
+Private Declare Function GdipDrawImageRectRectI Lib "gdiplus" (ByVal graphics As Long, ByVal image As Long, ByVal dstX As Long, ByVal dstY As Long, ByVal dstW As Long, ByVal dstH As Long, ByVal srcX As Long, ByVal srcY As Long, ByVal srcW As Long, ByVal srcH As Long, ByVal srcUnit As Long, Optional ByVal imageAttributes As Long, Optional ByVal callback As Long, Optional ByVal callbackData As Long) As Long
+
+Public Sub RenderStreamToPictureBox(ByVal pStream As Long, pic As PictureBox)
+    Dim hBitmap As Long, hGraphics As Long
+    Dim imgW As Long, imgH As Long
+    
+    ' 1. Initialize GDI+ Graphics from PictureBox hDC
+    GdipCreateFromHDC pic.hdc, hGraphics
+    
+    ' 2. Create GDI+ Bitmap directly from the Memory Stream
+    If GdipCreateBitmapFromStream(pStream, hBitmap) = 0 Then
+        GdipGetImageWidth hBitmap, imgW
+        GdipGetImageHeight hBitmap, imgH
+        
+        ' 3. Paint the Bitmap to the hDC
+        pic.Cls
+        GdipDrawImageRectRectI hGraphics, hBitmap, 0, 0, pic.ScaleWidth, pic.ScaleHeight, 0, 0, imgW, imgH, 2 ' UnitPixel=2
+        pic.Refresh
+    End If
+    
+    ' Cleanup GDI+ Objects
+    GdipDisposeImage hBitmap
+    GdipDeleteGraphics hGraphics
+End Sub
