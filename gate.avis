@@ -1,0 +1,18 @@
+{
+  "protocol": "AVIS-GATEWAY",
+  "identity": "MERGCG-MASTER-NODE",
+  "security": "FVS-ESIGN-ENCRYPTED",
+  "network_scope": {
+    "primary": "https://github.com",
+    "nodes": [
+      "https://github.com/NEXUS",
+      "https://github.com/Cyborg",
+      "https://github.com/FVS-Modules"
+    ]
+  },
+  "bridge": {
+    "cyhy_layer": "ASM_INTERPRETER",
+    "resource_gateway": "ENABLED",
+    "global_ingest": "active"
+  }
+}
