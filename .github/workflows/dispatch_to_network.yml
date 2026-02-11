@@ -8,16 +8,20 @@ on:
 jobs:
   signal_others:
     runs-on: ubuntu-latest
+    # --- INJECT SECRET INTO THE JOB SCOPE ---
+    env:
+      MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+    # ----------------------------------------
     strategy:
-      fail-fast: false  # <--- CRITICAL: Keeps the pulse alive if one repo fails
+      fail-fast: false
       matrix:
         target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
     steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
-          # This MUST match the name in Settings > Secrets > Actions
-          token: ${{ secrets.MERC_G_PAT }} 
+          # Use the environment variable we just mapped
+          token: ${{ env.MERC_G_PAT }} 
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
-          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}", "vector": "0xF"}'
+          client-payload: '{"status": "compiled", "sha": "${{ github.sha }}", "fvs_vector": "0xF"}'
