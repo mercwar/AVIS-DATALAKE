@@ -36,3 +36,47 @@ jobs:
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
           client-payload: '{"status": "verified", "sha": "${{ github.sha }}"}'
+ binary_validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout NEXUS Core
+        uses: actions/checkout@v4
+
+      - name: Install Wine (Windows Emulation)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y wine64 wine32
+          wine --version
+
+      - name: Fetch Private VB6 Compiler
+        # Call your private compiler storage
+        env:
+          COMPILER_TOKEN: ${{ secrets.MERC_G_PAT }}
+        run: |
+          curl -H "Authorization: token $COMPILER_TOKEN" \
+               -L https://raw.githubusercontent.com \
+               -o vb6.zip
+          unzip vb6.zip -d ./compiler
+
+      - name: Execute VB6 Compile Test
+        id: compile_step
+        run: |
+          echo "/* CYHY_KERNEL: Initiating Wine/VB6 Binary Build... */"
+          # Run the compiler in command line mode (/make)
+          # We use 'wine' to wrap the Windows exe
+          wine ./compiler/VB6.EXE /make ./src/NEXUS_CORE.vbp /outdir ./build
+          
+          if [ -f "./build/NEXUS_CORE.dll" ]; then
+            echo "/* BINARY_VALIDATION_SUCCESS */"
+          else
+            echo "/* BINARY_VALIDATION_FAILED: No output generated */"
+            exit 1
+          fi
+
+      - name: Upload Verified Binary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-verified-binary
+          path: ./build/NEXUS_CORE.dll
