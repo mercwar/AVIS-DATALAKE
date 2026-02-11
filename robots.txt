@@ -10,3 +10,13 @@ Sitemap: https://mercwar.github.io
 
 # Custom Configuration (Global)
 X-Datalake-Config: https://mercwar.github.io
+User-agent: *
+Allow: /
+Sitemap: https://mercwar.github.io
+
+# AVIS Specific Logic
+User-agent: sitemap.avis
+Disallow: /private/
+Allow: /NEXUS/TABS/
+Crawl-delay: 0
+
