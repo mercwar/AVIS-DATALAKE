@@ -1,0 +1,23 @@
+name: AVIS_RECEIVE_SIGNAL
+
+on:
+  repository_dispatch:
+    types: [nexus_update_signal]
+
+jobs:
+  update_local_artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Local Repo
+        uses: actions/checkout@v4
+
+      - name: Pull Latest NEXUS Core
+        run: |
+          echo "/* CYHY_KERNEL: Receiving signal from ${{ github.event.client_payload.sha }} */"
+          # Example: Pull a specific file from the main NEXUS repo
+          curl -H "Authorization: token ${{ secrets.MERC_G_PAT }}" \
+               -L https://raw.githubusercontent.com \
+               -o ./src/nexus_core.bas
+
+      - name: Log Pulse
+        run: ./log_pulse.sh "Handshake Successful"
