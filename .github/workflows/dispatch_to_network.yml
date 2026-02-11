@@ -7,10 +7,6 @@ on:
 jobs:
   signal_others:
     runs-on: ubuntu-latest
-    # --- MAP SECRET TO JOB ENV ---
-    env:
-      MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
-    # -----------------------------
     strategy:
       fail-fast: false
       matrix:
@@ -19,8 +15,8 @@ jobs:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
         with:
-          # Call the mapped environment variable
-          token: ${{ env.MERC_G_PAT }}
+          # Calling secret directly from the vault
+          token: ${{ secrets.MERC_G_PAT }}
           repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
           event-type: nexus_update_signal
           client-payload: '{"status": "compiled", "sha": "${{ github.sha }}", "fvs_vector": "0xF"}'
