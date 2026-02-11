@@ -1,0 +1,20 @@
+# [SCROLL_ID: AVIS_BINARY_PACKAGER_v2]
+# [PROTOCOL: AVIS_DATALAKE_SYNC_v2.1]
+
+datalake_resources:
+  - id: 201
+    name: "WV2_LOADER_DLL"
+    type: "!!binary"
+    content: |
+      TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAuAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9T
+      bW9kZS4NDQokAAAAAAAAAFBFAABMAQQA... # [Truncated Base64 DLL Data]
+    target_path: "./bin/WebView2Loader.dll"
+
+  - id: 202
+    name: "APP_ICON"
+    type: "!!binary"
+    content: !!binary |
+      iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlz
+      AAAOwwAADsMBx2+oZAAAADhJREFUOE9j/P//PwMaYBj9IDD6QWD0g8DoB4HRDwKjHwRGPwiMfhAY
+      /SAw+kFg9IPAKBgYGADu4S/x8o7vSAAAAABJRU5ErkJggg==
