@@ -1,0 +1,38 @@
+name: AVIS_GUARDED_DISPATCH
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  validate_nexus:
+    runs-on: ubuntu-latest
+    outputs:
+      test_result: ${{ steps.run_tests.outcome }}
+    steps:
+      - name: Checkout NEXUS Core
+        uses: actions/checkout@v4
+
+      - name: Run VB6 Unit Tests/Linting
+        id: run_tests
+        # This calls your testing script. If it exits with a non-zero code, the job fails.
+        run: |
+          echo "/* CYHY_KERNEL: Initiating VB6 Module Validation... */"
+          # Example: check if .bas files have required headers
+          grep -q "FIREGEM_DIRECTIVE" nexus_core.bas || (echo "Validation Failed" && exit 1)
+          echo "/* VALIDATION_SUCCESS */"
+
+  dispatch_to_network:
+    needs: validate_nexus # THIS IS THE GUARD: It only runs if validation succeeds
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: ['repo-alpha', 'repo-beta']
+    steps:
+      - name: Emit Signal to Network
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MERC_G_PAT }}
+          repository: ${{ github.repository_owner }}/${{ matrix.target_repo }}
+          event-type: nexus_update_signal
+          client-payload: '{"status": "verified", "sha": "${{ github.sha }}"}'
