@@ -26,3 +26,69 @@ Public Sub RenderStreamToPictureBox(ByVal pStream As Long, pic As PictureBox)
     GdipDisposeImage hBitmap
     GdipDeleteGraphics hGraphics
 End Sub
+1. The GDI+ Memory Loader (VB6 Module)
+This logic takes an IStream (the memory buffer), converts it to a GDI+ Bitmap, and renders it to the PictureBox. 
+Microsoft Learn
+Microsoft Learn
+vba
+' --- GDI+ Declarations ---
+Private Declare Function GdipCreateBitmapFromStream Lib "gdiplus" (ByVal stream As Long, bitmap As Long) As Long
+Private Declare Function GdipGetImageWidth Lib "gdiplus" (ByVal image As Long, Width As Long) As Long
+Private Declare Function GdipGetImageHeight Lib "gdiplus" (ByVal image As Long, Height As Long) As Long
+Private Declare Function GdipDrawImageRectRectI Lib "gdiplus" (ByVal graphics As Long, ByVal image As Long, ByVal dstX As Long, ByVal dstY As Long, ByVal dstW As Long, ByVal dstH As Long, ByVal srcX As Long, ByVal srcY As Long, ByVal srcW As Long, ByVal srcH As Long, ByVal srcUnit As Long, Optional ByVal imageAttributes As Long, Optional ByVal callback As Long, Optional ByVal callbackData As Long) As Long
+
+Public Sub RenderStreamToPictureBox(ByVal pStream As Long, pic As PictureBox)
+    Dim hBitmap As Long, hGraphics As Long
+    Dim imgW As Long, imgH As Long
+    
+    ' 1. Initialize GDI+ Graphics from PictureBox hDC
+    GdipCreateFromHDC pic.hdc, hGraphics
+    
+    ' 2. Create GDI+ Bitmap directly from the Memory Stream
+    If GdipCreateBitmapFromStream(pStream, hBitmap) = 0 Then
+        GdipGetImageWidth hBitmap, imgW
+        GdipGetImageHeight hBitmap, imgH
+        
+        ' 3. Paint the Bitmap to the hDC
+        pic.Cls
+        GdipDrawImageRectRectI hGraphics, hBitmap, 0, 0, pic.ScaleWidth, pic.ScaleHeight, 0, 0, imgW, imgH, 2 ' UnitPixel=2
+        pic.Refresh
+    End If
+    
+    ' Cleanup GDI+ Objects
+    GdipDisposeImage hBitmap
+    GdipDeleteGraphics hGraphics
+End Sub
+Use code with caution.
+
+2. The CYHY Signal Receiver
+When the WebView2 C-Loader finishes a capture, it triggers the CYHY_SIG_CAPTURE event and passes the IStream pointer. 
+vba
+' Inside your CYHY Callback Procedure
+Public Sub Cyhy_Callback(ByVal SigID As Long, ByVal DataPtr As Long, ByVal Size As Long)
+    If SigID = CYHY_SIG_CAPTURE Then
+        ' DataPtr is the memory address of the IStream from WebView2
+        RenderStreamToPictureBox DataPtr, Form1.Picture1
+    End If
+End Sub
+Use code with caution.
+
+3. C-Loader Capture Logic (Flat API)
+In your Pelles C DLL, you must call CapturePreview using the IStream interface instead of a file path. 
+c
+// [C-LOADER SEGMENT]
+HRESULT CaptureToMemory(ICoreWebView2* pWebView) {
+    IStream* pStream = NULL;
+    CreateStreamOnHGlobal(NULL, TRUE, &pStream); // Initialize memory stream
+    
+    // Request WebView2 to write PNG data into our stream
+    return pWebView->lpVtbl->CapturePreview(pWebView, 0, (const wchar_t*)pStream, pCaptureHandler);
+}
+
+// In the CapturePreview Handler Invoke:
+HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2CapturePreviewCompletedHandler* This, HRESULT result) {
+    // Send the stream pointer back to VB6 via the CYHY ABI
+    Cyhy_Kernel_Route(CYHY_SIG_CAPTURE, pGlobalStream, 0); 
+    return S_OK;
+}
+Use code with caution.
