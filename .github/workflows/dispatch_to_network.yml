@@ -1,10 +1,18 @@
-dispatch_to_network:
-    needs: binary_validation
+name: AVIS_NETWORK_DISPATCH
+
+# This tells the robot WHEN to run
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  dispatch_to_network:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        target_repo: ['NEXUS', 'Sentinel', 'Cyborg','Robo-Knight-Demos','AVIS']
+        target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
     steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
