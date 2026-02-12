@@ -9,12 +9,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // 2. Convert GUID string to unsigned long long to match the header
-    unsigned long long guid_val = strtoull(argv[1], NULL, 16);
+    // 2. Convert GUID string to unsigned long long to match fire-gem.h
+    unsigned long long active_guid = strtoull(argv[1], NULL, 16);
 
-    // 3. BOOT: Fixes 'too few arguments' by passing the guid_val
-    printf("[C-BOOT] Initializing Hardware with GUID: %llX\n", guid_val);
-    run_asm_logic(guid_val); 
+    // 3. BOOT: Pass the GUID to the hardware gate (Fixes 'too few arguments')
+    printf("[C-BOOT] Initializing Hardware with GUID: %llX\n", active_guid);
+    run_asm_logic(active_guid); 
 
     return 0;
 }
