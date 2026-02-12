@@ -1,10 +1,16 @@
-#ifndef FIRE_GEM_H
-#define FIRE_GEM_H
+#include <stdio.h>
+#include <stdlib.h>
+#include "fire-gem.h"
 
-/* ASM Hardware Gate - 32-bit ONLY */
-extern void run_asm_logic(unsigned int guid);
+int main(int argc, char *argv[]) {
+    if (argc < 2) return 1;
 
-/* ASM Binary Executor */
-extern void fire_end_entry();
+    // Convert to 32-bit unsigned int (e.g., 0x827364A1)
+    unsigned int active_guid = (unsigned int)strtoul(argv[1], NULL, 16);
 
-#endif
+    // BOOT: Passing the 32-bit GUID to the hardware gate
+    printf("[C-BOOT] Initializing HW (32-bit: %08X)\n", active_guid);
+    run_asm_logic(active_guid); 
+
+    return 0;
+}
