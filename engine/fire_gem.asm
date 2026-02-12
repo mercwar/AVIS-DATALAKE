@@ -1,67 +1,37 @@
 ; ==========================================================
-; ENGINE: fire_gem.asm (V4-Zero-Halt)
+; ENGINE: fire_gem.asm (The Igniter)
+; PURPOSE: Detect KB and Handover to Processor
 ; ==========================================================
 section .data
-    mode dw 0755
-    target_key db '"target": "', 0
-
-section .bss
-    buffer resb 4096
-    path_tmp resb 256
+    kb_file db "kb.kb", 0
+    proc_bin db "./kb_processor", 0
 
 section .text
     global _start
 
 _start:
-    pop rax             ; argc
-    pop rax             ; prog_name
-    pop rdi             ; rdi = config file from argv
+    ; 1. Hardware Sync
+    mov rbp, rsp
+    and rsp, -16
 
-    ; 1. OPEN
-    mov rax, 2          ; sys_open
-    xor rsi, rsi        ; O_RDONLY
-    syscall
-    mov r12, rax
-
-    ; 2. READ & HALT GUARD
-    mov rax, 0          ; sys_read
-    mov rdi, r12
-    mov rsi, buffer
-    mov rdx, 4096
+    ; 2. Check for Fuel (kb.kb)
+    mov rax, 21         ; sys_access
+    mov rdi, kb_file
+    mov rsi, 0          ; F_OK
     syscall
     test rax, rax
-    jle exit            ; IF 0 OR NEGATIVE, SHUTDOWN
+    jnz exit            ; No KB, no spark.
 
-    ; 3. DETERMINISTIC BUILD
-    ; (Directly targets strings between quotes)
-    lea rsi, [buffer]
-find_quote:
-    cmp byte [rsi], '"'
-    je extract_path
-    inc rsi
-    cmp rsi, buffer + 4096
-    jl find_quote
-    jmp exit
-
-extract_path:
-    add rsi, 11         ; Skip '"target": "'
-    mov rdi, path_tmp
-copy_loop:
-    mov al, [rsi]
-    cmp al, '"'
-    je build_dir
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    jmp copy_loop
-
-build_dir:
-    mov byte [rdi], 0   ; Null terminate
-    mov rax, 83         ; sys_mkdir
-    mov rdi, path_tmp
-    mov rsi, 0755
+    ; 3. Handover to Processor (execve)
+    mov rax, 59         ; sys_execve
+    mov rdi, proc_bin
+    
+    push 0              ; NULL env
+    push kb_file        ; argv[1] = kb.kb
+    push proc_bin       ; argv[0] = processor
+    mov rsi, rsp
+    xor rdx, rdx
     syscall
-    jmp exit            ; Exit after first build for safety
 
 exit:
     mov rax, 60         ; sys_exit
