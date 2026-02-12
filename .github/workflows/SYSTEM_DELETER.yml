@@ -1,0 +1,19 @@
+name: SYSTEM_DELETER
+on: workflow_dispatch
+
+jobs:
+  delete_ghosts:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete Workflow Runs
+        run: |
+          # This command loops through all workflows and deletes their run history
+          # Once history is 0, the workflow name disappears from the sidebar
+          ids=$(gh run list --limit 100 --json databaseId --jq '.[].databaseId')
+          for id in $ids; do
+            gh run delete "$id"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
