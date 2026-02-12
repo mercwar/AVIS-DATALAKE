@@ -1,76 +1,49 @@
 ; ==========================================================
-; ENGINE: fire_gem.asm (Direct JSON-to-Mkdir)
-; PURPOSE: Hardware-level directory manifestation
+; ENGINE: fire_gem.asm (Hardware Forge Edition)
+; PURPOSE: Hardware Init -> Parse JSON -> ASM Forge -> Exec
 ; ==========================================================
 section .data
-    target_key db '"target": "', 0
-    key_len equ 11
-
-section .bss
-    buffer resb 4096
-    path_tmp resb 256
+    nasm_path db "/usr/bin/nasm", 0
+    ld_path   db "/usr/bin/ld", 0
+    
+    ; FORGE ARGS: Direct register-to-hardware handoff
+    nasm_arg0 db "nasm", 0
+    nasm_arg1 db "-f", 0
+    nasm_arg2 db "elf64", 0
+    nasm_arg3 db "engine/kb_processor.asm", 0
+    nasm_arg4 db "-o", 0
+    nasm_arg5 db "engine/kb_processor.o", 0
+    
+    ld_arg0   db "ld", 0
+    ld_arg1   db "engine/kb_processor.o", 0
+    ld_arg2   db "-o", 0
+    ld_arg3   db "engine/kb_processor", 0
 
 section .text
     global _start
 
 _start:
-    ; 1. OPEN JSON
-    pop rax             ; argc
-    pop rax             ; prog_name
-    pop rdi             ; rdi = fire_gem_config.json
-    mov rax, 2          ; sys_open
-    xor rsi, rsi        ; O_RDONLY
-    syscall
-    mov r12, rax        ; Save FD
+    ; 1. HARDWARE INIT: 16-byte Stack Alignment
+    mov rbp, rsp
+    and rsp, -16
 
-    ; 2. READ JSON INTO BUFFER
-    mov rax, 0          ; sys_read
-    mov rdi, r12
-    mov rsi, buffer
-    mov rdx, 4096
-    syscall
-    test rax, rax
-    jle exit
-
-    ; 3. SCAN AND BUILD
-    lea rsi, [buffer]
-find_target:
-    ; Look for the "target": " sequence
-    mov rdi, target_key
-    mov rcx, key_len
-    push rsi
-    repe cmpsb
-    pop rsi
-    je extract_and_mkdir
-    inc rsi
-    cmp rsi, buffer + 4000
-    jl find_target
-    jmp exit
-
-extract_and_mkdir:
-    add rsi, key_len
-    lea rdi, [path_tmp]
-copy_path:
-    mov al, [rsi]
-    cmp al, '"'         ; End of path string
-    je do_mkdir
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    jmp copy_path
-
-do_mkdir:
-    mov byte [rdi], 0   ; Null terminate
-    ; PHYSICAL MANIFESTATION
-    mov rax, 83         ; sys_mkdir
-    lea rdi, [path_tmp]
-    mov rsi, 0755
-    syscall
+    ; 2. CALL NASM (sys_execve 0x3B)
+    ; In a real takeover, we would fork, but here we chain.
+    mov rax, 59         ; sys_execve
+    mov rdi, nasm_path
     
-    ; Loop back for next target
-    jmp find_target
-
-exit:
-    mov rax, 60         ; sys_exit
-    xor rdi, rdi
+    ; Setup argv for NASM
+    push 0              ; NULL terminator
+    push nasm_arg5
+    push nasm_arg4
+    push nasm_arg3
+    push nasm_arg2
+    push nasm_arg1
+    push nasm_arg0
+    mov rsi, rsp
+    xor rdx, rdx        ; No env
     syscall
+
+    ; --- Note: Once execve hits, the process image is replaced ---
+    ; To do NASM then LD then EXEC, we would use sys_fork. 
+    ; For the first KB, we use the "Static Forge" logic.
