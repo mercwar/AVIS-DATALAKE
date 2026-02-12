@@ -4,16 +4,21 @@ on: [push, workflow_dispatch]
 jobs:
   bootstrap:
     runs-on: ubuntu-latest
+    # THE PERMISSION UNLOCK: Allows the robot to commit files
+    permissions:
+      contents: write
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Ensure write-authority
 
       - name: Initialize FVS Surface
         run: |
           echo "[REPLACEMENTS]" > string_registry.ini
           echo 'find=" "' >> string_registry.ini
           echo 'replace="%20"' >> string_registry.ini
-          
           echo "[fire-gem]" > path.ini
           echo 'config="fire_gem_config.json"' >> path.ini
 
@@ -24,23 +29,24 @@ jobs:
           nasm -f elf64 engine/fire_gem.asm -o fire_gem.o
           ld fire_gem.o -o fire_gem
           chmod +x fire_gem
+          # The Engine builds the surface
           ./fire_gem fire_gem_config.json
           
       - name: Stabilize and Upload .so
         run: |
-          # 1. Spark the Forge
+          # 1. Spark the Forge (Ensure forge.sh has mkdir -p gemini/kb/so)
           chmod +x forge/forge.sh
           ./forge/forge.sh
           
-          # 2. VERIFY: Only proceed if the .so was actually created
+          # 2. VERIFY AND PUSH
           if [ -f "gemini/kb/so/kb_processor.so" ]; then
             git config --local user.email "cvbgod@demonizer.com"
             git config --local user.name "CVBGOD"
             git add gemini/kb/so/kb_processor.so
             git commit -m "FIREGEM: Stabilization SO Uploaded"
-            git push
+            # Explicitly target origin to force the ground
+            git push origin HEAD:main
           else
             echo "PRINCE_OF_DARKNESS: Binary manifestation failed. Grounding error."
             exit 1
           fi
-
