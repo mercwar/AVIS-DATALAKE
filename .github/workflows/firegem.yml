@@ -11,5 +11,6 @@ jobs:
       - name: Spark Gemini V2 Forge
         run: |
           sudo apt-get update && sudo apt-get install -y nasm
+          # The quotes around the path are the Flat Key for spaces
           chmod +x "AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
           "./AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
