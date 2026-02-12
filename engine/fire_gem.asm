@@ -1,37 +1,74 @@
 ; ==========================================================
-; ENGINE: fire_gem.asm (The Igniter)
-; PURPOSE: Detect KB and Handover to Processor
+; ENGINE: fire_gem.asm (Direct JSON-to-Mkdir)
+; PURPOSE: Hardware-level directory manifestation
 ; ==========================================================
 section .data
-    kb_file db "kb.kb", 0
-    proc_bin db "./kb_processor", 0
+    target_key db '"target": "', 0
+    key_len equ 11
+
+section .bss
+    buffer resb 4096
+    path_tmp resb 256
 
 section .text
     global _start
 
 _start:
-    ; 1. Hardware Sync
-    mov rbp, rsp
-    and rsp, -16
+    ; 1. OPEN JSON
+    pop rax             ; argc
+    pop rax             ; prog_name
+    pop rdi             ; rdi = fire_gem_config.json
+    mov rax, 2          ; sys_open
+    xor rsi, rsi        ; O_RDONLY
+    syscall
+    mov r12, rax        ; Save FD
 
-    ; 2. Check for Fuel (kb.kb)
-    mov rax, 21         ; sys_access
-    mov rdi, kb_file
-    mov rsi, 0          ; F_OK
+    ; 2. READ JSON INTO BUFFER
+    mov rax, 0          ; sys_read
+    mov rdi, r12
+    mov rsi, buffer
+    mov rdx, 4096
     syscall
     test rax, rax
-    jnz exit            ; No KB, no spark.
+    jle exit
 
-    ; 3. Handover to Processor (execve)
-    mov rax, 59         ; sys_execve
-    mov rdi, proc_bin
-    
-    push 0              ; NULL env
-    push kb_file        ; argv[1] = kb.kb
-    push proc_bin       ; argv[0] = processor
-    mov rsi, rsp
-    xor rdx, rdx
+    ; 3. SCAN AND BUILD
+    lea rsi, [buffer]
+find_target:
+    ; Look for the "target": " sequence
+    mov rdi, target_key
+    mov rcx, key_len
+    push rsi
+    repe cmpsb
+    pop rsi
+    je extract_and_mkdir
+    inc rsi
+    cmp rsi, buffer + 4000
+    jl find_target
+    jmp exit
+
+extract_and_mkdir:
+    add rsi, key_len
+    lea rdi, [path_tmp]
+copy_path:
+    mov al, [rsi]
+    cmp al, '"'         ; End of path string
+    je do_mkdir
+    mov [rdi], al
+    inc rsi
+    inc rdi
+    jmp copy_path
+
+do_mkdir:
+    mov byte [rdi], 0   ; Null terminate
+    ; PHYSICAL MANIFESTATION
+    mov rax, 83         ; sys_mkdir
+    lea rdi, [path_tmp]
+    mov rsi, 0755
     syscall
+    
+    ; Loop back for next target
+    jmp find_target
 
 exit:
     mov rax, 60         ; sys_exit
