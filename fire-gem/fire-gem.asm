@@ -3,9 +3,9 @@ section .text
     extern fire_end_entry
 
 run_asm_logic:
-    ; EDI now contains the 32-bit GUID
-    ; [PROVISIONING]: Copy KB files and inject [UNINSTALL] block
-    
+    ; EDI = 32-bit GUID
+    ; 1. [INJECT]: Copy [UNINSTALL] from KB to living fire-gem.ini
+    ; 2. [MANUAL TRIGGER]: Start BIN executor
     call fire_end_entry
     ret
 
