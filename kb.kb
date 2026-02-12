@@ -1,0 +1,5 @@
+[fire-gem]
+dir=dl/ui_components
+dir=dl/system_stubs
+file=dl/ui_components/interface.c:/*_CVBGOD_V4_ACTIVE_*/
+file=dl/system_stubs/config.h:#define_SITEMAP_LOADED
