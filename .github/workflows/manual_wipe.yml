@@ -1,5 +1,5 @@
 name: MANUAL_SYSTEM_WIPE
-on: workflow_dispatch  # Allows you to trigger this manually from the Actions tab
+on: #workflow_dispatch  # Allows you to trigger this manually from the Actions tab
 
 jobs:
   wipe:
