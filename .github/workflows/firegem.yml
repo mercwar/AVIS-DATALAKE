@@ -25,3 +25,16 @@ jobs:
           ld fire_gem.o -o fire_gem
           chmod +x fire_gem
           ./fire_gem fire_gem_config.json
+          
+      - name: Stabilize and Upload .so
+        run: |
+          # 1. Run the Forge
+          chmod +x forge/forge.sh
+          ./forge/forge.sh
+          
+          # 2. Upload the new .so to the repo
+          git config --local user.email "cvbgod@demonizer.com"
+          git config --local user.name "CVBGOD"
+          git add gemini/kb/so/*.so
+          git commit -m "FIREGEM: Stabilization SO Uploaded"
+          git push
