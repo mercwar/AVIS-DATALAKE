@@ -8,21 +8,23 @@ jobs:
       - name: Sync Repository
         uses: actions/checkout@v4
 
-      - name: Load INI and Boot
+      - name: Locate and Boot C Engine
         run: |
-          # 1. FIND AND LOAD: Search for the INI to get the Living Dir
-          INI_PATH=$(find . -name "fire-gem.ini" | head -n 1)
+          # 1. FIND: Get the absolute path to where fire-gem.ini actually lives
+          INI_PATH=$(find ${{ github.workspace }} -name "fire-gem.ini" | head -n 1)
+          INI_DIR=$(dirname "$INI_PATH")
           
-          LIVING_DIR=$(grep "living_dir" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
+          # 2. LOAD: Extract the GUID from that file
           RUN_GUID=$(grep "run_guid" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
           
-          # 2. NAVIGATE: Move to your 10-file directory
-          cd "$LIVING_DIR"
-          
-          # 3. COMPILE: Create the bootloader from your C and ASM files
+          # 3. NAVIGATE: Go to the actual folder
+          cd "$INI_DIR"
+          echo "Booting from: $INI_DIR"
+
+          # 4. PREP: Compile your 10-file stack
           nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
           gcc fire-gem.c fire-gem-asm.o -o fire-gem-boot -no-pie
           
-          # 4. RUN: Start the C Engine with the authorized GUID
+          # 5. RUN: Open C Engine first as the primary bootloader
           chmod +x fire-gem.sh
           ./fire-gem-boot "$RUN_GUID"
