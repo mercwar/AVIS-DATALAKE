@@ -20,7 +20,7 @@ jobs:
       - name: 2. Build G-V3 Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 3. FVS_IO:CLONE_V3_SEED
+        - name: 3. FVS_IO:CLONE_V3_SEED
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
@@ -29,20 +29,9 @@ jobs:
             exit 1
           fi
 
-          # 1. Authenticated Clone of the FULL Robo-Knight-Demos repo
-          git clone https://x-access-token:${MERC_G_PAT}@github.com/mercwar/Robo-Knight-Demos.git temp_seed
-
-          # 2. Create Version 3 Surface
-          mkdir -p "GEMINI/VERSION 3/v1.04_core"
-
-          # 3. Materialize V3 Controller from KB
-          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
-
-          # 4. Flash the entire v1.04 Core into VERSION 3
-          cp -r "temp_seed/Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
-
-          # 5. Cleanup
-          rm -rf temp_seed
+          # 1. Clone the ENTIRE Robo-Knight-Demos repo
+          # Using authenticated access token syntax
+          git clone https://x-access-token:${MERC_G_PAT}@://
 
       - name: 4. FVS_IO:MATERIALIZE_AND_PUSH
         env:
