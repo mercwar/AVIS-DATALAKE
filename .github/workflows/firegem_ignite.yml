@@ -1,45 +1,54 @@
 name: G-V3 Final Sector Ignition
+
 on:
   push:
     paths:
       - 'kb_packets/initial_launch.kb'
+
 jobs:
   materialize-v3:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
+
     steps:
+      # 1️⃣ Checkout Repository
       - name: 1. Checkout AVIS-DATALAKE
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MERC_G_PAT }}
+
+      # 2️⃣ Build Loader
       - name: 2. Build G-V3 Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
-        - name: 🔗 FVS_IO:CLONE_V3_SEED
+
+      # 3️⃣ Clone V3 Seed + Materialize
+      - name: 3. FVS_IO:CLONE_V3_SEED
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # 1. Authenticated Clone (Fixed URL Format)
-          # The full path to the Robo-Knight-Demos repository is used.
-          git clone "https://${MERC_G_PAT}@://github.com" temp_seed
-          
-          # 2. Build the Version 3 Path Surface
+          # 1. Authenticated Clone (Correct URL Format)
+          git clone https://${MERC_G_PAT}@github.com/mercwar/Robo-Knight-Demos.git temp_seed
+
+          # 2. Create Version 3 Surface
           mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          
-          # 3. Materialize G-V3 Controller from KB
-          # The loader uses the initial_launch.kb.
+
+          # 3. Materialize V3 Controller from KB
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
-          
-          # 4. Flash the v1.04 Seed Source into VERSION 3
-          # The specific Standard C sub-directory from the cloned repo is copied.
+
+          # 4. Flash v1.04 Core into VERSION 3
           cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
-          
-          # 5. Cleanup temp data
+
+          # 5. Cleanup
           rm -rf temp_seed
+
+      # 4️⃣ Commit + Push
       - name: 4. FVS_IO:MATERIALIZE_AND_PUSH
         run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
+
           git add "GEMINI/VERSION 3/"
           git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes"
           git push origin main
