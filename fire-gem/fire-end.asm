@@ -1,6 +1,13 @@
+; AVIS-DATALAKE/fire-gem/fire-gem.asm
 section .text
-    global fire_end_entry  ; This MUST be global for the linker to see it
+    global run_asm_logic
+    extern fire_end_entry ; Manual trigger link
 
-fire_end_entry:
-    ; Binary command logic (0x01 - 0x08)
+run_asm_logic:
+    ; RDI contains the GUID passed from C
+    ; 1. [PROVISIONING]: Copy drivers from KB to local disk
+    ; 2. [INJECT]: Copy [UNINSTALL] from KB into living fire-gem.ini
+    
+    ; 3. MANUAL TRIGGER: Jump to the final executor
+    call fire_end_entry
     ret
