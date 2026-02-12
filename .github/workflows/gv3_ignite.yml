@@ -1,27 +1,43 @@
-name: Gemini V3 - Core Ignition
+name: G-V3 Sector Ignition
 on:
   push:
     paths:
       - 'kb_packets/initial_launch.kb'
 
 jobs:
-  gv3-installation:
+  materialize-v3:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: 1. Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MERC_G_PAT }}
 
-      - name: 🛠️ Build G-V3 Loader
-        run: gcc src/core/firegem_kb_loader.c -o gv3_loader
+      - name: 2. Prep G-V3 Loader
+        run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 🔥 FVS_IO:GV3_IGNITION
+      - name: 3. FVS_IO:CLONE_AND_EXPAND
+        env:
+          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # 1. Decode G-V3 Controller (Auto-creates dl/gv3_core/)
-          ./gv3_loader kb_packets/initial_launch.kb dl/gv3_core/controller.c
+          # 1. Authenticated Clone of Seed
+          git clone https://$MERC_G_PAT@://github.com temp_seed
           
-          # 2. Compile with AVIS/FVS Core (v1.04 ASM)
-          # Links the G-V3 logic to the hardware gate
-          as src/core/avis_fvs_core.s -o avis_fvs_core.o
-          gcc dl/gv3_core/controller.c avis_fvs_core.o -o gv3_controller
+          # 2. Build the Version 3 Path
+          mkdir -p "GEMINI/VERSION 3/v1.04_core"
           
-          # 3. Execute Global V3 Activation
-          ./gv3_controller
+          # 3. Decode KB into the new Sector
+          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/gv3_controller.c"
+          
+          # 4. Flash the Seed Source
+          cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
+
+      - name: 4. PUSH_TO_REPO (The Materialization)
+        run: |
+          git config --global user.name "FireGem-Bot"
+          git config --global user.email "bot@firegem.ai"
+          git add "GEMINI/VERSION 3/"
+          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized"
+          git push
