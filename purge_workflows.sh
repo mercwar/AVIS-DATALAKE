@@ -1,18 +1,7 @@
 #!/bin/bash
-echo "CVBGOD: Initializing manual purge..."
+echo "CVBGOD: High-Voltage Purge Initialized..."
 
-# Get all workflow run IDs
-RUN_IDS=$(gh run list --limit 1000 --json databaseId -q '.[].databaseId')
+# Get the IDs and pipe them into 30 parallel workers
+gh run list --limit 1000 --json databaseId -q '.[].databaseId' | xargs -I{} -P 30 gh run delete {}
 
-if [ -z "$RUN_IDS" ]; then
-  echo "No workflow runs found."
-  exit 0
-fi
-
-# Loop and delete each run to clear the sidebar
-for id in $RUN_IDS; do
-  echo "Deleting run ID: $id"
-  gh run delete "$id"
-done
-
-echo "Purge complete. Ghost runs removed."
+echo "PURGE COMPLETE: All ghosts grounded."
