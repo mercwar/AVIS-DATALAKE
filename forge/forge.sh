@@ -1,32 +1,25 @@
 #!/bin/bash
-# ==========================================================
-# FIREGEM FORGE CONTROLLER
-# FILE: forge/forge.sh
-# PURPOSE: Link the Hardware Logic to the JSON Fuel
-# ==========================================================
+# CVBGOD: High-Voltage Forge (Tool-Aware)
+TARGET_DIR="gemini/kb/so"
+mkdir -p "$TARGET_DIR"
 
-# 1. ACQUIRE HARDWARE TOOLS
-# Standardizing the environment for the ASM build
-sudo apt-get update && sudo apt-get install -y nasm binutils jq
+# 1. GROUND THE TOOLS (Acquire power)
+if ! command -v nasm &> /dev/null; then
+    echo "FORGE: Tools missing. Acquiring NASM..."
+    sudo apt-get update && sudo apt-get install -y nasm binutils jq
+fi
 
-# 2. FORGE THE ENGINE
-# Compiling the hard-coded directory creator
-echo "[FORGE] Assembling Fire-Gem Engine..."
-nasm -f elf64 engine/fire_gem.asm -o engine/fire_gem.o
-ld engine/fire_gem.o -o engine/fire_gem
+echo "FORGE: Compiling with -fPIC for Shared Object..."
 
-# 3. SECURE THE SURFACE
-chmod +x engine/fire_gem
+# 2. ASSEMBLE: Prepare the Brain
+nasm -f elf64 engine/kb_processor.asm -o engine/kb_processor.o
 
-# 4. IGNITION
-# Handing full control to the ASM and passing the JSON path ($1)
-echo "[FORGE] Relinquishing control to ASM..."
-./engine/fire_gem "$1"
+# 3. LINK: Manifest the .so
+ld -shared engine/kb_processor.o -o "$TARGET_DIR/kb_processor.so"
 
-# 5. PHYSICAL GROUNDING (GIT SYNC)
-# CVBGOD: Forcing the repo to accept the manifested surface
-git config --local user.email "cvbgod@demonizer.com"
-git config --local user.name "CVBGOD"
-git add .
-git commit -m "FIREGEM: Surface Manifested by ASM Engine" || exit 0
-git push origin HEAD:main
+if [ -f "$TARGET_DIR/kb_processor.so" ]; then
+    echo "STATUS: KB Engine manifested at $TARGET_DIR/kb_processor.so"
+else
+    echo "ERROR: Linker failed to ground the binary."
+    exit 1
+fi
