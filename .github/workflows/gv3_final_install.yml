@@ -7,30 +7,42 @@ on:
 jobs:
   v3-expansion:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MERC_G_PAT }}
 
       - name: 🛠️ Build Sector Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 🔗 FVS_IO:CLONE_V1.04_SEED
+      - name: 🔗 FVS_IO:CLONE_AND_MATERIALIZE
         run: |
-          # 1. Authenticated Clone of the Robo-Knight-Demos
-          git clone https://$MERC_G_PAT@://github.com temp_seed
+          # 1. FIXED Authenticated Clone (No more URL errors)
+          git clone "https://x-access-token:${MERC_G_PAT}@://github.com" temp_seed
           
-          # 2. Materialize the Version 3 Sector
-          # This uses your C-loader's 'mkdir -p' power
+          # 2. Materialize V3 Path via your C-Loader
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
           
-          # 3. Flash the Seed into V3
+          # 3. Flash Seed Source into Version 3
           mkdir -p "GEMINI/VERSION 3/core_v1.04"
           cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/core_v1.04/"
 
       - name: 🔥 FVS_IO:IGNITE_V3
         run: |
-          # Compile the Seed ASM and the Init C inside Version 3
+          # 4. Assemble & Link the materialized V3 Core
           as "GEMINI/VERSION 3/core_v1.04/avis_fvs_core.s" -o core.o
           gcc "GEMINI/VERSION 3/v3_init.c" core.o -o gv3_v3_exec
           ./gv3_v3_exec
+
+      - name: 📦 FVS_IO:PUSH_TO_REPO
+        run: |
+          # 5. Commit the new GEMINI/VERSION 3 folder back to your repo
+          git config --global user.name "FireGem-Bot"
+          git config --global user.email "bot@firegem.ai"
+          git add "GEMINI/VERSION 3/"
+          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes"
+          git push
