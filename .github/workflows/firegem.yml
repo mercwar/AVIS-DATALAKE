@@ -9,6 +9,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Load INI and Boot C Engine
+        # Fixed path relative to the repo root
         working-directory: AVIS-DATALAKE/fire-gem
         run: |
           # 1. LOAD: Extract GUID from fire-gem.ini
