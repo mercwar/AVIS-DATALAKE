@@ -1,49 +1,72 @@
 ; ==========================================================
-; ENGINE: fire_gem.asm (Hardware Forge Edition)
-; PURPOSE: Hardware Init -> Parse JSON -> ASM Forge -> Exec
+; ENGINE: fire_gem.asm (PIC / SO COMPATIBLE)
 ; ==========================================================
 section .data
-    nasm_path db "/usr/bin/nasm", 0
-    ld_path   db "/usr/bin/ld", 0
-    
-    ; FORGE ARGS: Direct register-to-hardware handoff
-    nasm_arg0 db "nasm", 0
-    nasm_arg1 db "-f", 0
-    nasm_arg2 db "elf64", 0
-    nasm_arg3 db "engine/kb_processor.asm", 0
-    nasm_arg4 db "-o", 0
-    nasm_arg5 db "engine/kb_processor.o", 0
-    
-    ld_arg0   db "ld", 0
-    ld_arg1   db "engine/kb_processor.o", 0
-    ld_arg2   db "-o", 0
-    ld_arg3   db "engine/kb_processor", 0
+    target_key db '"target": "', 0
+    key_len equ 11
+
+section .bss
+    buffer resb 4096
+    path_tmp resb 256
 
 section .text
     global _start
 
 _start:
-    ; 1. HARDWARE INIT: 16-byte Stack Alignment
-    mov rbp, rsp
-    and rsp, -16
+    ; 1. HARDWARE INIT: RIP-Relative Positioning
+    ; We use [rel ...] to satisfy the linker for .so creation
+    pop rax             ; argc
+    pop rax             ; prog_name
+    pop rdi             ; rdi = config file
 
-    ; 2. CALL NASM (sys_execve 0x3B)
-    ; In a real takeover, we would fork, but here we chain.
-    mov rax, 59         ; sys_execve
-    mov rdi, nasm_path
-    
-    ; Setup argv for NASM
-    push 0              ; NULL terminator
-    push nasm_arg5
-    push nasm_arg4
-    push nasm_arg3
-    push nasm_arg2
-    push nasm_arg1
-    push nasm_arg0
-    mov rsi, rsp
-    xor rdx, rdx        ; No env
+    ; 2. OPEN (sys_open)
+    mov rax, 2
+    xor rsi, rsi
+    syscall
+    mov r12, rax
+
+    ; 3. READ into RIP-Relative Buffer
+    mov rax, 0
+    mov rdi, r12
+    lea rsi, [rel buffer] ; THE FIX: Load relative address
+    mov rdx, 4096
     syscall
 
-    ; --- Note: Once execve hits, the process image is replaced ---
-    ; To do NASM then LD then EXEC, we would use sys_fork. 
-    ; For the first KB, we use the "Static Forge" logic.
+    ; 4. SCAN AND BUILD
+    lea rsi, [rel buffer]
+find_target:
+    lea rdi, [rel target_key]
+    mov rcx, key_len
+    push rsi
+    repe cmpsb
+    pop rsi
+    je extract_and_mkdir
+    inc rsi
+    cmp rsi, buffer + 4000
+    jl find_target
+    jmp exit
+
+extract_and_mkdir:
+    add rsi, key_len
+    lea rdi, [rel path_tmp] ; THE FIX: Load relative address
+copy_path:
+    mov al, [rsi]
+    cmp al, '"'
+    je do_mkdir
+    mov [rdi], al
+    inc rsi
+    inc rdi
+    jmp copy_path
+
+do_mkdir:
+    mov byte [rdi], 0
+    mov rax, 83         ; sys_mkdir
+    lea rdi, [rel path_tmp]
+    mov rsi, 0755
+    syscall
+    jmp find_target
+
+exit:
+    mov rax, 60
+    xor rdi, rdi
+    syscall
