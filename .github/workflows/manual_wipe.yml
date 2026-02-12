@@ -1,15 +1,56 @@
-- name: Batch Wipe 30 Workflow Runs
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run: |
-    # Use the github.repository context to fill :owner/:repo
-    echo "Scanning for last 30 runs in ${{ github.repository }}..."
-    
-    gh api "repos/${{ github.repository }}/actions/runs?per_page=30" | \
-    jq -r '.workflow_runs[].id' | \
-    while read -r run_id; do
-      if [ "$run_id" != "${{ github.run_id }}" ]; then
-        echo "Wiping Run ID: $run_id"
-        gh api -X DELETE "repos/${{ github.repository }}/actions/runs/$run_id" --silent
-      fi
-    done
+name: Fire-Gem Master Boot
+# workflow_dispatch allows the "Run workflow" button in the Actions tab
+on: 
+  push:
+    branches: [ main ]
+  workflow_dispatch: 
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  initialize-firegem:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Repository
+        uses: actions/checkout@v4
+
+      - name: Install Compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm gcc jq
+
+      - name: Batch Wipe 30 Workflow Runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Finds the IDs of the first 30 runs and deletes them
+          gh api "repos/${{ github.repository }}/actions/runs?per_page=30" | \
+          jq -r '.workflow_runs[].id' | \
+          while read -r run_id; do
+            if [ "$run_id" != "${{ github.run_id }}" ]; then
+              echo "Wiping Run ID: $run_id"
+              gh api -X DELETE "repos/${{ github.repository }}/actions/runs/$run_id" --silent
+            fi
+          done
+
+      - name: Load INI and Open C Engine
+        run: |
+          # 1. FIND: Locate where your 10 files live
+          INI_PATH=$(find ${{ github.workspace }} -name "fire-gem.ini" | head -n 1)
+          LIVING_DIR=$(dirname "$INI_PATH")
+          
+          # 2. LOAD: Extract GUID from the INI
+          RUN_GUID=$(grep "run_guid" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
+          
+          # 3. NAVIGATE: Go to your folder
+          cd "$LIVING_DIR"
+
+          # 4. PREP: Compile C and ASM into 'fire-gem'
+          nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
+          gcc fire-gem.c fire-gem-asm.o -o fire-gem -no-pie
+          
+          # 5. RUN: Open C Engine first
+          chmod +x fire-gem.sh
+          ./fire-gem "$RUN_GUID"
