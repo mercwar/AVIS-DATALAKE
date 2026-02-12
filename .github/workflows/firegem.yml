@@ -7,13 +7,14 @@ jobs:
     steps:
       - name: System Entry
         uses: actions/checkout@v4
-    - name: Spark Gemini V2 Forge
-      run: |
-        # Set the path as a clean variable
-        FORGE_PATH="AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
-        
-        sudo apt-get update && sudo apt-get install -y nasm
-        
-        # Quote the variable during execution
-        chmod +x "$FORGE_PATH"
-        "$FORGE_PATH"
+
+      - name: Spark Gemini V2 Forge
+        run: |
+          # Set the path as a clean variable
+          FORGE_PATH="AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
+          
+          sudo apt-get update && sudo apt-get install -y nasm
+          
+          # Quote the variable during execution to handle the space
+          chmod +x "$FORGE_PATH"
+          "./$FORGE_PATH"
