@@ -1,28 +1,28 @@
-- name: FireGem Logic Restoration
+- name: FireGem Logic: Rebuilding KB from Staging
   run: |
     echo "FLAME ON: Committing code blocks to Datalake surfaces..."
     
-    # Ensure the directory structure exists
-    mkdir -p dl/ui_components/
-    
-    # Use the Fire-Writer to distribute the unzipped files
     python3 -c "
     import os
-    try:
-        # Load the staging content
-        with open('staging_area.tmp', 'r') as s:
-            content = s.read()
-        
-        target = 'dl/ui_components/active_interface.c'
-        print(f'FIRE: Writing {target}')
-        
-        # Write the file (directory is now guaranteed by mkdir -p)
-        with open(target, 'w') as f:
-            f.write(content)
-            
-    except FileNotFoundError as e:
-        print(f'STAGING ERROR: {e}')
+
+    # 1. Check if staging exists (prevents empty file errors)
+    if not os.path.exists('staging_area.tmp'):
+        print('CRITICAL: staging_area.tmp is missing. KB source is empty.')
         exit(1)
+
+    content = open('staging_area.tmp').read()
+    target_path = 'dl/ui_components/active_interface.c'
+    target_dir = os.path.dirname(target_path)
+
+    # 2. FireGem Logic: Create missing directories automatically
+    if not os.path.exists(target_dir):
+        print(f'FIRE: Creating directory {target_dir}')
+        os.makedirs(target_dir, exist_ok=True)
+
+    # 3. Write the file
+    print(f'FIRE: Writing {target_path}')
+    with open(target_path, 'w') as f:
+        f.write(content)
     "
     echo "FIRE COMPLETE: System Synchronized."
   shell: /usr/bin/bash -e {0}
