@@ -1,16 +1,19 @@
 #!/bin/bash
-# CVBGOD: Fixed Binary Port Forge
+# CVBGOD: Position Independent Forge
 TARGET_DIR="gemini/kb/so"
-
-echo "FORGE: Opening Binary Port at $TARGET_DIR..."
-
-# THE FIX: Force the directory to exist before the linker runs
 mkdir -p "$TARGET_DIR"
 
-# 1. Compile the Brain
+echo "FORGE: Compiling with -fPIC for Shared Object..."
+
+# THE FIX: Add -fPIC logic (nasm handles this via elf64)
 nasm -f elf64 engine/kb_processor.asm -o engine/kb_processor.o
 
-# 2. Link the .so - Now the path exists, so the binary can land
+# THE LINKER FIX: Use -shared to create the library
 ld -shared engine/kb_processor.o -o "$TARGET_DIR/kb_processor.so"
 
-echo "STATUS: KB Engine manifested at $TARGET_DIR/kb_processor.so"
+if [ -f "$TARGET_DIR/kb_processor.so" ]; then
+    echo "STATUS: KB Engine manifested at $TARGET_DIR/kb_processor.so"
+else
+    echo "ERROR: Linker failed to ground the binary."
+    exit 1
+fi
