@@ -1,0 +1,17 @@
+name: FIREGEM_V2_IGNITION
+on: [push, workflow_dispatch]
+
+jobs:
+  spark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: System Entry
+        uses: actions/checkout@v4
+
+      - name: Handover to Gemini Forge
+        run: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          chmod +x "gemini/version2/firegem_forge.sh"
+          ./gemini/version2/firegem_forge.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
