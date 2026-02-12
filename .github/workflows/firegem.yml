@@ -1,21 +1,23 @@
-name: Fire-Gem KB Loader
+name: Fire-Gem Master Boot
 on: [push, workflow_dispatch]
 
 jobs:
-  kb-provision:
+  initialize-firegem:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync Master Repo
+      - name: Sync Repository
         uses: actions/checkout@v4
 
-      - name: Load INI and Install Gemini
+      - name: Load INI and Boot C Engine
         working-directory: AVIS-DATALAKE/fire-gem
         run: |
-          # LOAD: Extract the Run GUID from fire-gem.ini
-          # Using grep to find the key and cut to grab the value
-          ACTIVE_GUID=$(grep "run_guid" fire-gem.ini | cut -d'=' -f2)
-          echo "LOADED_GUID=$ACTIVE_GUID" >> $GITHUB_ENV
+          # 1. LOAD: Extract GUID from fire-gem.ini
+          RUN_GUID=$(grep "run_guid" fire-gem.ini | cut -d'=' -f2)
           
-          # EXEC: Pass the loaded GUID to the orchestrator
+          # 2. PREP: Compile the C Bootloader and ASM
+          nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
+          gcc fire-gem.c fire-gem-asm.o -o fire-gem-boot -no-pie
+          
+          # 3. RUN: Open C Engine first with the loaded GUID
           chmod +x fire-gem.sh
-          ./fire-gem.sh "$ACTIVE_GUID"
+          ./fire-gem-boot "$RUN_GUID"
