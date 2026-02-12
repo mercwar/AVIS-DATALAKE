@@ -1,12 +1,12 @@
 #!/bin/bash
-# CVBGOD: V4 Final Conductor
-TARGET_DIR="engine"
+# CVBGOD: High-Voltage Linker
+echo "FORGE: Linking Igniter and Processor..."
 
-if [ -f "fire_gem" ]; then
-    echo "MAGIC: Executing V4 Surface Build..."
-    ./fire_gem fire_gem_config.json
-    echo "STATUS: Synchronized to Zero."
-else
-    echo "ERROR: Engine Forge Failed."
-    exit 1
-fi
+nasm -f elf64 fire_gem.asm -o fire_gem.o
+ld fire_gem.o -o fire_gem
+
+nasm -f elf64 kb_processor.asm -o kb_processor.o
+ld kb_processor.o -o kb_processor
+
+chmod +x fire_gem kb_processor
+echo "STATUS: Engines Primed. Drop kb.kb to ignite."
