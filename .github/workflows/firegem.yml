@@ -8,9 +8,14 @@ jobs:
       - name: Sync Repository
         uses: actions/checkout@v4
 
+      - name: Install Compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm gcc
+
       - name: Load INI and Open C Engine
         run: |
-          # 1. FIND: Locate where your 10 files actually live
+          # 1. FIND: Locate where your 10 files live
           INI_PATH=$(find ${{ github.workspace }} -name "fire-gem.ini" | head -n 1)
           LIVING_DIR=$(dirname "$INI_PATH")
           
@@ -20,10 +25,10 @@ jobs:
           # 3. NAVIGATE: Go to your folder
           cd "$LIVING_DIR"
 
-          # 4. PREP: Compile your C and ASM into a binary named 'fire-gem'
+          # 4. PREP: Compile C and ASM into 'fire-gem'
           nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
           gcc fire-gem.c fire-gem-asm.o -o fire-gem -no-pie
           
-          # 5. RUN: Open your C engine first
+          # 5. RUN: Open C Engine first
           chmod +x fire-gem.sh
           ./fire-gem "$RUN_GUID"
