@@ -1,28 +1,40 @@
-  - name: 🔥 FVS_IO:IGNITE_VERSION_3
+name: G-V3 Sector Ignition
+on:
+  push:
+    paths:
+      - 'kb_packets/initial_launch.kb'
+
+jobs:
+  materialize-v3:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 1. Checkout AVIS-DATALAKE
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MERC_G_PAT }}
+
+      - name: 2. Build G-V3 Loader (The Key)
+        # This compiles the loader so we don't need the missing .so file
+        run: gcc src/core/firegem_kb_loader.c -o loader
+
+      - name: 3. FVS_IO:CLONE_AND_EXPAND
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # 1. Prep Sector Surfaces
+          # AVIS_IO:FVS_MKDIR_P - Build the V3 Path
           mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          mkdir -p dl/runtime
           
-          # 2. Build the FireGem Loader (The Key)
-          gcc src/core/firegem_kb_loader.c -o loader
-          
-          # 3. Materialize G-V3 Controller from KB
-          # Your Base64: I2luY2x1ZGUg...
+          # AVIS_IO:FVS_READ_KB - Decode your G-V3 Launch Sequence
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/gv3_controller.c"
           
-          # 4. Clone Robo-Knight Seed (Cloning Power)
+          # AVIS_IO:FVS_CLONE - Pull the Robo-Knight Seed Source
           git clone https://$MERC_G_PAT@://github.com temp_seed
           cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
-          
-          # 5. Compile and Mark 0x9000 Online
-          as "GEMINI/VERSION 3/v1.04_core/avis_fvs_core.s" -o core.o
-          gcc "GEMINI/VERSION 3/gv3_controller.c" core.o -o gv3_v3_exec
-          ./gv3_v3_exec
-          
-          # 6. Push Materialized Sector to Repo
+
+      - name: 4. FVS_IO:PUSH_TO_SURFACE
+        run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
           git add "GEMINI/VERSION 3/"
