@@ -6,11 +6,11 @@ int main(int argc, char *argv[]) {
     if (argc < 2) return 1;
     char *active_guid = argv[1];
 
-    // Hardware Initialization
-    printf("[C-BOOT] Initializing with GUID: %s\n", active_guid);
+    // Hardware Initialization (ASM)
+    printf("[C-BOOT] Initializing Hardware with GUID: %s\n", active_guid);
     run_asm_logic(); 
 
-    // TRIGGER SH STUB
+    // TRIGGER SH STUB: LittleBot disk writing starts here
     char command[256];
     snprintf(command, sizeof(command), "bash fire-gem.sh %s", active_guid);
     return system(command);
