@@ -1,0 +1,37 @@
+name: FireGem - Final Installation
+on:
+  push:
+    paths:
+      - 'dl/**'
+      - 'kb_packets/**'
+
+jobs:
+  firegem-core-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Clone Mercwar Datalake
+        uses: actions/checkout@v4
+
+      - name: 2. Install Build Tools
+        run: sudo apt-get install -y nasm gcc jq # jq handles JSON/CJS processing
+
+      - name: 3. Compile FireGem ASM Stubs
+        run: |
+          # Compiling the low-level AVIS and CYHY signals
+          nasm -f elf64 src/core/fire_stubs.asm -o fire_stubs.o
+          gcc -shared -o fire_stubs.so fire_stubs.o
+          
+      - name: 4. Deploy Global Type Resources
+        run: |
+          # Stubbing JSON, XML, CSV, and CJS for the application
+          mkdir -p dl/resources
+          echo '{"status": "BGIN", "engine": "FireGem"}' > dl/resources/init.json
+          echo '<cyhy><state>active</state></cyhy>' > dl/resources/config.xml
+          echo "id,state,ptr\n01,fire,0x7000" > dl/resources/offsets.csv
+
+      - name: 5. Execute FireGem (BGIN FIRE!END)
+        env:
+          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+        run: |
+          # Unzipping KB Packet and using ASM stubs to flash the build
+          python3 src/scripts/firegem_unzip.py --input kb_packets/latest.kb
