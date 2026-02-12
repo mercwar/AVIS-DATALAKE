@@ -3,7 +3,6 @@ on:
   push:
     paths:
       - 'kb_packets/initial_launch.kb'
-
 jobs:
   materialize-v3:
     runs-on: ubuntu-latest
@@ -14,28 +13,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MERC_G_PAT }}
-
       - name: 2. Build G-V3 Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
-
-      - name: 3. FVS_IO:CLONE_V1.04_SEED
+        - name: 🔗 FVS_IO:CLONE_V3_SEED
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # AVIS_IO:FVS_MKDIR_P - Build the V3 Path Surface
-          mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          
-          # AVIS_IO:FVS_CLONE - Authenticated Clone (Fixed URL)
-          # Note: No "://" after the PAT, just the "@" symbol.
+          # 1. Authenticated Clone (Fixed URL Format)
+          # The full path to the Robo-Knight-Demos repository is used.
           git clone "https://${MERC_G_PAT}@://github.com" temp_seed
           
-          # AVIS_IO:FVS_READ_KB - Decode G-V3 Launch Sequence
-          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/gv3_controller.c"
+          # 2. Build the Version 3 Path Surface
+          mkdir -p "GEMINI/VERSION 3/v1.04_core"
           
-          # AVIS_IO:FVS_FLASH_SEED - Inject v1.04 Core from Temp Seed
+          # 3. Materialize G-V3 Controller from KB
+          # The loader uses the initial_launch.kb.
+          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
+          
+          # 4. Flash the v1.04 Seed Source into VERSION 3
+          # The specific Standard C sub-directory from the cloned repo is copied.
           cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
+          
+          # 5. Cleanup temp data
           rm -rf temp_seed
-
       - name: 4. FVS_IO:MATERIALIZE_AND_PUSH
         run: |
           git config --global user.name "FireGem-Bot"
