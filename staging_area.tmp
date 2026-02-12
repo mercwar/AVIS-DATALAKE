@@ -1,0 +1,6 @@
+/* FIREGEM_KB_DATA: V1 */
+/* AUTHOR: CVBGOD */
+#include <stdio.h>
+void active_interface() {
+    printf("Interface Synchronized.\n");
+}
