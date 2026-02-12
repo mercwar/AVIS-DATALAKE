@@ -1,13 +1,9 @@
-; AVIS-DATALAKE/fire-gem/fire-gem.asm
+; AVIS-DATALAKE/fire-gem/fire-end.asm
 section .text
-    global run_asm_logic
-    extern fire_end_entry ; Manual trigger link
+    global fire_end_entry
 
-run_asm_logic:
-    ; RDI contains the GUID passed from C
-    ; 1. [PROVISIONING]: Copy drivers from KB to local disk
-    ; 2. [INJECT]: Copy [UNINSTALL] from KB into living fire-gem.ini
-    
-    ; 3. MANUAL TRIGGER: Jump to the final executor
-    call fire_end_entry
+fire_end_entry:
+    ; 1. Process BIN Header (GEM!)
+    ; 2. Execute Command Stream (0x01 - 0x08)
+    ; 3. Finalize: LittleBot writes to fire-gem.log
     ret
