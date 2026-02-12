@@ -1,6 +1,10 @@
+# KB_NAME: initial_launch.kb
+# KB_PURPOSE: V3 Migration & Sector Materialization
+# KB_TARGET: GEMINI/VERSION 3/v3_init.c
+
 -----BEGIN KB-----
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCmludCBtYWluKCkgewog
-ICAgcHJpbnRmKCJbRy1WM10gQ2xvbmluZyBQb3dlciBBY3RpdmF0ZWQgaW4gVkVSU0lPTiAy
-LlxuIik7CiAgICBwcmludGYoIltHLVYzXSBQcmVwYXJpbmcgQmVnaW4gU2VlZCBNaWdyYXRp
-b24gdG8gVkVSU0lPTiAzLi4uXG4iKTsKICAgIHJldHVybiAwOwp9
+I2luY2x1ZGUgPHN0ZGlvLmg+CmV4dGVybiB2b2lkIGF2aXNfYm9vdF9tYXJrKHZvaWQpOwpp
+bnQgbWFpbigpIHsKICAgIHByaW50ZigiW0dWM10gTUlHUkFUSU9OIExJVkU6IE1hcHBpbmcg
+U2VlZCB0byBWRVJTSU9OIDNcbiIpOwogICAgYXZpc19ib290X21hcmsoKTsgLy8gU2lnbmFs
+cyAweDcwMDAgKGZpcmVnZW0pCiAgICByZXR1cm4gMDsKfQ==
 -----END KB-----
