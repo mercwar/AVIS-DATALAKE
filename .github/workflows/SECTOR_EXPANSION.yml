@@ -1,0 +1,12 @@
+      - name: 🔥 FVS_IO:SECTOR_EXPANSION
+        run: |
+          # 1. Compile the Upgraded Loader
+          gcc src/core/firegem_kb_loader.c -o firegem_kb_loader
+          
+          # 2. Execute the Power KB
+          # This will create dl/v2_expansion/sector_01/ automatically
+          ./firegem_kb_loader kb_packets/latest.kb dl/v2_expansion/sector_01/active_node.c
+          
+          # 3. Verify and Execute
+          gcc dl/v2_expansion/sector_01/active_node.c -o active_node
+          ./active_node
