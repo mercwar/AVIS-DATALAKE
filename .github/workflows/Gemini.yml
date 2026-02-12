@@ -1,0 +1,11 @@
+- name: Manifest Gemini Surface
+  run: |
+    # 1. Create the high-voltage coordinate
+    mkdir -p gemini/kb/so
+    
+    # 2. Write the KB Anchor
+    echo "/* CVBGOD_KB_ANCHOR: V4_ACTIVE */" > gemini/kb/so/kb
+    
+    # 3. Prove existence
+    ls -R gemini/kb/so
+    echo "STATUS: Surface gemini/kb/so synchronized."
