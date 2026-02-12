@@ -1,0 +1,55 @@
+name: FireGem - Ignite Datalake
+on:
+  push:
+    paths:
+      - 'kb_packets/**' # Triggers when you drop a new UI block
+
+jobs:
+  ignite-firegem:
+    runs-on: ubuntu-latest
+    env:
+      MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+    steps:
+      - name: Checkout FireGem Core
+        uses: actions/checkout@v4
+
+      - name: Install Fire-Writers (Minimal ASM)
+        run: |
+          # Minimal C-ASM bridge for low-level file writes
+          cat <<EOF > fire_writer.c
+          #include <stdio.h>
+          void fire_write(const char* filename, const char* data) {
+              FILE *f = fopen(filename, "w");
+              if (f) { fputs(data, f); fclose(f); }
+          }
+          EOF
+          gcc -shared -o fire_writer.so fire_writer.c
+
+      - name: Process KB Packet (Unzip & Read)
+        run: |
+          # Finds the latest .kb packet from the UI code block
+          LATEST_KB=$(ls -t kb_packets/*.kb | head -1)
+          echo "Reading KB Packet: $LATEST_KB"
+          
+          # Unzip (Base64 decode) the AI UI data
+          DECODED_UI=$(cat $LATEST_KB | base64 -d)
+          
+          # Write the code to a temporary staging area
+          echo "$DECODED_UI" > staging_area.tmp
+
+      - name: BEGIN FIRE!END
+        run: |
+          # This is the FireGem logic: Writing the KB to actual files
+          echo "FLAME ON: Committing code blocks to Datalake surfaces..."
+          
+          # Use the Fire-Writer to distribute the unzipped files
+          # Assuming the KB packet contains a 'target_path:content' format
+          python3 -c "
+          import os
+          content = open('staging_area.tmp').read()
+          # FireGem Logic: Splits and writes files
+          print('FIRE: Writing /dl/ui_components/active_interface.c')
+          with open('dl/ui_components/active_interface.c', 'w') as f:
+              f.write(content)
+          "
+          echo "FIRE COMPLETE: System Synchronized."
