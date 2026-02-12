@@ -1,18 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include "fire-gem.h"
+#ifndef FIRE_GEM_H
+#define FIRE_GEM_H
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) return 1;
-    
-    // Parse the 32-bit GUID from the INI/YAML load
-    uint32_t active_guid = (uint32_t)strtoul(argv[1], NULL, 16);
+/* ASM Hardware Gate - 32-bit ONLY */
+extern void run_asm_logic(unsigned int guid);
 
-    // BOOT: Passing 32-bit GUID to fire-gem.asm
-    // Fixed: Passing the variable to resolve 'too few arguments'
-    printf("[C-BOOT] Initializing HW with 32-bit GUID: %08X\n", active_guid);
-    run_asm_logic(active_guid); 
+/* ASM Binary Executor */
+extern void fire_end_entry();
 
-    return 0;
-}
+#endif
