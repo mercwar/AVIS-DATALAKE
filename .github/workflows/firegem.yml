@@ -8,21 +8,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Initialize Registry & INI
+      - name: Initialize FVS Surface
         run: |
-          # Create the string registry for space normalization
           echo "[REPLACEMENTS]" > string_registry.ini
           echo 'find=" "' >> string_registry.ini
           echo 'replace="%20"' >> string_registry.ini
           
-          # Create path.ini as the Locator
           echo "[fire-gem]" > path.ini
           echo 'config="fire_gem_config.json"' >> path.ini
-          echo 'registry="string_registry.ini"' >> path.ini
 
       - name: Forge V4 Engine
+        timeout-minutes: 5
         run: |
           sudo apt-get update && sudo apt-get install -y nasm
           nasm -f elf64 engine/fire_gem.asm -o fire_gem.o
           ld fire_gem.o -o fire_gem
-          ./fire_gem path.ini
+          chmod +x fire_gem
+          ./fire_gem fire_gem_config.json
