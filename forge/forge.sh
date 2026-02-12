@@ -1,16 +1,12 @@
 #!/bin/bash
-# CVBGOD: V4 Conductor
-# Purpose: Static link and execution
-
+# CVBGOD: V4 Final Conductor
 TARGET_DIR="engine"
-CONFIG="fire_gem_config.json"
 
-echo "FORGE: Initializing V4 Bootstrap..."
-
-# Standardize permissions
-chmod 644 "$CONFIG"
-
-# Handover to Compiled Engine
-./fire_gem path.ini
-
-echo "STATUS: Synchronized to Zero."
+if [ -f "fire_gem" ]; then
+    echo "MAGIC: Executing V4 Surface Build..."
+    ./fire_gem fire_gem_config.json
+    echo "STATUS: Synchronized to Zero."
+else
+    echo "ERROR: Engine Forge Failed."
+    exit 1
+fi
