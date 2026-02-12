@@ -1,21 +1,21 @@
-name: FIREGEM_HARDWARE_FORGE
+name: Fire-Gem KB Loader
 on: [push, workflow_dispatch]
 
 jobs:
-  ignition:
+  kb-provision:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: System Entry
+      - name: Sync Master Repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: System Power
-        run: sudo apt-get update && sudo apt-get install -y nasm binutils jq
-
-      - name: Spark Master Engine
+      - name: Load INI and Install Gemini
+        working-directory: AVIS-DATALAKE/fire-gem
         run: |
-          chmod +x engine/fire_gem
-          ./engine/fire_gem fire_gem_config.json
+          # LOAD: Extract the Run GUID from fire-gem.ini
+          # Using grep to find the key and cut to grab the value
+          ACTIVE_GUID=$(grep "run_guid" fire-gem.ini | cut -d'=' -f2)
+          echo "LOADED_GUID=$ACTIVE_GUID" >> $GITHUB_ENV
+          
+          # EXEC: Pass the loaded GUID to the orchestrator
+          chmod +x fire-gem.sh
+          ./fire-gem.sh "$ACTIVE_GUID"
