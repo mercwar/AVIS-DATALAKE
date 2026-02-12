@@ -1,18 +1,15 @@
-name: MANUAL_SYSTEM_WIPE
-on: #workflow_dispatch  # Allows you to trigger this manually from the Actions tab
-
-jobs:
-  wipe:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write  # Required for the script to delete history
-    steps:
-      - name: Force Identity
-        uses: actions/checkout@v4
-
-      - name: Execute Manual Purge
-        run: |
-          chmod +x purge_workflows.sh
-          ./purge_workflows.sh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+- name: Batch Wipe 30 Workflow Runs
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    # Use the github.repository context to fill :owner/:repo
+    echo "Scanning for last 30 runs in ${{ github.repository }}..."
+    
+    gh api "repos/${{ github.repository }}/actions/runs?per_page=30" | \
+    jq -r '.workflow_runs[].id' | \
+    while read -r run_id; do
+      if [ "$run_id" != "${{ github.run_id }}" ]; then
+        echo "Wiping Run ID: $run_id"
+        gh api -X DELETE "repos/${{ github.repository }}/actions/runs/$run_id" --silent
+      fi
+    done
