@@ -1,9 +1,0 @@
-jobs:
-  datalake_deploy:
-    runs-on: ubuntu-latest
-    env:
-      # You must explicitly map the secret to the variable name
-      MERC_G_PAT: ${{ secrets.MERC_G_PAT }} 
-    steps:
-      - name: Run Diagnostics
-        run: bash verify_pat.sh

@@ -1,6 +1,0 @@
-- name: Multi-Repo Checkout
-  uses: actions/checkout@v4
-  with:
-    repository: mercwar/other-repo
-    path: './external/other-repo'
-    token: ${{ secrets.MERC_G_PAT }}

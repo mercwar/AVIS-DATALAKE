@@ -1,6 +1,0 @@
-- name: Install Custom Artifacts
-  run: |
-    sudo apt-get update
-    sudo apt-get install -y zip unzip  # Call for zip tools
-    # Or call for custom VB6-related Wine components if needed:
-    # sudo apt-get install wine
