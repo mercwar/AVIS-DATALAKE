@@ -3,18 +3,18 @@
 #include "fire-gem.h"
 
 int main(int argc, char *argv[]) {
-    // 1. Validate that the GUID was loaded from the INI via YAML
+    // 1. Ensure the YAML passed the GUID from the INI
     if (argc < 2) {
-        fprintf(stderr, "[ERR] Missing Run GUID. Initialization aborted.\n");
+        fprintf(stderr, "[CRITICAL] No GUID provided for hardware boot.\n");
         return 1;
     }
 
-    // 2. Convert the GUID string into the unsigned long long required by the ASM
-    unsigned long long active_guid = strtoull(argv[1], NULL, 16);
+    // 2. Convert GUID string to unsigned long long to match the header
+    unsigned long long guid_val = strtoull(argv[1], NULL, 16);
 
-    // 3. BOOT: Trigger hardware logic (Fixes 'too few arguments' error)
-    printf("[C-BOOT] Passing GUID %llX to fire-gem.asm...\n", active_guid);
-    run_asm_logic(active_guid); 
+    // 3. BOOT: Fixes 'too few arguments' by passing the guid_val
+    printf("[C-BOOT] Initializing Hardware with GUID: %llX\n", guid_val);
+    run_asm_logic(guid_val); 
 
     return 0;
 }
