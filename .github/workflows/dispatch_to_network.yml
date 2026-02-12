@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
+        target_repo: ['NEXUS', 'Sentinel', 'Cyborg',  'AVIS']
 steps:
       - name: Emit Verified Signal
         uses: peter-evans/repository-dispatch@v3
