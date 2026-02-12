@@ -1,5 +1,4 @@
 name: Fire-Gem Master Boot
-# workflow_dispatch allows the "Run workflow" button in the Actions tab
 on: 
   push:
     branches: [ main ]
@@ -25,10 +24,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Finds the IDs of the first 30 runs and deletes them
-          gh api "repos/${{ github.repository }}/actions/runs?per_page=30" | \
-          jq -r '.workflow_runs[].id' | \
-          while read -r run_id; do
+          # Load the list of last 30 runs from GitHub API
+          # We skip the current run_id so the job doesn't kill itself
+          RUNS=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=30" | jq -r '.workflow_runs[].id')
+          for run_id in $RUNS; do
             if [ "$run_id" != "${{ github.run_id }}" ]; then
               echo "Wiping Run ID: $run_id"
               gh api -X DELETE "repos/${{ github.repository }}/actions/runs/$run_id" --silent
@@ -37,20 +36,23 @@ jobs:
 
       - name: Load INI and Open C Engine
         run: |
-          # 1. FIND: Locate where your 10 files live
+          # 1. FIND: Locate the anchor INI file
           INI_PATH=$(find ${{ github.workspace }} -name "fire-gem.ini" | head -n 1)
           LIVING_DIR=$(dirname "$INI_PATH")
           
-          # 2. LOAD: Extract GUID from the INI
+          # 2. LOAD: Get the 32-bit GUID from the INI
           RUN_GUID=$(grep "run_guid" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
           
-          # 3. NAVIGATE: Go to your folder
+          # 3. NAVIGATE: Enter the AVIS-DATALAKE
           cd "$LIVING_DIR"
 
-          # 4. PREP: Compile C and ASM into 'fire-gem'
+          # 4. PREP: Compile the 10-file stack (including fire-end.asm trigger)
           nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
-          gcc fire-gem.c fire-gem-asm.o -o fire-gem -no-pie
+          nasm -f elf64 fire-end.asm -o fire-end-asm.o
           
-          # 5. RUN: Open C Engine first
+          # 5. LINK: Create the primary C Bootloader
+          gcc fire-gem.c fire-gem-asm.o fire-end-asm.o -o fire-gem -no-pie -z noexecstack
+          
+          # 6. RUN: Execute and write KBs to disk
           chmod +x fire-gem.sh
           ./fire-gem "$RUN_GUID"
