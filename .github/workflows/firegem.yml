@@ -1,4 +1,4 @@
-name: FIREGEM_STATIC_IGNITION
+name: FIREGEM_HARDWARE_FORGE
 on: [push, workflow_dispatch]
 
 jobs:
@@ -12,8 +12,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Ingest and Spark
+      - name: System Power
+        run: sudo apt-get update && sudo apt-get install -y nasm binutils jq
+
+      - name: Spark Master Engine
         run: |
-          # The YAML only calls the SH
-          chmod +x forge/forge.sh
-          ./forge/forge.sh fire_gem_config.json
+          chmod +x engine/fire_gem
+          ./engine/fire_gem fire_gem_config.json
