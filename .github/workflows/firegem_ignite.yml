@@ -8,28 +8,31 @@ on:
 jobs:
   materialize-v3:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
     steps:
-      # 1️⃣ Checkout Repository
       - name: 1. Checkout AVIS-DATALAKE
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MERC_G_PAT }}
+          # Use the built-in token for the local repo checkout
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2️⃣ Build Loader
       - name: 2. Build G-V3 Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      # 3️⃣ Clone V3 Seed + Materialize
       - name: 3. FVS_IO:CLONE_V3_SEED
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # 1. Authenticated Clone (Correct URL Format)
-          git clone https://${MERC_G_PAT}@github.com/mercwar/Robo-Knight-Demos.git temp_seed
+          # Check if PAT exists to prevent malformed URL
+          if [ -z "$MERC_G_PAT" ]; then
+            echo "Error: MERC_G_PAT secret is empty."
+            exit 1
+          fi
+
+          # 1. Authenticated Clone (Using x-access-token for security)
+          git clone https://x-access-token:${MERC_G_PAT}@github.com/mercwar/Robo-Knight-Demos.git temp_seed
 
           # 2. Create Version 3 Surface
           mkdir -p "GEMINI/VERSION 3/v1.04_core"
@@ -43,12 +46,14 @@ jobs:
           # 5. Cleanup
           rm -rf temp_seed
 
-      # 4️⃣ Commit + Push
       - name: 4. FVS_IO:MATERIALIZE_AND_PUSH
         run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
-
+          
+          # Ensure we are pushing to the correct origin
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}
+          
           git add "GEMINI/VERSION 3/"
-          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes"
+          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes to commit"
           git push origin main
