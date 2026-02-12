@@ -22,26 +22,26 @@ jobs:
 
       - name: 3. FVS_IO:MATERIALIZE_V2_BRIDGE
         run: |
-          # AVIS_IO:FVS_MKDIR_P - Materialize Version 2 Bridge
           mkdir -p "GEMINI/VERSION 2/"
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/gv3_bridge.c"
 
       - name: 4. FVS_IO:SIGNAL_BATCH_RUNS (Cyborg Pulse)
         run: |
-          # AVIS_IO:SENTINEL_DISPATCH - Triggering 4-Layer Cyborg Gateway
-          # This connects the repos without cloning
-          
-          # Signal Sentinel Batch
+          # SIGNAL SENTINEL: 4-Layer Gateway
+          # FIXED: Points to /repos/mercwar/Sentinel/actions/workflows/main.yml/dispatches
           curl -L -X POST \
             -H "Authorization: Bearer $MERC_G_PAT" \
             -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com \
             -d '{"ref":"main"}'
 
-          # Signal Nexus (Robot AI Search) Batch
+          # SIGNAL NEXUS: Robot AI Education
+          # FIXED: Points to /repos/mercwar/NEXUS/actions/workflows/main.yml/dispatches
           curl -L -X POST \
             -H "Authorization: Bearer $MERC_G_PAT" \
             -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com \
             -d '{"ref":"main"}'
 
