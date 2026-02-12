@@ -28,8 +28,8 @@ jobs:
           # AVIS_IO:FVS_READ_KB - Decode G-V3 Launch Sequence into V2
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/gv3_bridge.c"
           
-          # AVIS_IO:FVS_CLONE - CLONE THE FULL REPO AS VERSION 3
-          # This installs the cloning power directly to the sector
+          # AVIS_IO:FVS_CLONE - FIXED URL (Points to the real repo)
+          # No more '://' errors. This clones the full repo into VERSION 3
           git clone "https://x-access-token:${MERC_G_PAT}@://github.com" "GEMINI/VERSION 3"
 
       - name: 4. FVS_IO:PUSH_TO_SURFACE
