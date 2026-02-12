@@ -6,5 +6,6 @@ fire_end_entry:
     ; 1. OPEN fire-gem.bin
     ; 2. VERIFY HEADER: 0x47454D21 ("GEM!")
     ; 3. EXECUTE COMMANDS: 0x01 (INIT) -> 0x08 (FINALIZE)
-    ; 4. REGISTER: Write success to fire-gem.csv
+    
+    ; Logic to finalize single app installation
     ret
