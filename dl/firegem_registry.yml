@@ -1,0 +1,21 @@
+# /dl/firegem_registry.yml
+FireGem_Registry:
+  Version: "2.0-FINAL"
+  Resource_Mapping:
+    - Type: "JSON"
+      Extension: ".json"
+      Role: "CJS_BIND_INIT"
+      Path: "/dl/resources/init.json"
+    - Type: "XML"
+      Extension: ".xml"
+      Role: "CYHY_CONFIG"
+      Path: "/dl/resources/config.xml"
+    - Type: "CSV"
+      Extension: ".csv"
+      Role: "AVIS_FVS_PTR"
+      Path: "/dl/resources/offsets.csv"
+
+  ASM_Stubs:
+    - Sector: 0x7000
+      Function: "BGIN_FIRE"
+      Source: "src/core/fire_stubs.asm"
