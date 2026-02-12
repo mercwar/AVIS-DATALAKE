@@ -1,36 +1,38 @@
-name: FIREGEM_AVIS_IGNITION
+name: FIREGEM_V3_INSTALLATION
 on: [push, workflow_dispatch]
 
 jobs:
-  ignition:
+  install:
     runs-on: ubuntu-latest
     steps:
       - name: System Entry
         uses: actions/checkout@v4
 
-      # STEP 1: FLAT KEY THE INI
-      # This preserves the "s o s" spaces in a physical file so shell can't break them
-      - name: Hard-Code FVS Section
+      - name: Hard-Code V3 Surface
         run: |
-          echo "[fire-gem]" > fire-gem.ini
-          echo 'address="AVIS-DATALAKE/GEMINI/VERSION 2"' >> fire-gem.ini
-          echo 'cmd="echo s o s && mkdir -p \"AVIS-DATALAKE/GEMINI/VERSION 2\""' >> fire-gem.ini
-          echo "FVS_ANCHOR: fire-gem.ini pre-staged with hard-coded spaces."
-
-      # STEP 2: LOAD FORGE TOOLS
-      - name: Acquire Forge Tools
-        run: |
-          sudo apt-get update && sudo apt-get install -y nasm binutils
-
-      # STEP 3: SPARK THE BASH CONTROLLER
-      # We use the CD method to ground the pathing before execution
-      - name: Spark Gemini V2 Forge
-        run: |
-          # Locate the forge.sh through the space-trap using quotes
-          FORGE_PATH="AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
+          # 1. Force create the V3 Coordinate
+          mkdir -p "gemini/install/v3"
           
-          # Grant execution and fire
-          chmod +x "$FORGE_PATH"
-          "./$FORGE_PATH" "../../fire-gem.ini"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 2. Inject the Hard-Coded FVS Table (fire-gem.ini)
+          # Note: The spaces are locked as literal bytes here
+          cat <<EOF > "gemini/install/v3/fire-gem.ini"
+          [fire-gem]
+          address="gemini/install/v3"
+          guid="GUID_V3_8822_C4"
+          status="FVS_V3_ACTIVE"
+          cmd="echo s o s && mkdir -p dl/ui_components/v3"
+          
+          [fire-gem-next]
+          next_dir="gemini/install/v3"
+          deploy_mode="true"
+          EOF
+          
+          echo "V3_SYNC: fire-gem.ini hard-coded at gemini/install/v3"
+
+      - name: Spark V3 Forge
+        run: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          # Move to the V3 coordinate and ignite
+          cd "gemini/install/v3"
+          chmod +x forge.sh
+          ./forge.sh fire-gem.ini
