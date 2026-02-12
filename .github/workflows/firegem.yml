@@ -28,13 +28,19 @@ jobs:
           
       - name: Stabilize and Upload .so
         run: |
-          # 1. Run the Forge
+          # 1. Spark the Forge
           chmod +x forge/forge.sh
           ./forge/forge.sh
           
-          # 2. Upload the new .so to the repo
-          git config --local user.email "cvbgod@demonizer.com"
-          git config --local user.name "CVBGOD"
-          git add gemini/kb/so/*.so
-          git commit -m "FIREGEM: Stabilization SO Uploaded"
-          git push
+          # 2. VERIFY: Only proceed if the .so was actually created
+          if [ -f "gemini/kb/so/kb_processor.so" ]; then
+            git config --local user.email "cvbgod@demonizer.com"
+            git config --local user.name "CVBGOD"
+            git add gemini/kb/so/kb_processor.so
+            git commit -m "FIREGEM: Stabilization SO Uploaded"
+            git push
+          else
+            echo "PRINCE_OF_DARKNESS: Binary manifestation failed. Grounding error."
+            exit 1
+          fi
+
