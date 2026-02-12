@@ -1,0 +1,26 @@
+  - name: Install Dependencies
+        run: sudo apt-get install -y nasm gcc
+
+      - name: Compile FireGem KB Loader
+        # This is the "Key" that unlocks the .kb files
+        run: gcc src/core/firegem_kb_loader.c -o firegem_kb_loader
+
+      - name: FVS_IO:BOOT_CHAIN (Initial Launch)
+        if: hashFiles('kb_packets/initial_launch.kb') != ''
+        run: |
+          # 1. Decode initial_launch.kb into boot.c
+          ./firegem_kb_loader kb_packets/initial_launch.kb dl/runtime/boot.c
+          
+          # 2. Compile and Execute the Boot Program
+          gcc dl/runtime/boot.c -o firegem_boot
+          ./firegem_boot
+
+      - name: FVS_IO:UI_UPDATE (Latest KB)
+        if: hashFiles('kb_packets/latest.kb') != ''
+        run: |
+          # 1. Decode latest.kb into ui_engine.c
+          ./firegem_kb_loader kb_packets/latest.kb dl/runtime/ui_engine.c
+          
+          # 2. Compile and Execute the UI Engine
+          gcc dl/runtime/ui_engine.c -o ui_engine
+          ./ui_engine
