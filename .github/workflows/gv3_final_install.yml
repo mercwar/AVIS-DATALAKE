@@ -1,4 +1,4 @@
-name: Gemini V3 - Cloning Power Installation
+name: Gemini V3 - Master Batch Dispatch
 on:
   push:
     paths:
@@ -20,23 +20,32 @@ jobs:
       - name: 2. Build Sector Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 3. FVS_IO:CLONE_V3_REPO_CORE
+      - name: 3. FVS_IO:MATERIALIZE_V2_BRIDGE
         run: |
-          # AVIS_IO:FVS_MKDIR_P - Build the Version 2 Bridge
+          # AVIS_IO:FVS_MKDIR_P - Materialize Version 2 Bridge
           mkdir -p "GEMINI/VERSION 2/"
-          
-          # AVIS_IO:FVS_READ_KB - Decode G-V3 Launch Sequence into V2
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/gv3_bridge.c"
-          
-          # AVIS_IO:FVS_CLONE - FIXED URL (Points to the real repo)
-          # No more '://' errors. This clones the full repo into VERSION 3
-          git clone "https://x-access-token:${MERC_G_PAT}@://github.com" "GEMINI/VERSION 3"
 
-      - name: 4. FVS_IO:PUSH_TO_SURFACE
+      - name: 4. FVS_IO:SIGNAL_REMOTE_BATCHES
+        run: |
+          # AVIS_IO:SENTINEL_DISPATCH - Triggering Sentinel Master Shell
+          curl -L -X POST \
+            -H "Authorization: Bearer $MERC_G_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com \
+            -d '{"ref":"main"}'
+
+          # AVIS_IO:NEXUS_SYNC - Triggering Robot AI Search Repository
+          curl -L -X POST \
+            -H "Authorization: Bearer $MERC_G_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com \
+            -d '{"ref":"main"}'
+
+      - name: 5. FVS_IO:PUSH_TO_SURFACE
         run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
           git add "GEMINI/VERSION 2/"
-          git add "GEMINI/VERSION 3/"
-          git commit -m "FVS_IO: Materialize V2 Bridge and V3 Repo-Core" || echo "No changes"
+          git commit -m "FVS_IO: V2 Bridge Materialized & Batch Pulse Emitted" || echo "No changes"
           git push
