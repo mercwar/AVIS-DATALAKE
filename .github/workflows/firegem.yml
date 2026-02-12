@@ -1,24 +1,26 @@
-name: Fire-Gem Master Boot
+name: Fire-Gem Master Load
 on: [push, workflow_dispatch]
 
 jobs:
-  initialize-firegem:
+  load-and-run:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Load INI and Boot C Engine
-        # Fixed path relative to the repo root
-        working-directory: AVIS-DATALAKE/fire-gem
+      - name: Parse INI and Execute SH
         run: |
-          # 1. LOAD: Extract GUID from fire-gem.ini
-          RUN_GUID=$(grep "run_guid" fire-gem.ini | cut -d'=' -f2)
+          # 1. LOAD: Extract the living directory and GUID from fire-gem.ini
+          # We look in the root first to find the map
+          INI_PATH="AVIS-DATALAKE/fire-gem/fire-gem.ini"
           
-          # 2. PREP: Compile the C Bootloader and ASM
-          nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
-          gcc fire-gem.c fire-gem-asm.o -o fire-gem-boot -no-pie
+          LIVING_DIR=$(grep "living_dir" $INI_PATH | cut -d'=' -f2)
+          RUN_GUID=$(grep "run_guid" $INI_PATH | cut -d'=' -f2)
           
-          # 3. RUN: Open C Engine first with the loaded GUID
+          echo "Target Directory: $LIVING_DIR"
+          echo "Authorized GUID: $RUN_GUID"
+
+          # 2. RUN: Navigate to the Living Dir and execute the SH file
+          cd "$LIVING_DIR"
           chmod +x fire-gem.sh
-          ./fire-gem-boot "$RUN_GUID"
+          ./fire-gem.sh "$RUN_GUID"
