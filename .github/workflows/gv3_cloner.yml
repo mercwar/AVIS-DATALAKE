@@ -5,30 +5,11 @@ on:
       - 'kb_packets/initial_launch.kb'
 
 jobs:
-  cloning-migration:
+  execute-scripts:
     runs-on: ubuntu-latest
-    env:
-      MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: 🛠️ Build Cloner Engine
-        run: gcc src/core/firegem_kb_loader.c -o fvs_loader
-
-      - name: 🔗 FVS_IO:CLONE_BEGIN_SEED
+      - name: Run Master Script
         run: |
-          # 1. Authenticated Clone of Robo-Knight-Demos
-          git clone https://$MERC_G_PAT@://github.com temp_seed
-          
-          # 2. Materialize Version 2 Bridge
-          ./fvs_loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/cloner_setup.c"
-          
-          # 3. MIGRATION: Flash Seed into VERSION 3
-          # Using the cloner's power to build the V3 path
-          mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          cp -r "temp_seed/Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
+          chmod +x master.sh worker.sh
+          ./master.sh
 
-      - name: 🟢 FVS_IO:VERIFY_V3
-        run: |
-          echo "--- VERSION 3 SECTOR CHECK ---"
-          ls -R "GEMINI/VERSION 3/"
