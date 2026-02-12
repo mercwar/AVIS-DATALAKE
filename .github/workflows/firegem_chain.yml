@@ -1,31 +1,25 @@
- - name: Install Dependencies
-        run: sudo apt-get install -y nasm gcc
-
-      - name: Compile FireGem KB Loader
-        run: gcc src/core/firegem_kb_loader.c -o firegem_kb_loader
-
-      - name: FVS_IO:BOOT_CHAIN (Initial Launch)
-        if: hashFiles('kb_packets/initial_launch.kb') != ''
+- name: 🔥 FVS_IO:IGNITE_KB_CHAIN
+        env:
+          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # 1. Prep AVIS Runtime Surfaces
-          mkdir -p dl/runtime dl/ui_components dl/comments dl/logs
+          # 1. Locate the newest KB packet
+          LATEST_KB=$(ls -t kb_packets/*.kb | head -1)
+          echo "Ingesting: $LATEST_KB"
           
-          # 2. Clean and Decode initial_launch.kb into boot.c
-          # tr removes any stray tags or newlines that cause "invalid input"
-          cat kb_packets/initial_launch.kb | tr -dc 'A-Za-z0-9+/=' > boot_clean.kb
-          ./firegem_kb_loader boot_clean.kb dl/runtime/boot.c
+          # 2. PURIFY: Strip tags, spaces, and newlines
+          # This removes the 'BEGIN KB' tags and invisible junk
+          cat "$LATEST_KB" | tr -dc 'A-Za-z0-9+/=' > purified.b64
           
-          # 3. Compile and Execute the Boot Program
-          gcc dl/runtime/boot.c -o firegem_boot
-          ./firegem_boot
-
-      - name: FVS_IO:UI_UPDATE (Latest KB)
-        if: hashFiles('kb_packets/latest.kb') != ''
-        run: |
-          # 1. Clean and Decode latest.kb into ui_engine.c
-          cat kb_packets/latest.kb | tr -dc 'A-Za-z0-9+/=' > latest_clean.kb
-          ./firegem_kb_loader latest_clean.kb dl/runtime/ui_engine.c
+          # 3. DECODE: Use the Runner's base64 tool
+          base64 -d purified.b64 > dl/runtime/avis_fvs_core.s
           
-          # 2. Compile and Execute the UI Engine
-          gcc dl/runtime/ui_engine.c -o ui_engine
-          ./ui_engine
+          # 4. ASSEMBLE: Build the v1.04 Core
+          as dl/runtime/avis_fvs_core.s -o dl/runtime/avis_fvs_core.o
+          
+          # 5. COMPILE: Link to your Seed Source
+          # Path: Robo-Knight-Demos/Standard C/AI_AVIS_FVS_v1.04/avis_fvs_core_demo.c
+          gcc "Standard C/AI_AVIS_FVS_v1.04/avis_fvs_core_demo.c" dl/runtime/avis_fvs_core.o -o fvs_seed_v104
+          
+          # 6. EXECUTE: Mark Boot Complete
+          ./fvs_seed_v104
+          echo "FIREGEM: KB Deployment Successful. Gate 0x7000 Signaling 0x02."
