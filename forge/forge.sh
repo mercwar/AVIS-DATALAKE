@@ -1,12 +1,14 @@
 #!/bin/bash
-# CVBGOD: Base64 Engine Forge
-echo "FORGE: Linking Base64 Decoder Brain..."
+# CVBGOD: Shared Object (.so) Forge
+# Purpose: Compile ASM into dynamic libraries
 
-nasm -f elf64 engine/fire_gem.asm -o engine/fire_gem.o
-ld engine/fire_gem.o -o engine/fire_gem
+TARGET_DIR="gemini/kb/so"
 
+echo "FORGE: Compiling KB to Shared Object..."
+
+# -felf64: 64-bit ELF format
+# -shared: Create a shared library
 nasm -f elf64 engine/kb_processor.asm -o engine/kb_processor.o
-ld engine/kb_processor.o -o engine/kb_processor
+ld -shared engine/kb_processor.o -o "$TARGET_DIR/kb_processor.so"
 
-chmod +x engine/fire_gem engine/kb_processor
-echo "STATUS: Base64 Engine Primed. Feed the machine."
+echo "STATUS: KB Engine manifested at $TARGET_DIR/kb_processor.so"
