@@ -19,20 +19,22 @@ jobs:
         # This compiles the loader so we don't need the missing .so file
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 3. FVS_IO:CLONE_AND_EXPAND
-        env:
-          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
-        run: |
-          # AVIS_IO:FVS_MKDIR_P - Build the V3 Path
-          mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          
-          # AVIS_IO:FVS_READ_KB - Decode your G-V3 Launch Sequence
-          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/gv3_controller.c"
-          
-          # AVIS_IO:FVS_CLONE - Pull the Robo-Knight Seed Source
-          git clone https://$MERC_G_PAT@://github.com temp_seed
-          cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
-
+     - name: 🔗 FVS_IO:CLONE_V1.04_SEED
+env:
+MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+run: |
+# 1. Authenticated Clone of Robo-Knight-Demos (FIXED URL)
+# Format: github.com
+git clone "https://$MERC_G_PAT@github.com" temp_seed
+# 2. Materialize the Version 3 Sector Path
+# This creates the directories for the C-loader to write into
+mkdir -p "GEMINI/VERSION 3/core_v1.04"
+# 3. Decode G-V3 Launch Sequence from KB
+./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
+# 4. Flash the v1.04 Seed into the new Directory
+cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/core_v1.04/"
+# 5. Clean up temp folder
+rm -rf temp_seed
       - name: 4. FVS_IO:PUSH_TO_SURFACE
         run: |
           git config --global user.name "FireGem-Bot"
