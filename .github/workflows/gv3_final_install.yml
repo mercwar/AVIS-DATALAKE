@@ -1,4 +1,4 @@
-name: Gemini V3 - Final Sector Installation
+name: Gemini V3 - Cloning Power Installation
 on:
   push:
     paths:
@@ -12,37 +12,31 @@ jobs:
     env:
       MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
     steps:
-      - uses: actions/checkout@v4
+      - name: 1. Checkout AVIS-DATALAKE
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.MERC_G_PAT }}
 
-      - name: 🛠️ Build Sector Loader
+      - name: 2. Build Sector Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 🔗 FVS_IO:CLONE_AND_MATERIALIZE
+      - name: 3. FVS_IO:CLONE_V3_REPO_CORE
         run: |
-          # 1. FIXED Authenticated Clone
-          git clone "https://x-access-token:${MERC_G_PAT}@://github.com" temp_seed
+          # AVIS_IO:FVS_MKDIR_P - Build the Version 2 Bridge
+          mkdir -p "GEMINI/VERSION 2/"
           
-          # 2. Materialize V3 Path via your C-Loader
-          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
+          # AVIS_IO:FVS_READ_KB - Decode G-V3 Launch Sequence into V2
+          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/gv3_bridge.c"
           
-          # 3. Flash Seed Source into Version 3
-          mkdir -p "GEMINI/VERSION 3/core_v1.04"
-          cp -r "temp_seed/Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/core_v1.04/"
+          # AVIS_IO:FVS_CLONE - CLONE THE FULL REPO AS VERSION 3
+          # This installs the cloning power directly to the sector
+          git clone "https://x-access-token:${MERC_G_PAT}@://github.com" "GEMINI/VERSION 3"
 
-      - name: 🔥 FVS_IO:IGNITE_V3
+      - name: 4. FVS_IO:PUSH_TO_SURFACE
         run: |
-          # 4. Assemble & Link the materialized V3 Core
-          as "GEMINI/VERSION 3/core_v1.04/avis_fvs_core.s" -o core.o
-          gcc "GEMINI/VERSION 3/v3_init.c" core.o -o gv3_v3_exec
-          ./gv3_v3_exec
-
-      - name: 📦 FVS_IO:PUSH_TO_REPO
-        run: |
-          # 5. Commit the new GEMINI/VERSION 3 folder back to your repo
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
+          git add "GEMINI/VERSION 2/"
           git add "GEMINI/VERSION 3/"
-          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes"
+          git commit -m "FVS_IO: Materialize V2 Bridge and V3 Repo-Core" || echo "No changes"
           git push
