@@ -4,22 +4,30 @@ on: workflow_dispatch
 jobs:
   delete_ghosts:
     runs-on: ubuntu-latest
+
     steps:
       - name: Identity Check
-        uses: actions/checkout@v4 # This creates the .git folder so 'gh' works
+        uses: actions/checkout@v4
+
+      - name: Authenticate GH CLI
+        run: |
+          echo "$GH_TOKEN" | gh auth login --with-token
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Force Delete Run History
         run: |
           echo "CVBGOD: Locating ghost records..."
-          # This pulls the IDs from the current repo context
+
+          # Pull run IDs from the current repo
           ids=$(gh run list --limit 100 --json databaseId --jq '.[].databaseId')
-          
+
           if [ -z "$ids" ]; then
             echo "No ghost runs found."
           else
             for id in $ids; do
               echo "Deleting run ID: $id"
-              gh run delete "$id"
+              gh run delete "$id" --yes
             done
           fi
         env:
