@@ -1,10 +1,9 @@
 ; ==========================================================
-; FIREGEM V4 BOOTSTRAP ENGINE
-; Purpose: Space-Safe Directory Creation via Syscalls
+; ENGINE: fire_gem.asm (V4-Zero-Halt)
 ; ==========================================================
 section .data
     mode dw 0755
-    space_char db ' '
+    target_key db '"target": "', 0
 
 section .bss
     buffer resb 4096
@@ -14,49 +13,57 @@ section .text
     global _start
 
 _start:
-    ; 1. Hardware Sync
-    mov rbp, rsp
-    and rsp, -16
-
-    ; 2. Open Config (r8 = path.ini from argv)
     pop rax             ; argc
     pop rax             ; prog_name
-    pop r8              ; r8 = path.ini
-    
-    ; [Logic: Open path.ini -> Find config filename -> Open config]
-    ; Simplified for First-KB: Direct open of config
-    mov rax, 2          ; sys_open
-    mov rdi, config_file ; Hardcoded for Bootstrap
-    xor rsi, rsi
-    syscall
-    mov r12, rax        ; r12 = fd
+    pop rdi             ; rdi = config file from argv
 
-    ; 3. Read loop
+    ; 1. OPEN
+    mov rax, 2          ; sys_open
+    xor rsi, rsi        ; O_RDONLY
+    syscall
+    mov r12, rax
+
+    ; 2. READ & HALT GUARD
     mov rax, 0          ; sys_read
     mov rdi, r12
     mov rsi, buffer
     mov rdx, 4096
     syscall
+    test rax, rax
+    jle exit            ; IF 0 OR NEGATIVE, SHUTDOWN
 
-    ; 4. Parse NDJSON and Build
+    ; 3. DETERMINISTIC BUILD
+    ; (Directly targets strings between quotes)
     lea rsi, [buffer]
-parse_line:
-    ; Seek "target":"
-    ; ... (Pointer arithmetic to find start of path)
-    
-    ; Call sys_mkdir (83)
-    mov rax, 83
-    mov rdi, rsi        ; Extracted path
-    mov rsi, [mode]
-    syscall
+find_quote:
+    cmp byte [rsi], '"'
+    je extract_path
+    inc rsi
+    cmp rsi, buffer + 4096
+    jl find_quote
+    jmp exit
 
-    ; Loop until end of buffer
-    jmp parse_line
+extract_path:
+    add rsi, 11         ; Skip '"target": "'
+    mov rdi, path_tmp
+copy_loop:
+    mov al, [rsi]
+    cmp al, '"'
+    je build_dir
+    mov [rdi], al
+    inc rsi
+    inc rdi
+    jmp copy_loop
+
+build_dir:
+    mov byte [rdi], 0   ; Null terminate
+    mov rax, 83         ; sys_mkdir
+    mov rdi, path_tmp
+    mov rsi, 0755
+    syscall
+    jmp exit            ; Exit after first build for safety
 
 exit:
-    mov rax, 60
+    mov rax, 60         ; sys_exit
     xor rdi, rdi
     syscall
-
-section .data
-    config_file db "fire_gem_config.json", 0
