@@ -1,43 +1,54 @@
-name: G-V3 Sector Ignition
+name: Gemini V3 - Master Dispatch Relay
 on:
   push:
     paths:
       - 'kb_packets/initial_launch.kb'
 
 jobs:
-  materialize-v3:
+  v3-expansion:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
     steps:
-      - name: 1. Checkout
+      - name: 1. Checkout AVIS-DATALAKE
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MERC_G_PAT }}
 
-      - name: 2. Prep G-V3 Loader
+      - name: 2. Build Sector Loader
         run: gcc src/core/firegem_kb_loader.c -o loader
 
-      - name: 3. FVS_IO:CLONE_AND_EXPAND
-        env:
-          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+      - name: 3. FVS_IO:MATERIALIZE_V2_BRIDGE
         run: |
-          # 1. Authenticated Clone of Seed
-          git clone https://$MERC_G_PAT@://github.com temp_seed
-          
-          # 2. Build the Version 3 Path
-          mkdir -p "GEMINI/VERSION 3/v1.04_core"
-          
-          # 3. Decode KB into the new Sector
-          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/gv3_controller.c"
-          
-          # 4. Flash the Seed Source
-          cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
+          # AVIS_IO:FVS_MKDIR_P - Materialize Version 2 Bridge
+          mkdir -p "GEMINI/VERSION 2/"
+          ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 2/gv3_bridge.c"
 
-      - name: 4. PUSH_TO_REPO (The Materialization)
+      - name: 4. FVS_IO:SIGNAL_BATCH_RUNS (Cyborg Pulse)
+        run: |
+          # AVIS_IO:SENTINEL_DISPATCH - Triggering 4-Layer Cyborg Gateway
+          # This connects the repos without cloning
+          
+          # Signal Sentinel Batch
+          curl -L -X POST \
+            -H "Authorization: Bearer $MERC_G_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com \
+            -d '{"ref":"main"}'
+
+          # Signal Nexus (Robot AI Search) Batch
+          curl -L -X POST \
+            -H "Authorization: Bearer $MERC_G_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com \
+            -d '{"ref":"main"}'
+
+      - name: 5. FVS_IO:PUSH_TO_SURFACE
         run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
-          git add "GEMINI/VERSION 3/"
-          git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized"
+          git add "GEMINI/VERSION 2/"
+          git commit -m "FVS_IO: V2 Bridge Online & Batch Signals Emitted" || echo "No changes"
           git push
