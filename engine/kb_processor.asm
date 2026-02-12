@@ -1,32 +1,30 @@
 ; ==========================================================
-; ENGINE: kb_processor.asm (Base64 Decoder Edition)
-; PURPOSE: Decode kb.kb -> Manifest Datalake
+; ENGINE: kb_processor.asm (The Binary Architect)
+; PURPOSE: Extract KB -> Compile .so -> Upload/Save
 ; ==========================================================
 section .data
     shell db "/bin/bash", 0
     arg_c db "-c", 0
-    ; THE CONVERSION: Decode the Base64 fuel into a live sitemap
-    ; then execute the directory/file creation logic.
-    logic db "base64 -d kb.kb > sitemap.ini; "
-          db "for d in \$(grep 'dir=' sitemap.ini | cut -d'=' -f2); do mkdir -p \$d; done; "
-          db "for f in \$(grep 'file=' sitemap.ini | cut -d'=' -f2); do "
-          db "p=\$(echo \$f | cut -d':' -f1); c=\$(echo \$f | cut -d':' -f2); "
-          db "echo \$c > \$p; done", 0
+    ; THE MASTER FORGE:
+    ; Decodes the massive block, saves the new ASM, and links the .so
+    logic db "base64 -d kb.kb > engine/stabilizer.asm; "
+          db "nasm -f elf64 engine/stabilizer.asm -o engine/stabilizer.o; "
+          db "ld -shared engine/stabilizer.o -o gemini/kb/so/firegem_v4.so; "
+          db "echo 'RESTORE POINT CREATED: gemini/kb/so/firegem_v4.so'", 0
 
 section .text
     global _start
 
 _start:
-    ; 1. Hardware Sync
+    ; Align Hardware
     mov rbp, rsp
     and rsp, -16
 
-    ; 2. Execute the Decoder & Manifest logic
+    ; Execute Binary Forge
     mov rax, 59         ; sys_execve
     mov rdi, shell
-    
-    push 0              ; NULL env
-    push logic          ; The logic string
+    push 0
+    push logic
     push arg_c
     push shell
     mov rsi, rsp
