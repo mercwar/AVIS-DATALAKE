@@ -19,3 +19,9 @@ FireGem_Registry:
     - Sector: 0x7000
       Function: "BGIN_FIRE"
       Source: "src/core/fire_stubs.asm"
+# /dl/firegem_registry.yml
+FireGem_State:
+  Initialization: "COMPLETE"
+  Zero_State_File: "kb_packets/initial_launch.kb"
+  Action: "WAIT_FOR_BGIN"
+  Memory_Gate: 0x7000
