@@ -15,7 +15,6 @@ jobs:
       - name: 1. Checkout AVIS-DATALAKE
         uses: actions/checkout@v4
         with:
-          # Use the built-in token for the local repo checkout
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 2. Build G-V3 Loader
@@ -25,13 +24,12 @@ jobs:
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
-          # Check if PAT exists to prevent malformed URL
           if [ -z "$MERC_G_PAT" ]; then
             echo "Error: MERC_G_PAT secret is empty."
             exit 1
           fi
 
-          # 1. Authenticated Clone (Using x-access-token for security)
+          # 1. Authenticated Clone of Robo-Knight-Demos
           git clone https://x-access-token:${MERC_G_PAT}@github.com/mercwar/Robo-Knight-Demos.git temp_seed
 
           # 2. Create Version 3 Surface
@@ -41,19 +39,21 @@ jobs:
           ./loader kb_packets/initial_launch.kb "GEMINI/VERSION 3/v3_init.c"
 
           # 4. Flash v1.04 Core into VERSION 3
-          cp -r temp_seed/"Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
+          cp -r "temp_seed/Standard C/AI_AVIS_FVS_v1.04/"* "GEMINI/VERSION 3/v1.04_core/"
 
           # 5. Cleanup
           rm -rf temp_seed
 
       - name: 4. FVS_IO:MATERIALIZE_AND_PUSH
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "FireGem-Bot"
           git config --global user.email "bot@firegem.ai"
-          
-          # Ensure we are pushing to the correct origin
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}
-          
+
+          # Ensure correct origin URL (no extra ://)
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+
           git add "GEMINI/VERSION 3/"
           git commit -m "FVS_IO: GEMINI VERSION 3 Sector Materialized" || echo "No changes to commit"
-          git push origin main
+          git push origin HEAD:main
