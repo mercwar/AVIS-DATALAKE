@@ -1,21 +1,33 @@
-// AVIS_IO:FVS_MKDIR_P      - Auto-create directories for target path
-// AVIS_IO:FVS_READ_KB      - Read Base64 KB from packets
-// AVIS_IO:FVS_WRITE_SRC    - Write decoded source to new directory
+/* AVIS_IO:FVS_MKDIR_P      - Auto-create directories */
+/* AVIS_IO:FVS_CLONE_BGIN   - Preparation for V3 migration */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 
-// Logic to create directories recursively (like mkdir -p)
+const char b64chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+void decode_b64(const char* input, FILE* out) {
+    int counts = 0, buffer = 0;
+    for (int i = 0; input[i] != '\0'; i++) {
+        const char* p = strchr(b64chars, input[i]);
+        if (!p) continue;
+        buffer = (buffer << 6) | (int)(p - b64chars);
+        counts++;
+        if (counts == 4) {
+            fputc((buffer >> 16) & 0xFF, out);
+            fputc((buffer >> 8) & 0xFF, out);
+            fputc(buffer & 0xFF, out);
+            counts = 0; buffer = 0;
+        }
+    }
+}
+
 void create_dirs(const char *path) {
     char tmp[512];
     char *p = NULL;
-    size_t len;
-
     snprintf(tmp, sizeof(tmp), "%s", path);
-    len = strlen(tmp);
-    if (tmp[len - 1] == '/') tmp[len - 1] = 0;
     for (p = tmp + 1; *p; p++) {
         if (*p == '/') {
             *p = 0;
@@ -25,23 +37,22 @@ void create_dirs(const char *path) {
     }
 }
 
-// [Base64 decoder logic here...]
-// (Use the b64chars and decode_b64 logic from earlier)
-
 int main(int argc, char** argv) {
     if (argc < 3) return 1;
-    
-    // FVS_IO: Prepare the path
     create_dirs(argv[2]);
-
     FILE *in = fopen(argv[1], "r");
     FILE *out = fopen(argv[2], "wb");
-    if (!in || !out) {
-        printf("[FVS_ERR] Cannot open path: %s\n", argv[2]);
-        return 1;
-    }
+    if (!in || !out) return 1;
 
-    // [Rest of file reading and decode_b64 call...]
+    fseek(in, 0, SEEK_END);
+    long fsize = ftell(in);
+    fseek(in, 0, SEEK_SET);
+    char *encoded = malloc(fsize + 1);
+    fread(encoded, 1, fsize, in);
+    encoded[fsize] = '\0';
+
+    decode_b64(encoded, out);
+    free(encoded); fclose(in); fclose(out);
     printf("[FVS_IO] Materialized Sector: %s\n", argv[2]);
     return 0;
 }
