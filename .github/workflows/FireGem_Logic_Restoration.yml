@@ -1,0 +1,30 @@
+- name: FireGem Logic Restoration
+  run: |
+    echo "FLAME ON: Committing code blocks to Datalake surfaces..."
+    
+    # Ensure the directory structure exists
+    mkdir -p dl/ui_components/
+    
+    # Use the Fire-Writer to distribute the unzipped files
+    python3 -c "
+    import os
+    try:
+        # Load the staging content
+        with open('staging_area.tmp', 'r') as s:
+            content = s.read()
+        
+        target = 'dl/ui_components/active_interface.c'
+        print(f'FIRE: Writing {target}')
+        
+        # Write the file (directory is now guaranteed by mkdir -p)
+        with open(target, 'w') as f:
+            f.write(content)
+            
+    except FileNotFoundError as e:
+        print(f'STAGING ERROR: {e}')
+        exit(1)
+    "
+    echo "FIRE COMPLETE: System Synchronized."
+  shell: /usr/bin/bash -e {0}
+  env:
+    MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
