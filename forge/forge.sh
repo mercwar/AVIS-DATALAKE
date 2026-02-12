@@ -1,12 +1,12 @@
 #!/bin/bash
-# CVBGOD: High-Voltage Linker
-echo "FORGE: Linking Igniter and Processor..."
+# CVBGOD: Base64 Engine Forge
+echo "FORGE: Linking Base64 Decoder Brain..."
 
-nasm -f elf64 fire_gem.asm -o fire_gem.o
-ld fire_gem.o -o fire_gem
+nasm -f elf64 engine/fire_gem.asm -o engine/fire_gem.o
+ld engine/fire_gem.o -o engine/fire_gem
 
-nasm -f elf64 kb_processor.asm -o kb_processor.o
-ld kb_processor.o -o kb_processor
+nasm -f elf64 engine/kb_processor.asm -o engine/kb_processor.o
+ld engine/kb_processor.o -o engine/kb_processor
 
-chmod +x fire_gem kb_processor
-echo "STATUS: Engines Primed. Drop kb.kb to ignite."
+chmod +x engine/fire_gem engine/kb_processor
+echo "STATUS: Base64 Engine Primed. Feed the machine."
