@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target_repo: ['NEXUS', 'Sentinel', 'Cyborg', 'Robo-Knight-Demos', 'AVIS']
+        target_repo: ['NEXUS', 'Sentinel', 'Cyborg',  'AVIS']
     steps:
       - name: AVIS_SECRET_GATE
         run: |
