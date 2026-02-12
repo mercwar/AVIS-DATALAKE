@@ -3,7 +3,7 @@ section .text
     global fire_end_entry
 
 fire_end_entry:
-    ; 1. Parse BIN Header (0x47454D21)
+    ; 1. Verify "GEM!" Header
     ; 2. Run Commands 0x01-0x08
     ret
 
