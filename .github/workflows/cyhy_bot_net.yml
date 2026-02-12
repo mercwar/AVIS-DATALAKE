@@ -11,22 +11,25 @@ jobs:
       - name: Checkout Datalake
         uses: actions/checkout@v4
 
-      - name: CYHY Networking - Generate Bot Report
+ - name: CYHY Networking - Generate Bot Report
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+          REPO_PATH: ${{ github.repository }} # Pre-defining the path
         run: |
           # 1. Create Navigation Metadata
           REPORT_ID=$(date +%s)
           PAYLOAD="{\"X\": 10, \"Y\": 20, \"Z\": 5, \"Status\": \"SUCCESS_CYHY\"}"
           
           # 2. Encode to Base64 KB Pack
-          B64_PACK=$(echo -n "$PAYLOAD" | base64)
+          B64_PACK=$(echo -n "$PAYLOAD" | base64 -w 0)
           
-          # 3. Network Push to Datalake via GitHub API
-          curl -X PUT \
+          # 3. Network Push (FIXED URL)
+          # We use the $REPO_PATH variable to avoid the 'nested brace' error
+          curl -L -X PUT \
             -H "Authorization: Bearer $MERC_G_PAT" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com{{ github.repository }}/contents/dl/comments/bot_nav_$REPORT_ID.cyhy \
+            -H "Content-Type: application/json" \
+            "https://api.github.com" \
             -d "{
               \"message\": \"CYHY Bot Success Report $REPORT_ID\",
               \"content\": \"$B64_PACK\"
