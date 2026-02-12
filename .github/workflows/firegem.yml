@@ -1,38 +1,28 @@
-name: FIREGEM_V3_INSTALLATION
+name: FIREGEM_V4_BOOTSTRAP
 on: [push, workflow_dispatch]
 
 jobs:
-  install:
+  bootstrap:
     runs-on: ubuntu-latest
     steps:
-      - name: System Entry
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Hard-Code V3 Surface
+      - name: Initialize Registry & INI
         run: |
-          # 1. Force create the V3 Coordinate
-          mkdir -p "gemini/install/v3"
+          # Create the string registry for space normalization
+          echo "[REPLACEMENTS]" > string_registry.ini
+          echo 'find=" "' >> string_registry.ini
+          echo 'replace="%20"' >> string_registry.ini
           
-          # 2. Inject the Hard-Coded FVS Table (fire-gem.ini)
-          # Note: The spaces are locked as literal bytes here
-          cat <<EOF > "gemini/install/v3/fire-gem.ini"
-          [fire-gem]
-          address="gemini/install/v3"
-          guid="GUID_V3_8822_C4"
-          status="FVS_V3_ACTIVE"
-          cmd="echo s o s && mkdir -p dl/ui_components/v3"
-          
-          [fire-gem-next]
-          next_dir="gemini/install/v3"
-          deploy_mode="true"
-          EOF
-          
-          echo "V3_SYNC: fire-gem.ini hard-coded at gemini/install/v3"
+          # Create path.ini as the Locator
+          echo "[fire-gem]" > path.ini
+          echo 'config="fire_gem_config.json"' >> path.ini
+          echo 'registry="string_registry.ini"' >> path.ini
 
-      - name: Spark V3 Forge
+      - name: Forge V4 Engine
         run: |
           sudo apt-get update && sudo apt-get install -y nasm
-          # Move to the V3 coordinate and ignite
-          cd "gemini/install/v3"
-          chmod +x forge.sh
-          ./forge.sh fire-gem.ini
+          nasm -f elf64 engine/fire_gem.asm -o fire_gem.o
+          ld fire_gem.o -o fire_gem
+          ./fire_gem path.ini
