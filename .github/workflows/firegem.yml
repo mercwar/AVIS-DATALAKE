@@ -8,27 +8,21 @@ jobs:
       - name: Sync Repository
         uses: actions/checkout@v4
 
-      - name: Load INI and Execute SH
+      - name: Load INI and Boot
         run: |
-          # 1. POINT TO THE FILE: Using the relative path from the repo root
-          # Based on your logs, the file is at: AVIS-DATALAKE/fire-gem/fire-gem.ini
-          INI_FILE="AVIS-DATALAKE/fire-gem/fire-gem.ini"
+          # 1. FIND AND LOAD: Search for the INI to get the Living Dir
+          INI_PATH=$(find . -name "fire-gem.ini" | head -n 1)
           
-          if [ ! -f "$INI_FILE" ]; then
-            echo "CRITICAL: Cannot find $INI_FILE"
-            echo "Current directory contents:"
-            ls -R
-            exit 1
-          fi
-
-          # 2. LOAD: Extract GUID and Directory
-          LIVING_DIR=$(grep "living_dir" "$INI_FILE" | cut -d'=' -f2 | tr -d '\r')
-          RUN_GUID=$(grep "run_guid" "$INI_FILE" | cut -d'=' -f2 | tr -d '\r')
-
-          echo "Target Directory: $LIVING_DIR"
-          echo "Authorized GUID: $RUN_GUID"
-
-          # 3. RUN: Use the extracted living_dir to run the SH stub
+          LIVING_DIR=$(grep "living_dir" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
+          RUN_GUID=$(grep "run_guid" "$INI_PATH" | cut -d'=' -f2 | tr -d '\r')
+          
+          # 2. NAVIGATE: Move to your 10-file directory
           cd "$LIVING_DIR"
+          
+          # 3. COMPILE: Create the bootloader from your C and ASM files
+          nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
+          gcc fire-gem.c fire-gem-asm.o -o fire-gem-boot -no-pie
+          
+          # 4. RUN: Start the C Engine with the authorized GUID
           chmod +x fire-gem.sh
-          ./fire-gem.sh "$RUN_GUID"
+          ./fire-gem-boot "$RUN_GUID"
