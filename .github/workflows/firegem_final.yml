@@ -34,4 +34,4 @@ jobs:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
         run: |
           # Unzipping KB Packet and using ASM stubs to flash the build
-          python3 src/scripts/firegem_unzip.py --input kb_packets/latest.kb
+          python3 src/scripts/firegem_unzip.c --input kb_packets/latest.kb
