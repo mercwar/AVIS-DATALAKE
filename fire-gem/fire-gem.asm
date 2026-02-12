@@ -2,5 +2,6 @@ section .text
     global run_asm_logic
 
 run_asm_logic:
-    ; RDI now contains the GUID passed from fire-gem.c
+    ; RDI contains the GUID passed from C
+    ; Hardware initialization instructions here
     ret
