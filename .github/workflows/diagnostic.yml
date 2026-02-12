@@ -1,0 +1,19 @@
+name: Mercwar RAM Datalake Diagnostic
+on: [push]
+
+jobs:
+  echo-properties:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Grant Execute Permissions
+        # Ensures your .sh script can run on the Linux runner
+        run: chmod +x verify_pat.sh
+
+      - name: Execute PAT Diagnostic
+        # Explicitly map the secret to the job environment
+        env:
+          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+        run: ./verify_pat.sh
