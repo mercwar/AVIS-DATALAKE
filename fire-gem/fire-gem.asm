@@ -3,9 +3,8 @@ section .text
     extern fire_end_entry
 
 run_asm_logic:
-    ; RDI = GUID
-    ; [Logic: Copy KB drivers to disk]
-    ; [Logic: Append [UNINSTALL] from KB to fire-gem.ini]
+    ; EDI now contains the 32-bit GUID
+    ; [PROVISIONING]: Copy KB files and inject [UNINSTALL] block
     
     call fire_end_entry
     ret
