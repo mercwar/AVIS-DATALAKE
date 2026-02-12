@@ -8,12 +8,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Grant Execute Permissions
-        # Ensures your .sh script can run on the Linux runner
-        run: chmod +x verify_pat.sh
-
-      - name: Execute PAT Diagnostic
-        # Explicitly map the secret to the job environment
+      - name: Property Echo Batch
+        # This maps your MERC_G_PAT to the runner
         env:
           MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
-        run: ./verify_pat.sh
+        run: |
+          echo "--- AVIS DIRECTORY CHECK ---"
+          ls -R dl/
+          
+          echo "--- TOKEN PROPERTY CHECK ---"
+          if [ -z "$MERC_G_PAT" ]; then
+            echo "Error: MERC_G_PAT property is not set in Secrets."
+            exit 1
+          else
+            echo "Property: Status -> [LOADED]"
+            echo "Property: Length -> ${#MERC_G_PAT}"
+          fi
