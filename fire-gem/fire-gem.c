@@ -3,22 +3,15 @@
 #include "fire-gem.h"
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        fprintf(stderr, "Critical: Missing GUID from INI.\n");
-        return 1;
-    }
+    if (argc < 2) return 1;
     char *active_guid = argv[1];
 
-    // BOOT PHASE 1: Hardware Initialization
-    printf("[C-BOOT] Opening Hardware Logic with GUID: %s\n", active_guid);
+    // Hardware Initialization
+    printf("[C-BOOT] Initializing with GUID: %s\n", active_guid);
     run_asm_logic(); 
 
-    // BOOT PHASE 2: Trigger KB Scan & Disk Write
-    printf("[C-BOOT] Hardware Ready. Executing KB Scan...\n");
+    // TRIGGER SH STUB
     char command[256];
-    snprintf(command, sizeof(command), "./fire-gem.sh %s", active_guid);
-    
-    // Handing off to the shell script
+    snprintf(command, sizeof(command), "bash fire-gem.sh %s", active_guid);
     return system(command);
 }
-
