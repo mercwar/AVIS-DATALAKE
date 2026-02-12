@@ -21,6 +21,7 @@ static void firegem_init_gate(void)
                       MAP_ANONYMOUS | MAP_PRIVATE,
                       -1,
                       0);
+
     if (addr == MAP_FAILED)
     {
         perror("mmap");
@@ -28,7 +29,7 @@ static void firegem_init_gate(void)
     }
 
     FIREGEM_GATE = (volatile uint8_t*)addr;
-    *FIREGEM_GATE = 0x00; // CLOSED
+    *FIREGEM_GATE = 0x00;
 }
 
 void firegem_signal(uint8_t code)
@@ -43,4 +44,36 @@ void firegem_signal(uint8_t code)
     );
 
     printf("[FireGem] Gate (emulated) set to 0x%02X\n", code);
+}
+
+int main(int argc, char** argv)
+{
+    if (argc < 2)
+    {
+        printf("Usage: firegem_unzip <kb_file>\n");
+        return 1;
+    }
+
+    const char* kbFile = argv[1];
+
+    printf("[FireGem] Installing KB Packet: %s\n", kbFile);
+
+    char command[512];
+    snprintf(command, sizeof(command),
+             "unzip -o %s -d dl/", kbFile);
+
+    int result = system(command);
+
+    if (result != 0)
+    {
+        printf("[FireGem] ERROR: Failed to unzip KB packet.\n");
+        firegem_signal(0xFF);
+        return 2;
+    }
+
+    printf("[FireGem] KB Packet Installed.\n");
+
+    firegem_signal(0x02);
+
+    return 0;
 }
