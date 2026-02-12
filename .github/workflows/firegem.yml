@@ -1,17 +1,15 @@
-name: FIREGEM_V2_IGNITION
+name: FIREGEM_AVIS_IGNITION
 on: [push, workflow_dispatch]
 
 jobs:
-  spark:
+  ignition:
     runs-on: ubuntu-latest
     steps:
       - name: System Entry
         uses: actions/checkout@v4
 
-      - name: Handover to Gemini Forge
+      - name: Spark Gemini V2 Forge
         run: |
           sudo apt-get update && sudo apt-get install -y nasm
-          chmod +x "gemini/version2/firegem_forge.sh"
-          ./gemini/version2/firegem_forge.sh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          chmod +x "AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
+          "./AVIS-DATALAKE/GEMINI/VERSION 2/forge.sh"
