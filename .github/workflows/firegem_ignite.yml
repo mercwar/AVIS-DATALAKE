@@ -1,0 +1,34 @@
+name: FireGem - C-Unzip Ignition
+on:
+  push:
+    paths:
+      - 'kb_packets/*.kb'
+
+jobs:
+  firegem-unzip-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile FireGem Unzipper
+        run: |
+          # Compiling your C code with embedded x86 ASM
+          gcc src/core/firegem_unzip.c -o firegem_unzip
+
+      - name: BGIN FIRE! (Process KB)
+        env:
+          MERC_G_PAT: ${{ secrets.MERC_G_PAT }}
+        run: |
+          # 1. Check for Initial Launch
+          if [ -f "kb_packets/initial_launch.kb" ]; then
+            ./firegem_unzip kb_packets/initial_launch.kb
+          fi
+
+          # 2. Check for Latest KB (The UI Code Blocks)
+          if [ -f "kb_packets/latest.kb" ]; then
+            ./firegem_unzip kb_packets/latest.kb
+          fi
+
+      - name: CYHY Report
+        if: success()
+        run: echo "FIREGEM: Sector 0x7000 signaled 0x02. AVIS Updated."
