@@ -8,19 +8,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Parse INI and Execute SH
+      - name: Load INI and Execute SH
         run: |
-          # 1. LOAD: Extract the living directory and GUID from fire-gem.ini
-          # We look in the root first to find the map
-          INI_PATH="AVIS-DATALAKE/fire-gem/fire-gem.ini"
+          # 1. Define the ABSOLUTE path using the GitHub Workspace variable
+          # This prevents the "No such file or directory" error
+          ROOT_PATH="${{ github.workspace }}"
+          INI_FILE="$ROOT_PATH/AVIS-DATALAKE/fire-gem/fire-gem.ini"
           
-          LIVING_DIR=$(grep "living_dir" $INI_PATH | cut -d'=' -f2)
-          RUN_GUID=$(grep "run_guid" $INI_PATH | cut -d'=' -f2)
-          
-          echo "Target Directory: $LIVING_DIR"
+          echo "Looking for INI at: $INI_FILE"
+
+          # 2. LOAD: Extract living_dir and run_guid from the INI
+          # We use tr to remove potential carriage returns from Windows-edited files
+          LIVING_DIR=$(grep "living_dir" "$INI_FILE" | cut -d'=' -f2 | tr -d '\r')
+          RUN_GUID=$(grep "run_guid" "$INI_FILE" | cut -d'=' -f2 | tr -d '\r')
+
+          echo "Target Living Directory: $ROOT_PATH/$LIVING_DIR"
           echo "Authorized GUID: $RUN_GUID"
 
-          # 2. RUN: Navigate to the Living Dir and execute the SH file
-          cd "$LIVING_DIR"
+          # 3. RUN: Use the absolute path to enter the directory and run the SH
+          cd "$ROOT_PATH/$LIVING_DIR"
           chmod +x fire-gem.sh
           ./fire-gem.sh "$RUN_GUID"
