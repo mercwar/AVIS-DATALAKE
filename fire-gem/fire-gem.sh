@@ -3,19 +3,23 @@
 
 GUID=$1
 
-# 1. COMPILE: Build both ASM modules into 64-bit ELF objects
+# 1. COMPILATION: Build ASM modules as Position-Independent Code (PIC)
+# The elf64 format remains, but logic inside must be PIC-compatible
 nasm -f elf64 fire-gem.asm -o fire-gem-asm.o
 nasm -f elf64 fire-end.asm -o fire-end-asm.o
 
-# 2. LINK: You MUST include fire-end-asm.o here to resolve the reference
-# The -z noexecstack removes the deprecated linker warning
-gcc fire-gem.c fire-gem-asm.o fire-end-asm.o -o fire-gem -no-pie -z noexecstack
+# 2. CREATE SHARED OBJECT: Bind ASM and C into a .so library
+# -shared creates the Shared Object; -fPIC ensures position independence
+gcc -shared -fPIC fire-gem-asm.o fire-end-asm.o -o libfiregem.so -z noexecstack
 
-# 3. RUN: Boot the 32-bit GUID Engine
+# 3. LINK BOOTLOADER: Link the C main engine against the new .so
+# -L. looks in current dir; -lfiregem links libfiregem.so
+gcc fire-gem.c -L. -lfiregem -o fire-gem -no-pie -Wl,-rpath,$(pwd)
+
+# 4. BOOT: Trigger the C Engine
 if [ -f "./fire-gem" ]; then
-    chmod +x fire-gem
     ./fire-gem "$GUID"
 else
-    echo "[CRITICAL] Linker failed to create the fire-gem binary."
+    echo "[CRITICAL] Shared Object compilation failed."
     exit 1
 fi
