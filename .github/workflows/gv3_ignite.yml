@@ -1,0 +1,27 @@
+name: Gemini V3 - Core Ignition
+on:
+  push:
+    paths:
+      - 'kb_packets/initial_launch.kb'
+
+jobs:
+  gv3-installation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🛠️ Build G-V3 Loader
+        run: gcc src/core/firegem_kb_loader.c -o gv3_loader
+
+      - name: 🔥 FVS_IO:GV3_IGNITION
+        run: |
+          # 1. Decode G-V3 Controller (Auto-creates dl/gv3_core/)
+          ./gv3_loader kb_packets/initial_launch.kb dl/gv3_core/controller.c
+          
+          # 2. Compile with AVIS/FVS Core (v1.04 ASM)
+          # Links the G-V3 logic to the hardware gate
+          as src/core/avis_fvs_core.s -o avis_fvs_core.o
+          gcc dl/gv3_core/controller.c avis_fvs_core.o -o gv3_controller
+          
+          # 3. Execute Global V3 Activation
+          ./gv3_controller
