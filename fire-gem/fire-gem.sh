@@ -1,15 +1,18 @@
 #!/bin/bash
-GUID=$1
+# ==========================================================
+# FIREGEM: HARDWARE ACQUISITION BRIDGE
+# ==========================================================
 
-# Scanning for BIN drops and writing to disk
-for bin_file in *.bin; do
-    [ -e "$bin_file" ] || continue
-    if ! grep -q "$bin_file" fire-gem.csv 2>/dev/null; then
-        echo "[LITTLEBOT] Writing $bin_file to disk..."
-        # Manifest the installation log
-        echo "KB_ID: $bin_file" > "INSTALLED_$bin_file.log"
-        echo "AUTH: $GUID" >> "INSTALLED_$bin_file.log"
-        # Register in CSV
-        echo "$bin_file,INSTALLED,$(date)" >> fire-gem.csv
-    fi
-done
+# 1. RESTORE POWER (Install NASM if missing)
+if ! command -v nasm &> /dev/null; then
+    echo "[BOOT] Tools missing. Acquiring NASM and Binutils..."
+    sudo apt-get update && sudo apt-get install -y nasm binutils jq
+fi
+
+# 2. GROUND THE PATHS
+# Ensure we are in the root workspace to avoid the recursive path error
+cd "$GITHUB_WORKSPACE"
+
+# 3. SPARK THE C BOOTLOADER
+chmod +x ./fire-gem-boot
+./fire-gem-boot "$1"
