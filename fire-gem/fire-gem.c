@@ -4,26 +4,21 @@
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        fprintf(stderr, "Critical: No Run GUID provided from INI.\n");
+        fprintf(stderr, "Critical: Missing GUID from INI.\n");
         return 1;
     }
-
     char *active_guid = argv[1];
 
-    // STEP 1: INITIALIZE HARDWARE
-    printf("[C-ENGINE] Booting... Initializing Hardware with GUID: %s\n", active_guid);
-    run_asm_logic(); // Logic gate in fire-gem.asm
+    // BOOT PHASE 1: Hardware Initialization
+    printf("[C-BOOT] Opening Hardware Logic with GUID: %s\n", active_guid);
+    run_asm_logic(); 
 
-    // STEP 2: HANDOFF TO SHELL FOR BIN/KB SCANNING
-    printf("[C-ENGINE] Hardware Ready. Triggering FVS Registry Scan...\n");
-    
+    // BOOT PHASE 2: Trigger KB Scan & Disk Write
+    printf("[C-BOOT] Hardware Ready. Executing KB Scan...\n");
     char command[256];
     snprintf(command, sizeof(command), "./fire-gem.sh %s", active_guid);
-    int result = system(command);
-
-    if (result == 0) {
-        printf("[C-ENGINE] Installation Cycle Finalized.\n");
-    }
-
-    return 0;
+    
+    // Handing off to the shell script
+    return system(command);
 }
+
