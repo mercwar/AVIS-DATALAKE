@@ -8,3 +8,5 @@ run_asm_logic:
     
     call fire_end_entry
     ret
+
+section .note.GNU-stack noalloc noexec nowrite progbits
