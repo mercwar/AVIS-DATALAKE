@@ -5,7 +5,7 @@
 section .data
     shell db "/bin/bash", 0
     arg_c db "-c", 0
-    ; THE LOGIC: Ingests kb.bin ($1) -> Chain Manifest
+    ; The Logic: Ingests kb.bin ($1) -> Extends the chain
     logic db "SZ=$(od -An -N4 -tu4 '$1'); "
           db "HDR=$(dd if='$1' bs=1 skip=4 count=$SZ); "
           db "echo $HDR | jq -c '.[]' | while read i; do "
@@ -26,11 +26,11 @@ _start:
     ; 2. Acquire Fuel Path (kb.bin from argv)
     pop rax             ; argc
     pop rax             ; prog_name
-    pop r8              ; r8 = path to kb.bin (check if NULL)
+    pop r8              ; r8 = path to kb.bin
     test r8, r8
     jz exit
 
-    ; 3. Bridge Pointers (Fixed Syntax)
+    ; 3. Bridge Pointers (LEA Fix for syntax error)
     lea rdi, [rel shell]
     lea rsi, [rel arg_c]
     lea rdx, [rel logic]
