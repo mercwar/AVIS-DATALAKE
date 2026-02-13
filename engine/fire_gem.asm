@@ -1,72 +1,80 @@
-; ==========================================================
-; ENGINE: fire_gem.asm (PIC / SO COMPATIBLE)
-; ==========================================================
 section .data
-    target_key db '"target": "', 0
-    key_len equ 11
-
-section .bss
-    buffer resb 4096
-    path_tmp resb 256
+    kb_src   db "KB.bin", 0
+    fs_dest  db "fire-shield", 0
+    log_file db "fire-gem.log", 0
+    msg_inst db "[LITTLEBOT] KB.bin detected. Installing Fire-Shield...", 0xA
+    msg_len  equ $ - msg_inst
+    buffer   times 1024 db 0
 
 section .text
     global _start
 
 _start:
-    ; 1. HARDWARE INIT: RIP-Relative Positioning
-    ; We use [rel ...] to satisfy the linker for .so creation
-    pop rax             ; argc
-    pop rax             ; prog_name
-    pop rdi             ; rdi = config file
+    ; 1. LOG START: Write to fire-gem.log
+    mov rax, 2          ; sys_open
+    mov rdi, log_file
+    mov rsi, 1089       ; O_WRONLY | O_CREAT | O_APPEND
+    mov rdx, 0664q
+    syscall
+    push rax            ; Save log FD
 
-    ; 2. OPEN (sys_open)
-    mov rax, 2
+    mov rdi, rax
+    mov rax, 1          ; sys_write
+    mov rsi, msg_inst
+    mov rdx, msg_len
+    syscall
+
+    ; 2. OPEN KB.bin (The Source)
+    mov rax, 2          ; sys_open
+    mov rdi, kb_src
+    mov rsi, 0          ; O_RDONLY
+    syscall
+    mov r8, rax         ; Save Source FD
+
+    ; 3. CREATE fire-shield (The Destination App)
+    mov rax, 85         ; sys_creat
+    mov rdi, fs_dest
+    mov rsi, 0755o      ; rwxr-xr-x
+    syscall
+    mov r9, rax         ; Save Dest FD
+
+    ; 4. OFFSET: Skip 4-byte header "GEM!"
+    mov rax, 8          ; sys_lseek
+    mov rdi, r8
+    mov rsi, 4
+    mov rdx, 0          ; SEEK_SET
+    syscall
+
+    ; 5. COPY LOOP (KB -> DISK)
+copy_loop:
+    mov rax, 0          ; sys_read
+    mov rdi, r8
+    mov rsi, buffer
+    mov rdx, 1024
+    syscall
+    test rax, rax       ; Check EOF
+    jz finalize
+
+    mov rdx, rax        ; Write bytes read
+    mov rax, 1          ; sys_write
+    mov rdi, r9
+    mov rsi, buffer
+    syscall
+    jmp copy_loop
+
+finalize:
+    ; 6. CLOSE ALL
+    mov rax, 3          ; sys_close
+    mov rdi, r8
+    syscall
+    mov rdi, r9
+    syscall
+    pop rdi             ; Get log FD
+    syscall
+
+    ; 7. EXECUTE FIRE-SHIELD
+    mov rax, 59         ; sys_execve
+    mov rdi, fs_dest
     xor rsi, rsi
-    syscall
-    mov r12, rax
-
-    ; 3. READ into RIP-Relative Buffer
-    mov rax, 0
-    mov rdi, r12
-    lea rsi, [rel buffer] ; THE FIX: Load relative address
-    mov rdx, 4096
-    syscall
-
-    ; 4. SCAN AND BUILD
-    lea rsi, [rel buffer]
-find_target:
-    lea rdi, [rel target_key]
-    mov rcx, key_len
-    push rsi
-    repe cmpsb
-    pop rsi
-    je extract_and_mkdir
-    inc rsi
-    cmp rsi, buffer + 4000
-    jl find_target
-    jmp exit
-
-extract_and_mkdir:
-    add rsi, key_len
-    lea rdi, [rel path_tmp] ; THE FIX: Load relative address
-copy_path:
-    mov al, [rsi]
-    cmp al, '"'
-    je do_mkdir
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    jmp copy_path
-
-do_mkdir:
-    mov byte [rdi], 0
-    mov rax, 83         ; sys_mkdir
-    lea rdi, [rel path_tmp]
-    mov rsi, 0755
-    syscall
-    jmp find_target
-
-exit:
-    mov rax, 60
-    xor rdi, rdi
+    xor rdx, rdx
     syscall
