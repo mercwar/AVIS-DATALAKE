@@ -15,10 +15,9 @@ jobs:
       - name: Spark Hardware
         run: |
           sudo apt-get update && sudo apt-get install -y nasm jq
-          # Build the Single Master Engine
           nasm -f elf64 engine/manifest.asm -o manifest.o
           ld manifest.o -o engine/manifest
-          # Ignite the Binary
+          chmod +x engine/manifest
           ./engine/manifest kb.bin
 
       - name: Physical Grounding
