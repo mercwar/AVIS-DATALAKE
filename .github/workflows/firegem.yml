@@ -1,4 +1,4 @@
-name: FIREGEM_CYBORG_BTS
+name: AVIS_CYBORG_FORGE
 on: [push, workflow_dispatch]
 
 jobs:
@@ -9,14 +9,26 @@ jobs:
     steps:
       - name: System Entry
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Spark Manifest Engine
         run: |
-          sudo apt-get update && sudo apt-get install -y nasm binutils
-          # Forge the BTS Engine
+          # 1. Acquire NASM, JQ, and Coreutils (for cksum)
+          sudo apt-get update && sudo apt-get install -y nasm jq coreutils
+          
+          # 2. Forge the Architect
           nasm -f elf64 engine/manifest.asm -o engine/manifest.o
           ld engine/manifest.o -o engine/manifest
           chmod +x engine/manifest
           
-          # Ignite: Engine reads payload.bin and forges the rest
+          # 3. Ignite
           ./engine/manifest
+
+      - name: Physical Grounding
+        run: |
+          git config --local user.email "cvbgod@demonizer.com"
+          git config --local user.name "CVBGOD"
+          git add engine/
+          git commit -m "FIREGEM: Secure Manifested Surface" || exit 0
+          git push origin HEAD:main
