@@ -1,29 +1,19 @@
-name: FIREGEM_V4_PRIMARY_IGNITION
-on: [push, workflow_dispatch]
+name: Fire-Gem Hello
+on: 
+  workflow_dispatch: 
 
 jobs:
-  ignition:
+  say-hello:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: System Entry
+      - name: Sync Repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Spark Hardware
-        run: |
-          sudo apt-get update && sudo apt-get install -y nasm jq
-          nasm -f elf64 engine/manifest.asm -o manifest.o
-          ld manifest.o -o engine/manifest
-          chmod +x engine/manifest
-          ./engine/manifest kb.bin
+      - name: Install NASM
+        run: sudo apt-get install -y nasm
 
-      - name: Physical Grounding
+      - name: Run Hello
+        working-directory: AVIS-DATALAKE/fire-gem
         run: |
-          git config --local user.email "cvbgod@demonizer.com"
-          git config --local user.name "CVBGOD"
-          git add .
-          git commit -m "FIREGEM: Surface Manifested" || exit 0
-          git push origin HEAD:main
+          chmod +x fire-gem.sh
+          ./fire-gem.sh
