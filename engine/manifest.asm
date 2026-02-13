@@ -5,7 +5,7 @@
 section .data
     shell db "/bin/bash", 0
     arg_c db "-c", 0
-    ; The Logic: Ingests kb.bin ($1) -> Extends the chain
+    ; THE LOGIC: Ingests kb.bin ($1) -> Chain Manifest
     logic db "SZ=$(od -An -N4 -tu4 '$1'); "
           db "HDR=$(dd if='$1' bs=1 skip=4 count=$SZ); "
           db "echo $HDR | jq -c '.[]' | while read i; do "
@@ -23,17 +23,19 @@ _start:
     mov rbp, rsp
     and rsp, -16
 
-    ; 2. Acquire Fuel Path (kb.bin)
+    ; 2. Acquire Fuel Path (kb.bin from argv)
     pop rax             ; argc
     pop rax             ; prog_name
-    pop r8              ; r8 = path to kb.bin
+    pop r8              ; r8 = path to kb.bin (check if NULL)
+    test r8, r8
+    jz exit
 
-    ; 3. Ground Pointers (The fix for the syntax error)
+    ; 3. Bridge Pointers (Fixed Syntax)
     lea rdi, [rel shell]
     lea rsi, [rel arg_c]
     lea rdx, [rel logic]
 
-    ; 4. Execute Manifestation (sys_execve)
+    ; 4. Execute (sys_execve)
     mov rax, 59         
     
     push 0              ; NULL env
@@ -43,9 +45,10 @@ _start:
     push rdi            ; /bin/bash
     
     mov rsi, rsp        ; argv
-    xor rdx, rdx        ; no envp
+    xor rdx, rdx        ; envp
     syscall
 
+exit:
     mov rax, 60
     xor rdi, rdi
     syscall
