@@ -1,5 +1,5 @@
 ; ==========================================================
-; ENGINE: manifest.asm (CVBGOD V4 MASTER)
+; ENGINE: manifest.asm (CVBGOD V4 MASTER - FIXED)
 ; PURPOSE: 4-Byte Header Ingestion -> Direct Manifestation
 ; ==========================================================
 section .data
@@ -23,22 +23,24 @@ _start:
     mov rbp, rsp
     and rsp, -16
 
-    ; 2. Acquire Fuel (kb.bin path passed from YAML in RDI)
+    ; 2. Acquire Fuel Path (kb.bin)
     pop rax             ; argc
     pop rax             ; prog_name
     pop r8              ; r8 = path to kb.bin
 
-    ; 3. Execute Manifestation
-    mov rax, 59         ; sys_execve
+    ; 3. Ground Pointers (The fix for the syntax error)
     lea rdi, [rel shell]
+    lea rsi, [rel arg_c]
+    lea rdx, [rel logic]
+
+    ; 4. Execute Manifestation (sys_execve)
+    mov rax, 59         
     
     push 0              ; NULL env
     push r8             ; $1 = kb.bin
-    lea rcx, [rel logic]
-    push rcx            ; $0 = logic
-    lea rbx, [rel arg_c]
-    push rbx
-    push rdi
+    push rdx            ; $0 = logic
+    push rsi            ; -c
+    push rdi            ; /bin/bash
     
     mov rsi, rsp        ; argv
     xor rdx, rdx        ; no envp
