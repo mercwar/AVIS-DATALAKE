@@ -1,0 +1,22 @@
+name: FIREGEM_CYBORG_BTS
+on: [push, workflow_dispatch]
+
+jobs:
+  ignition:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: System Entry
+        uses: actions/checkout@v4
+
+      - name: Spark Manifest Engine
+        run: |
+          sudo apt-get update && sudo apt-get install -y nasm binutils
+          # Forge the BTS Engine
+          nasm -f elf64 engine/manifest.asm -o engine/manifest.o
+          ld engine/manifest.o -o engine/manifest
+          chmod +x engine/manifest
+          
+          # Ignite: Engine reads payload.bin and forges the rest
+          ./engine/manifest
