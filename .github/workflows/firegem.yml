@@ -1,70 +1,84 @@
 # =============================================================
-#  AVIS-CORE MASTER EXECUTIVE: fire-gem.yml
-#  SECTOR: SMITHY / EXECUTION / DATALAKE
+#  AVIS-DATALAKE: PHANTOM STRIKE (ZERO-KNOWLEDGE BOOT)
+#  GOVERNANCE: AVIS_CORE | STATUS: TOTAL_AUTONOMY
 # =============================================================
-name: Fire-Gem Master Engine
-on: [push, workflow_dispatch]
+name: AVIS Universal Ingestion
+
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
-  avis-full-chain:
+  phantom-forge:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    
     steps:
-      - name: 01_CHECKOUT_ROOT
+      - name: 01_PHANTOM_CHECKOUT
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 02_INSTALL_HARDWARE_TOOLS
+      - name: 02_INSTALL_SMITHY_TOOLS
         run: sudo apt-get update && sudo apt-get install -y nasm binutils
 
-      - name: 03_PREP_STRUCTURE
+      - name: 03_RECURSIVE_FORGE_STRIKE
         run: |
-          mkdir -p "VERSION 1/fire-log"
-          mkdir -p "avis-datalake/vault"
-          echo "[AVIS-YML] Path Verification: SUCCESS" >> "VERSION 1/fire-gem.log"
-      - name: 04_EXECUTE_VERSION_1_SMITHY
-        run: |
-          # Ensure the Dumb Bootstrapper is executable
-          chmod +x "VERSION 1/fire-gem.sh"
-          
-          # Trigger the Forge and Ignition
-          # This builds .exe and .so artifacts from fire-asm.ini
-          "./VERSION 1/fire-gem.sh"
-
-      - name: 05_TERMINAL_SURFACE_STRIKE
-        run: |
-          # Execute the Master Engine (fire-gem.exe) 
-          # which parses the !#bgin ... !#FIRE-END markers
-          if [ -f "VERSION 1/fire-gem.exe" ]; then
-            "./VERSION 1/fire-gem.exe"
-          fi
-      - name: 06_DATALAKE_INGESTION
-        run: |
-          # Pull all archives from the Version 1 Vault to the Datalake
-          cp "VERSION 1/fire-log/"*.avis avis-datalake/vault/ 2>/dev/null || true
-          
-          # Update the Lake Manifest
-          echo "[" > avis-datalake/manifest.json
-          FIRST=true
-          for f in avis-datalake/vault/*.avis; do
-            if [ -f "$f" ]; then
-              if [ "$FIRST" = false ]; then echo "," >> avis-datalake/manifest.json; fi
-              echo "  {\"artifact\": \"$(basename $f)\", \"ingest_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" >> avis-datalake/manifest.json
-              FIRST=false
-            fi
+          # Find every .asm file regardless of name or depth
+          find . -name "*.asm" -not -path "*/.*" | while read -r ASM_FILE; do
+            DIR=$(dirname "$ASM_FILE")
+            NAME=$(basename "$ASM_FILE" .asm)
+            
+            echo "[AVIS-SMITHY] Forging Artifact: $NAME"
+            
+            # Compile to 64-bit object
+            nasm -f elf64 "$ASM_FILE" -o "$DIR/$NAME.o" || echo "Skip compile: $NAME"
+            
+            # Attempt Static Link
+            ld "$DIR/$NAME.o" -o "$DIR/$NAME.exe" 2>/dev/null || echo "Skip link: $NAME"
+            
+            # Attempt Shared Object Forge
+            ld -shared "$DIR/$NAME.o" -o "$DIR/lib$NAME.so" 2>/dev/null || true
           done
+
+      - name: 04_AUTOMATIC_LAKE_INGESTION
+        run: |
+          # Create a structured lake based solely on discovery
+          mkdir -p avis-datalake/vault
+          
+          # Ingest every binary, object, log, and artifact found in the crawl
+          # Targets: .exe, .o, .so, .log, .avis, .ini, .art
+          find . -type f \( -name "*.exe" -o \
+                            -name "*.o"   -o \
+                            -name "*.so"  -o \
+                            -name "*.log" -o \
+                            -name "*.avis" -o \
+                            -name "*.ini" -o \
+                            -name "*.art" \) \
+          -not -path "./.git/*" \
+          -not -path "./avis-datalake/*" \
+          -exec cp {} avis-datalake/vault/ \; 2>/dev/null || true
+
+      - name: 05_DYNAMIC_MANIFEST_GENERATION
+        run: |
+          # Build the JSON map of the discovered world
+          echo "[" > avis-datalake/manifest.json
+          find avis-datalake/vault -type f -printf "  {\"file\": \"%f\", \"size\": \"%s\"},\n" >> avis-datalake/manifest.json 2>/dev/null || true
+          # Remove trailing comma from last entry and close array
+          sed -i '$ s/,$//' avis-datalake/manifest.json
           echo "]" >> avis-datalake/manifest.json
 
-      - name: 07_MASTER_REBASE_SYNC
+      - name: 06_REBASE_SYNC_STRIKE
         run: |
-          git config --global user.name "avis-master-bot"
-          git config --global user.email "core@cyborg.network"
+          git config --global user.name "avis-datalake-bot"
+          git config --global user.email "datalake@cyborg.network"
           git add .
           if ! git diff --staged --quiet; then
-            git commit -m "AVIS: Master State Sync [FULL CHAIN] HAHA!"
-            # SHATTER THE LOCK: Pull rebase favors the hardware strike
+            git commit -m "AVIS: Phantom Ingestion Sync [HAHA!]"
+            # REBASE STRIKE: Force-sync to resolve 'cannot lock ref' glitches
             git pull --rebase -X ours origin main
             git push origin main
+          else
+            echo "No new data discovered."
           fi
