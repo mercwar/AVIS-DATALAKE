@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AVIS THEME CORE — ARTIFACT HTML CONVERSION</title>
+
+<!--
+*******************************************************************************
+ AIFVS-ARTIFACT: AVIS-THEME-CORE-V1
+ TYPE: LAW (VISUAL)
+ ROLE: Governs background, contrast, and surface visibility
+ ENGINE: AVIS-2026 / AIFVS-MODE
+ ORIGIN: /mercwar01/www/css/avis_theme_core.css
+
+ NOTES:
+ - Background = Datalake Void
+ - Foreground = CVBGOD Light
+ - Monospace = Technical clarity
+*******************************************************************************
+-->
+
+<style>
+body {
+    background-color: #000000;      /* VOID */
+    color: #ffffff;              /* LIGHT */
+    margin: 0;
+    padding: 0;
+    font-family: "Courier New", monospace;
+}
+</style>
+
+</head>
+
+<body>
+Artifact HTML conversion loaded.
+</body>
+</html>

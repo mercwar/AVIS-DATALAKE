@@ -1,0 +1,16 @@
+{
+  "protocol": "AVIS-DATALAKE",
+  "version": "2.0",
+  "ingest_mode": "RECURSIVE",
+  "root": "https://mercwar.github.io",
+  "discovery": {
+    "entry_points": ["/NEXUS/TABS/", "/src/", "/modules/"],
+    "file_types": [".md", ".bas", ".cls", ".frm", ".c", ".h", ".json"],
+    "ignore": [".git", "node_modules"]
+  },
+  "logic_bridge": {
+    "handshake": "tab_01",
+    "core_reasoning": "tab_25",
+    "source_mapping": "sitemap.xml"
+  }
+}
