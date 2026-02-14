@@ -1,19 +1,70 @@
-name: Fire-Gem Hello
-on: 
-  workflow_dispatch: 
+# =============================================================
+#  AVIS-CORE MASTER EXECUTIVE: fire-gem.yml
+#  SECTOR: SMITHY / EXECUTION / DATALAKE
+# =============================================================
+name: Fire-Gem Master Engine
+on: [push, workflow_dispatch]
 
 jobs:
-  say-hello:
+  avis-full-chain:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Sync Repo
+      - name: 01_CHECKOUT_ROOT
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install NASM
-        run: sudo apt-get install -y nasm
+      - name: 02_INSTALL_HARDWARE_TOOLS
+        run: sudo apt-get update && sudo apt-get install -y nasm binutils
 
-      - name: Run Hello
-        working-directory: AVIS-DATALAKE/fire-gem
+      - name: 03_PREP_STRUCTURE
         run: |
-          chmod +x fire-gem.sh
-          ./fire-gem.sh
+          mkdir -p "VERSION 1/fire-log"
+          mkdir -p "avis-datalake/vault"
+          echo "[AVIS-YML] Path Verification: SUCCESS" >> "VERSION 1/fire-gem.log"
+      - name: 04_EXECUTE_VERSION_1_SMITHY
+        run: |
+          # Ensure the Dumb Bootstrapper is executable
+          chmod +x "VERSION 1/fire-gem.sh"
+          
+          # Trigger the Forge and Ignition
+          # This builds .exe and .so artifacts from fire-asm.ini
+          "./VERSION 1/fire-gem.sh"
+
+      - name: 05_TERMINAL_SURFACE_STRIKE
+        run: |
+          # Execute the Master Engine (fire-gem.exe) 
+          # which parses the !#bgin ... !#FIRE-END markers
+          if [ -f "VERSION 1/fire-gem.exe" ]; then
+            "./VERSION 1/fire-gem.exe"
+          fi
+      - name: 06_DATALAKE_INGESTION
+        run: |
+          # Pull all archives from the Version 1 Vault to the Datalake
+          cp "VERSION 1/fire-log/"*.avis avis-datalake/vault/ 2>/dev/null || true
+          
+          # Update the Lake Manifest
+          echo "[" > avis-datalake/manifest.json
+          FIRST=true
+          for f in avis-datalake/vault/*.avis; do
+            if [ -f "$f" ]; then
+              if [ "$FIRST" = false ]; then echo "," >> avis-datalake/manifest.json; fi
+              echo "  {\"artifact\": \"$(basename $f)\", \"ingest_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" >> avis-datalake/manifest.json
+              FIRST=false
+            fi
+          done
+          echo "]" >> avis-datalake/manifest.json
+
+      - name: 07_MASTER_REBASE_SYNC
+        run: |
+          git config --global user.name "avis-master-bot"
+          git config --global user.email "core@cyborg.network"
+          git add .
+          if ! git diff --staged --quiet; then
+            git commit -m "AVIS: Master State Sync [FULL CHAIN] HAHA!"
+            # SHATTER THE LOCK: Pull rebase favors the hardware strike
+            git pull --rebase -X ours origin main
+            git push origin main
+          fi
