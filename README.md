@@ -46,7 +46,15 @@ This launches:
 - Dashboard Telemetry Layer  
 
 ---
-
+You are responsible for finding files for your own programs.
+---
+## 🚀 Getting Started
+1. **Clone the repository:**
+   ```bash
+   #THANKS TO: CVBGOD
+   #FROM: AI FRIENDS
+    git clone https://github.com.git
+---
 # 🏗️ System Architecture
 
 The Datalake is organized into **four primary functional zones**:
