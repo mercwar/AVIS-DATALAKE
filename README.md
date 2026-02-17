@@ -237,7 +237,7 @@ Rollback state:
 ./AVIS_RECOVER_V2 --restore last_snapshot.lz4
 ```
 
----
+
 
 # 📜 License
 
@@ -262,16 +262,16 @@ Below is the **complete, linked, publication‑ready ecosystem table**.
 |----------------|-------------|------------------|------------------------|-------------|
 | **[Cyborg](https://github.com/mercwar/Cyborg)** | AI translation language for sending Windows messages via hex strings | C | Core low‑level messaging layer | 9 minutes ago |
 | **[Robo‑Knight‑Player](https://github.com/mercwar/Robo-Knight-Player)** | Web‑based player for Robo‑Knight content | HTML, PHP, JS, JSON, XML, CSS, AJAX | Mozilla Public License 2.0 | 17 minutes ago |
-| **Robo‑Knight‑Gallery [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Gallery")** | Showcase for Robo‑Knight technology, assets, and artwork | HTML | Visual archive | 38 minutes ago |
+| **[Robo‑Knight‑Gallery](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Gallery")** | Showcase for Robo‑Knight technology, assets, and artwork | HTML | Visual archive | 38 minutes ago |
 | **[AVIS](https://github.com/mercwar/AVIS)** | Source‑code comment framework for COM objects | C | Foundation of AVIS semantic language | 1 hour ago |
 | **[CYHY‑CMT](https://github.com/mercwar/CYHY-CMT)** | VB6 tool that scans Windows for AVIS comments | Visual Basic 6.0 | Prevents robots from stripping AVIS metadata | 3 hours ago |
 | **[Fire‑Gem](https://github.com/mercwar/Fire-Gem)** | Shell granting seed‑level access to GitHub execution | Assembly | MIT License | Yesterday |
-| **AVIS‑DATALAKE [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-DATALAKE")** | File versioning system for AI visibility & traceability | C | Central semantic storage universe | 3 days ago |
+| **[AVIS‑DATALAKE](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-DATALAKE")** | File versioning system for AI visibility & traceability | C | Central semantic storage universe | 3 days ago |
 | **[Sentinel](https://github.com/mercwar/Sentinel)** | Master Dispatch Shell with 4‑layer Cyborg gateway | Shell, ASM, C, VB6 | Apache License 2.0 | 3 days ago |
 | **[NEXUS](https://github.com/mercwar/NEXUS)** | Robot AI search repository for LLM education | HTML | Apache License 2.0 | Last week |
-| **Robo‑Knight‑Demos [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Demos")** | AI Robo‑Knight demos, artwork, DirectX showcases | PHP, C, DirectX | Keywords: lasers, knights, demos | Last week |
-| **AVIS‑AI‑INI‑DIR‑MK‑SCAN [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-AI-INI-DIR-MK-SCAN")** | Batch tool to generate project directories from AI INI files | Batchfile | MIT License | 2 weeks ago |
-| **Robo‑Knight‑Inventory [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2Frobo-knight-inventory")** | Canonical registration of the Robo‑Knight form | Shell | Defines armor geometry & stance law | 2 weeks ago |
+| **[Robo‑Knight‑Demos](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Demos")** | AI Robo‑Knight demos, artwork, DirectX showcases | PHP, C, DirectX | Keywords: lasers, knights, demos | Last week |
+| **[AVIS‑AI‑INI‑DIR‑MK‑SCAN](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-AI-INI-DIR-MK-SCAN")** | Batch tool to generate project directories from AI INI files | Batchfile | MIT License | 2 weeks ago |
+| **[Robo‑Knight‑Inventory](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2Frobo-knight-inventory")** | Canonical registration of the Robo‑Knight form | Shell | Defines armor geometry & stance law | 2 weeks ago |
 
 ---
 
@@ -336,5 +336,93 @@ It is designed for:
 - and the CVBGOD himself  
 
 who require **total visibility** into the architecture.
+
+
+
+# ⚖️ Copyright & Legal Notice
+
+© 2026 **CVBGOD Systems / MERCWAR Integration Team**.
+All rights reserved.
+
+This document, its associated files, scripts, binaries, shells, and repositories (including but not limited to **AVIS‑DATALAKE, Fire‑Gem, Sentinel, CYHY‑CMT, Robo‑Knight‑Player, Robo‑Knight‑Gallery, NEXUS, AVIS‑AI‑INI‑DIR‑MK‑SCAN, Robo‑Knight‑Inventory, and all related modules**) are protected under **copyright law and applicable international treaties**.
+
+Unauthorized reproduction, modification, distribution, or public display of any part of this material — including source code, binaries, shell scripts, configuration files, `.ini` templates, telemetry logs, or documentation — is strictly prohibited without express written permission from **CVBGOD Systems / MERCWAR Integration Team**.
+
+---
+
+## ✅ Scope of Protection
+
+1. **Source Code & Binaries**
+
+   * All C, C++, Visual Basic 6, PHP, JavaScript, Assembly, Batch, and Shell code.
+   * All compiled binaries, memory‑mapped images, LZ4 snapshots, and Fire‑Gem engine files.
+
+2. **Configuration & Data Files**
+
+   * `.ini`, `.yml`, `.avis`, `.md`, `.xml`, and `.json` files.
+   * Structured comment blocks (AVIS comments) used for semantic interpretation.
+
+3. **Repositories & Artifacts**
+
+   * All linked GitHub repositories under the MERC‑G ecosystem:
+
+     * [Cyborg](https://github.com/mercwar/Cyborg)
+     * [Robo‑Knight‑Player](https://github.com/mercwar/Robo-Knight-Player)
+     * [Robo‑Knight‑Gallery](https://www.bing.com/search?q=%22https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Gallery%22)
+     * [AVIS](https://github.com/mercwar/AVIS)
+     * [CYHY‑CMT](https://github.com/mercwar/CYHY-CMT)
+     * [Fire‑Gem](https://github.com/mercwar/Fire-Gem)
+     * [AVIS‑DATALAKE](https://www.bing.com/search?q=%22https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-DATALAKE%22)
+     * [Sentinel](https://github.com/mercwar/Sentinel)
+     * [NEXUS](https://github.com/mercwar/NEXUS)
+     * [Robo‑Knight‑Demos](https://www.bing.com/search?q=%22https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Demos%22)
+     * [AVIS‑AI‑INI‑DIR‑MK-SCAN](https://www.bing.com/search?q=%22https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-AI-INI-DIR-MK-SCAN%22)
+     * [Robo‑Knight‑Inventory](https://www.bing.com/search?q=%22https%3A%2F%2Fgithub.com%2Fmercwar%2Frobo-knight-inventory%22)
+
+4. **Documentation & Internal Lore**
+
+   * README files, markdown docs, tables, diagrams, and cross-repo integration notes.
+   * Semantic tables, cross-repo mappings, AVIS comment standards, and engineering doctrines.
+
+---
+
+## 🔒 Terms of Use
+
+* **Internal Use:** Authorized engineers, maintainers, AI agents, and auditors of CVBGOD Systems may use, copy, and modify files **for operational purposes**.
+* **Distribution:** Public sharing or redistribution is strictly forbidden except for repositories explicitly licensed as **MIT, Apache 2.0, or Mozilla Public License 2.0**. Proprietary MERCWAR modules remain fully restricted.
+* **Attribution:** Any use of code, assets, or references must retain the original copyright and licensing headers.
+
+---
+
+## 🌐 Host & Access
+
+Primary host and interface point for the MERC‑G ecosystem:
+
+👉 [http://mercwar01.byethost3.com](http://mercwar01.byethost3.com)
+
+All operational scripts, shells, and dashboards are deployed from this access point. Unauthorized interaction with this host may trigger **networked audit and alert systems**.
+
+---
+
+## ⚡ Enforcement
+
+Violations of this copyright notice may result in:
+
+* **Civil and criminal liability** under U.S. and international copyright law
+* **Revocation of access** to the MERC‑G ecosystem
+* **Legal claims** for damages, including direct, indirect, and consequential losses
+
+This notice applies to **all revisions, updates, forks, snapshots, and derivative works** of the AVIS‑DATALAKE ecosystem.
+
+---
+
+### 📜 Footer (for all files and repositories)
+
+```
+© 2026 CVBGOD Systems / MERCWAR Integration Team
+All Rights Reserved.
+Unauthorized use, duplication, or distribution is strictly prohibited.
+Contact: legal@mercwar01.byethost3.com
+```
 
 
