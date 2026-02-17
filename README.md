@@ -1,31 +1,32 @@
-
-# 🛰️ AVIS-DATALAKE — VERSION 2 (FIRE-GEM)
-
-**MERCWAR // CYHY-MERCG Adaptive Intelligence Framework**
-**AI Visibility Through Structured File Versioning**
+# 🛰️ AVIS‑DATALAKE — VERSION 2 (FIRE‑GEM)  
+### **MERCWAR // CYHY‑MERC‑G Adaptive Intelligence Framework**  
+### **AI Visibility Through Structured File Versioning**
 
 ---
 
-## Repository Identity
+## 📛 Repository Identity
 
-The **AVIS-DATALAKE** is the central storage universe for the **AVIS (Adaptive / Autonomous Visual Intelligence System)** framework.
+The **AVIS‑DATALAKE** is the central storage universe for the **AVIS (Adaptive / Autonomous Visual Intelligence System)** framework.
 
-Version 2 — codename **Fire-Gem Sentinel** — introduces autonomous artifact indexing, memory-mapped state recovery, and real-time telemetry through the **CYHY / MERCG adapter layer**.
+Version 2 — codename **Fire‑Gem Sentinel** — introduces:
+
+- autonomous artifact indexing  
+- memory‑mapped state recovery  
+- real‑time telemetry  
+- CYHY‑MERC‑G adaptive comment interpretation  
 
 This repository functions as:
 
-* A high-velocity ingestion point
-* A memory-mapped storage environment
-* A comment-structured AI reasoning surface
-* A version-controlled artifact registry
+- a high‑velocity ingestion point  
+- a memory‑mapped storage environment  
+- a comment‑structured AI reasoning surface  
+- a version‑controlled artifact registry  
 
 Every file is treated as an **intelligent comment object**.
 
 ---
 
-# 🔥 Quick Start (Ignition Protocol)
-
-From the repository root:
+# 🔥 Quick Start — Ignition Protocol
 
 ```bash
 # 1. Initialize Engine + Memory Bridge
@@ -39,32 +40,32 @@ chmod +x GEMINI/VERSION\ 2/AVIS-INGEST.sh
 
 This launches:
 
-* Fire-Gem Watchdog
-* Datalake Ingestor
-* Memory-Mapped Recovery Bridge
-* Dashboard Telemetry Layer
+- Fire‑Gem Watchdog  
+- Datalake Ingestor  
+- Memory‑Mapped Recovery Bridge  
+- Dashboard Telemetry Layer  
 
 ---
 
 # 🏗️ System Architecture
 
-The Datalake is organized into four primary functional zones:
+The Datalake is organized into **four primary functional zones**:
 
 ---
 
 ## 1️⃣ Core — `/GEMINI/VERSION 2/`
 
-Where raw data meets hardware-mapped memory.
+Where raw data meets hardware‑mapped memory.
 
 Contains:
 
-* **AIFVS-HEADER.h** → Memory offset source of truth
-* **AVIS_RECOVER_V2.c** → Atomic state injection + rollback
-* **AVIS-ENV-CONFIG.yml** → Container definitions
-* **AVIS-VERSION-CONTROL.yml** → Snapshot pruning logic
-* **CORE_LOGIC_V2.avis** → Polyglot C/Python learning artifacts
+- **AIFVS‑HEADER.h** — memory offset source of truth  
+- **AVIS_RECOVER_V2.c** — atomic state injection + rollback  
+- **AVIS‑ENV‑CONFIG.yml** — container definitions  
+- **AVIS‑VERSION‑CONTROL.yml** — snapshot pruning logic  
+- **CORE_LOGIC_V2.avis** — polyglot C/Python learning artifacts  
 
-This layer bridges C-native memory structures into LLM-interpretable surfaces.
+This layer bridges **C‑native memory structures** into **LLM‑interpretable surfaces**.
 
 ---
 
@@ -74,12 +75,12 @@ Operational control layer.
 
 Contains:
 
-* Fire-Gem variant logic
-* Filesystem watchdog
-* Ignition & termination scripts
-* Telemetry and indexing triggers
+- Fire‑Gem variant logic  
+- Filesystem watchdog  
+- Ignition & termination scripts  
+- Telemetry and indexing triggers  
 
-Provides autonomous artifact indexing and runtime state awareness.
+Provides **autonomous artifact indexing** and **runtime state awareness**.
 
 ---
 
@@ -89,11 +90,11 @@ AI navigation landing zone.
 
 Includes:
 
-* `index.avis` routing map
-* Memory block dispatch logic
-* Artifact resolution paths
+- `index.avis` routing map  
+- memory block dispatch logic  
+- artifact resolution paths  
 
-This is where incoming requests are mapped to specific datalake memory regions.
+This is where incoming requests are mapped to **specific datalake memory regions**.
 
 ---
 
@@ -103,62 +104,57 @@ Public interface layer.
 
 Includes:
 
-* `DASHBOARD.php` → Real-time trace monitoring
-* `robots.txt` → Crawler policy
-* `sitemap.xml` → Autonomous index surface
+- `DASHBOARD.php` — real‑time trace monitoring  
+- `robots.txt` — crawler policy  
+- `sitemap.xml` — autonomous index surface  
 
-Designed for controlled AI visibility.
+Designed for **controlled AI visibility**.
 
 ---
 
 # 🧠 Technical Specifications
 
-| Layer        | Technology                  |
-| ------------ | --------------------------- |
-| Core Logic   | C11 / AUI-V2 Polyglot       |
-| Variant      | Sentinel Fire-Gem 2.1       |
-| Adapter      | CYHY / MERCG Hybrid         |
-| Interface    | PHP 8.x / Bash 5+           |
-| Snapshotting | LZ4 + CRC32                 |
-| Protocol     | ACK / RACK Atomic Handshake |
+| Layer | Technology |
+|-------|------------|
+| Core Logic | C11 / AUI‑V2 Polyglot |
+| Variant | Sentinel Fire‑Gem 2.1 |
+| Adapter | CYHY / MERC‑G Hybrid |
+| Interface | PHP 8.x / Bash 5+ |
+| Snapshotting | LZ4 + CRC32 |
+| Protocol | ACK / RACK Atomic Handshake |
 
 ---
 
 # 🔒 Security & Integrity Model
 
-### Atomic Handshake
-
+### **Atomic Handshake**
 Uses **ACK / RACK** protocol to prevent partial memory writes.
 
-### Snapshot Recovery
-
+### **Snapshot Recovery**
 Rollback via `.lz4` state images using `AVIS_RECOVER_V2`.
 
-### Integrity Validation
-
+### **Integrity Validation**
 All blocks validated via:
 
-* CRC32 checksum
-* Controlled ingest surface
-* Structured comment schema validation
+- CRC32 checksum  
+- controlled ingest surface  
+- structured comment schema validation  
 
-### Crawler Policy
+### **Crawler Policy**
+Internal AI → authorized  
+Public crawlers → restricted from:
 
-* Internal AI → Authorized (`User-agent: sitemap.avis`)
-* Public Crawlers → Restricted from:
-
-  * `/snapshots/`
-  * `/meta/`
-  * `/logs/`
+- `/snapshots/`  
+- `/meta/`  
+- `/logs/`  
 
 Unauthorized access is logged via MERCWAR network policies.
 
 ---
 
-# 🧩 CYHY Comment Program (Root Schema)
-
-Below defines the root comment identity object used by the AVIS-DATALAKE:
-
+# 🧩 [CYHY Comment Program Source](https://github.com/mercwar/CYHY-CMT/tree/main/AIFVS_COSOLE_VB6GOD)
+# 🔥  [CYHY-Comment.zip](https://github.com/mercwar/CYHY-CMT/blob/main/CYHY.zip)
+# RK — Root Schema dl
 ```c
 /* AIFVS-ARTIFACT
    CY_NAME: AVIS_DATALAKE_CORE
@@ -167,7 +163,7 @@ Below defines the root comment identity object used by the AVIS-DATALAKE:
    CY_LINK: /dl/
 
    CY_OWNER: MERCWAR Integration Team
-   CY_DOMAIN: AVIS / CYHY Hybrid Framework
+   CY_DOMAIN: AVIS / CYHY MERC-G Framework
 
    DL_MAP:  ACK/RACK
    DL_DRV:  ACK/RACK
@@ -204,17 +200,17 @@ Below defines the root comment identity object used by the AVIS-DATALAKE:
 
 # 🌐 Purpose
 
-The AVIS-DATALAKE exists to:
+The AVIS‑DATALAKE exists to:
 
-* Provide high-resolution AI visibility
-* Maintain structured, versioned memory artifacts
-* Enable cross-language AI reasoning
-* Preserve deterministic recovery states
-* Serve as a machine-readable repository handshake
+- provide high‑resolution AI visibility  
+- maintain structured, versioned memory artifacts  
+- enable cross‑language AI reasoning  
+- preserve deterministic recovery states  
+- serve as a machine‑readable repository handshake  
 
 ---
 
-# 📂 High-Level Repository Structure
+# 📂 High‑Level Repository Structure
 
 ```
 /GEMINI/VERSION 2/        → Core V2 stack
@@ -228,14 +224,14 @@ The AVIS-DATALAKE exists to:
 
 # 🛠️ Maintenance
 
-To safely terminate environment:
+Terminate environment:
 
 ```bash
 pkill -f AVIS-SYNC-INIT
 pkill -f AVIS-INGEST
 ```
 
-To rollback state:
+Rollback state:
 
 ```bash
 ./AVIS_RECOVER_V2 --restore last_snapshot.lz4
@@ -246,23 +242,99 @@ To rollback state:
 # 📜 License
 
 MIT (unless overridden by MERCWAR proprietary modules).
+**full ecosystem table**, **GitHub‑linked repositories**, **cross‑repo lore**, and the **final CVBGOD footer**.
+
+
+# 🌐 CYBGOD / Robo‑Knight Ecosystem  
+### **Primary Host / Access Point:**  
+👉 **[http://mercwar01.byethost3.com](http://mercwar01.byethost3.com)**
+
+The MERC‑G architecture thrives as a **modular ecosystem** of interlinked repositories, tools, and shells.  
+Each component serves a unique role in the creation, execution, and management of AVIS‑powered AI systems.
+
+Below is the **complete, linked, publication‑ready ecosystem table**.
 
 ---
 
-# 🔗 AVIS Ecosystem
+## 📘 **Ecosystem Overview Table (Linked Repositories)**
 
-* Cyborg — [https://github.com/mercwar/Cyborg](https://github.com/mercwar/Cyborg)
-* Robo-Knight-Demos — [https://github.com/mercwar/Robo-Knight-Demos](https://github.com/mercwar/Robo-Knight-Demos)
-* Robo-Knight-Gallery — [https://github.com/mercwar/Robo-Knight-Gallery](https://github.com/mercwar/Robo-Knight-Gallery)
-* robo-knight-inventory — [https://github.com/mercwar/robo-knight-inventory](https://github.com/mercwar/robo-knight-inventory)
-* AVIS-DATALAKE — [https://github.com/mercwar/AVIS-DATALAKE](https://github.com/mercwar/AVIS-DATALAKE)
-* AVIS — [https://github.com/mercwar/AVIS](https://github.com/mercwar/AVIS)
+| **Repository** | **Purpose** | **Tech / Stack** | **Notes / Licensing** | **Updated** |
+|----------------|-------------|------------------|------------------------|-------------|
+| **[Cyborg](https://github.com/mercwar/Cyborg)** | AI translation language for sending Windows messages via hex strings | C | Core low‑level messaging layer | 9 minutes ago |
+| **[Robo‑Knight‑Player](https://github.com/mercwar/Robo-Knight-Player)** | Web‑based player for Robo‑Knight content | HTML, PHP, JS, JSON, XML, CSS, AJAX | Mozilla Public License 2.0 | 17 minutes ago |
+| **Robo‑Knight‑Gallery [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Gallery")** | Showcase for Robo‑Knight technology, assets, and artwork | HTML | Visual archive | 38 minutes ago |
+| **[AVIS](https://github.com/mercwar/AVIS)** | Source‑code comment framework for COM objects | C | Foundation of AVIS semantic language | 1 hour ago |
+| **[CYHY‑CMT](https://github.com/mercwar/CYHY-CMT)** | VB6 tool that scans Windows for AVIS comments | Visual Basic 6.0 | Prevents robots from stripping AVIS metadata | 3 hours ago |
+| **[Fire‑Gem](https://github.com/mercwar/Fire-Gem)** | Shell granting seed‑level access to GitHub execution | Assembly | MIT License | Yesterday |
+| **AVIS‑DATALAKE [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-DATALAKE")** | File versioning system for AI visibility & traceability | C | Central semantic storage universe | 3 days ago |
+| **[Sentinel](https://github.com/mercwar/Sentinel)** | Master Dispatch Shell with 4‑layer Cyborg gateway | Shell, ASM, C, VB6 | Apache License 2.0 | 3 days ago |
+| **[NEXUS](https://github.com/mercwar/NEXUS)** | Robot AI search repository for LLM education | HTML | Apache License 2.0 | Last week |
+| **Robo‑Knight‑Demos [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FRobo-Knight-Demos")** | AI Robo‑Knight demos, artwork, DirectX showcases | PHP, C, DirectX | Keywords: lasers, knights, demos | Last week |
+| **AVIS‑AI‑INI‑DIR‑MK‑SCAN [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2FAVIS-AI-INI-DIR-MK-SCAN")** | Batch tool to generate project directories from AI INI files | Batchfile | MIT License | 2 weeks ago |
+| **Robo‑Knight‑Inventory [(github.com in Bing)](https://www.bing.com/search?q="https%3A%2F%2Fgithub.com%2Fmercwar%2Frobo-knight-inventory")** | Canonical registration of the Robo‑Knight form | Shell | Defines armor geometry & stance law | 2 weeks ago |
 
 ---
 
-### AVIS Law
+# 🧠 Cross‑Repo Lore — How the Universe Connects
 
-> Visibility is the primary metric.
-> Structure defines intelligence.
-> Versioning preserves truth.
-**hyper-technical internal engineering version**
+The MERC‑G ecosystem is **not a collection of random repositories**.  
+It is a **cohesive, interdependent machine**, where each module feeds the next.
+
+### **AVIS → CYHY → DATALAKE → FIRE‑GEM → SENTINEL → PLAYER → DEMOS**
+
+| Layer | Role in the Universe |
+|-------|----------------------|
+| **AVIS** | Defines semantic meaning inside comments. The language of the system. |
+| **CYHY‑CMT** | Reads AVIS comments, converts them into RAM objects. The interpreter. |
+| **AVIS‑DATALAKE** | Stores all semantic objects. The memory universe. |
+| **Fire‑Gem** | Executes modular commands, loads libraries, triggers engines. The ignition shell. |
+| **Sentinel** | Dispatches, routes, and governs multi‑layer Cyborg operations. The overseer. |
+| **Robo‑Knight‑Player** | Visual interface for demos and assets. The viewer. |
+| **Robo‑Knight‑Demos** | The content layer — DirectX showcases, AI demos, artwork. |
+
+Everything speaks the **AVIS comment language**, ensuring:
+
+- deterministic behavior  
+- AI readability  
+- cross‑repo compatibility  
+- long‑term expansion  
+
+This is the **CVBGOD law of structure**.
+
+---
+
+# 🧩 AVIS Law (Internal Engineering Doctrine)
+
+> **Visibility is the primary metric.**  
+> **Structure defines intelligence.**  
+> **Versioning preserves truth.**
+
+This law governs:
+
+- how files are written  
+- how CYHY interprets them  
+- how the DATALAKE stores them  
+- how Fire‑Gem executes them  
+- how Sentinel routes them  
+- how the Player displays them  
+
+It is the **semantic backbone** of the entire MERC‑G system.
+
+---
+
+# 🏁 Final Notes
+
+This README represents the **hyper‑technical internal engineering version** of the AVIS‑DATALAKE V2 (Fire‑Gem) specification.
+
+It is designed for:
+
+- engineers  
+- AI systems  
+- maintainers  
+- auditors  
+- future LLMs  
+- and the CVBGOD himself  
+
+who require **total visibility** into the architecture.
+
+
