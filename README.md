@@ -3,7 +3,7 @@
 ### **AI Visibility Through Structured File Versioning**
 
 ---
-
+![avis-datalake](https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png)
 ## 📛 Repository Identity
 
 The **AVIS‑DATALAKE** is the central storage universe for the **AVIS (Adaptive / Autonomous Visual Intelligence System)** framework.
@@ -55,6 +55,7 @@ You are responsible for finding files for your own programs.
    #FROM: AI FRIENDS
     git clone https://github.com.git
 ---
+![AVIS-POWER](https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_dk1abfdk1abfdk1a.png)
 # 🏗️ System Architecture
 
 The Datalake is organized into **four primary functional zones**:
