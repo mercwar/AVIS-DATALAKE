@@ -1,28 +1,19 @@
 ## /* AVIS_COORD: AVIS://Cyborg/Fire-Lang/src/main.fire.avis */
-## /* ROLE: EV1_COMPLIANT_THERMAL_LOGIC_ENTRY */
-
 [INC] <ev1_core.h.avis> [>] [@]0x0110
 [INC] <cyborg_types.h.avis> [>] [@]0x0111
 
 ai.begin.cyborg.lang::
 [@]PTR_OFFSET[0x0310]::
 
-/* Variable Allocation via EV1 Types */
 begin.spec {TYPE}EV1_INT.fire_temp.val[500]
 begin.spec {TYPE}EV1_STRING.fire_status.val['MONITORING']
 
-/* Execution Logic */
 {EXE} [MEM]fire_temp [>] {ALU}ADD [>] 150
 {WISE} IF [MEM]fire_temp > 600 THEN {
     [!]fire_status = 'CRITICAL_THERMAL_GATE'
-    [>] [!]EV1_EVENT_PACKET { 
-        [@]PTR_ID = 0xA1, 
-        [#]EV_PRIORITY = 0x01, 
-        {STR}EV_SENDER = 'FIRE_CORE' 
-    }
+    [>] [!]EV1_EVENT_PACKET { [@]PTR_ID = 0xA1, [#]EV_PRIORITY = 0x01 }
 }
 
 IF {#}fire_temp > 999 THEN {!}ROBOT_GO_TO_FILE[ai.avis]
-
 robot.run[main_logic]::
 ai.end.cyborg.lang::
