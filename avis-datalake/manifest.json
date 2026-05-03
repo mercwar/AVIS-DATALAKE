@@ -27,6 +27,7 @@
   {"file": "fire_stubs.o", "size": "656"},
   {"file": "fire_stubs.exe", "size": "4744"},
   {"file": "libfire_writer.so", "size": "13240"},
+  {"file": "thermal_burst.fire.avis", "size": "1001"},
   {"file": "fire-gem.ini", "size": "254"},
   {"file": "libmanifest.so", "size": "14744"},
   {"file": "AVIS_HTML_BODY_BGC.art", "size": "850"},
