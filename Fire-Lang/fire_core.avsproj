@@ -1,0 +1,10 @@
+<Project Sdk="AVIS.Cyborg.Sdk/8.0">
+  <PropertyGroup>
+    <ProjectName>FIRE_LANG_CORE</ProjectName>
+    <ExecutionPriority>ULTRA_HIGH</ExecutionPriority>
+    <BaseAddress>0x0300</BaseAddress>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src/ignite.fire.avis" Address="0x0310" />
+  </ItemGroup>
+</Project>
