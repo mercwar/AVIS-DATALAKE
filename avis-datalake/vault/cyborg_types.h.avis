@@ -1,0 +1,8 @@
+## /* AVIS_COORD: AVIS://MSDN/SDK/INC/CYBORG_TYPES */
+## /* ROLE: EV1_Standard_Type_Map */
+ai.begin.cyborg.lang::
+[@]PTR_OFFSET[0x0111]::
+#define {TYPE}EV1_INT    var.ansii.int
+#define {TYPE}EV1_STRING var.ansii.string
+#define {GATE}EV1_EXIT   [#]EXIT_CODE
+ai.end.cyborg.lang::
