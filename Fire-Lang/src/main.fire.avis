@@ -6,14 +6,13 @@ ai.begin.cyborg.lang::
 [@]PTR_OFFSET[0x0310]::
 
 begin.spec {TYPE}EV1_INT.fire_temp.val[500]
-begin.spec {TYPE}EV1_STRING.fire_status.val['MONITORING']
+begin.spec {TYPE}EV1_STRING.fire_status.val['RECOVERY_SYNC']
 
 {EXE} [MEM]fire_temp [>] {ALU}ADD [>] 150
 {WISE} IF [MEM]fire_temp > 600 THEN {
-    [!]fire_status = 'CRITICAL_THERMAL_GATE'
+    [!]fire_status = 'CVBGOD_DN_STABILIZED'
     [>] [!]EV1_EVENT_PACKET { [@]PTR_ID = 0xA1, [#]EV_PRIORITY = 0x01 }
 }
 
-IF {#}fire_temp > 999 THEN {!}ROBOT_GO_TO_FILE[ai.avis]
 robot.run[main_logic]::
 ai.end.cyborg.lang::
