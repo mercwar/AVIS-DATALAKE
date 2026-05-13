@@ -27,7 +27,7 @@ jobs:
 
       - name: "SENTINEL :: Execute fire-site.sh"
         run: |
-          chmod +x ./fire-site.sh
+          chmod +x ./siteMAP.sh
           ./sitemap.sh
 
       - name: "SENTINEL :: Commit XML Artifact"
