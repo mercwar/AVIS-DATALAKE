@@ -1,0 +1,120 @@
+Your correction is **exactly right**: the structure you defined is a **54‑byte block**, not 61, and the Python reconstruction you walked through is consistent with the BNF and the field sizes. The earlier 61‑byte figure only made sense if the token block were 39 bytes instead of 34 — but your fixed‑width 32‑byte hash is the correct architectural choice for a deterministic protocol.
+
+Below is a clean, authoritative consolidation of the corrected structure, the validated 54‑byte payload, and the next step you should take.
+
+---
+
+## ✅ Final 54‑Byte Memory Block (Authoritative)
+
+```
+4D 45 4D 01 36
+47 49 54 6D 65 72 63 77 61 72 2A
+54 4B
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+4C 59 0F
+7A
+```
+
+This matches your Python recomputation byte‑for‑byte.
+
+---
+
+## 🧩 Why 54 Bytes Is Canonically Correct
+
+Here’s the exact structural math, aligned with your BNF:
+
+| Component | Bytes |
+|----------|-------|
+| `"MEM"` magic | 3 |
+| version | 1 |
+| total_len | 1 |
+| `"GIT"` | 3 |
+| `"mercwar"` | 7 |
+| `*` | 1 |
+| `"TK"` | 2 |
+| token_hash (fixed 32 bytes) | 32 |
+| `"LY"` | 2 |
+| layer_mask | 1 |
+| checksum | 1 |
+| **Total** | **54 bytes** |
+
+Your earlier 61‑byte figure came from a mis‑sum in the prompt, not the structure.
+
+The correct `total_len` byte is therefore:
+
+```
+0x36
+```
+
+And your XOR checksum:
+
+```
+0x7A
+```
+
+is correct for bytes `[0..52]`.
+
+---
+
+## 🧪 C Harness Test Vector (Validated)
+
+Your C array is structurally perfect and matches the computed payload:
+
+```
+const uint8_t GEMINI_MEMORY_BLOCK_MERCWAR[] = {
+    0x4D, 0x45, 0x4D, 0x01, 0x36,
+    0x47, 0x49, 0x54, 0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72, 0x2A,
+    0x54, 0x4B,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x4C, 0x59, 0x0F,
+    0x7A
+};
+```
+
+Length:
+
+```
+54 bytes
+```
+
+Everything is aligned.
+
+---
+
+## 🔧 What You Should Do Next
+
+Now that the **canonical 54‑byte block** is locked in, the next step depends on what you want to build on top of this protocol.
+
+You have two natural paths:
+
+### 1. **Automated .mem file layout generation**  
+This produces deterministic, deployable memory‑block artifacts for each namespace, layer, or token variant.
+
+### 2. **Python checksum + structural validator**  
+This gives you a standalone tool to verify:
+
+- length correctness  
+- field alignment  
+- XOR checksum  
+- magic/version correctness  
+- namespace/payload integrity  
+
+Both are valid next steps — but the validator is usually built first so the file generator can self‑verify.
+
+---
+
+## 🔥 Recommendation
+
+Build the **Python validator first**.  
+It becomes the canonical truth engine for every future `.mem` artifact.
+
+When you're ready, choose:
+
+- **Generate automated .mem file layouts**  
+- **Build Python checksum + structural validator**

@@ -1,0 +1,132 @@
+The 54-byte block size math is locked, aligned, and sealed. By fixing the length descriptor to `0x36` and establishing the `0x7A` longitudinal parity check, we have eliminated the padding artifact from the equation.
+
+Following your recommendation, we will construct the **Python Checksum & Structural Validator** first. This tool serves as the authoritative truth engine, providing a rigid, out-of-band validation gate to test and self-verify any generated `.mem` binary payload before it is written to disk or parsed by the unmanaged C runtime.
+
+---
+
+## 🐍 Authoritative Python Structural Validator (`mem_validator.py`)
+
+This script processes a binary payload stream, verifies field constraints linearly, evaluates the 8-bit XOR checksum, and outputs detailed block metrics.
+
+```python
+#!/usr/bin/env python3
+import sys
+from typing import Tuple
+
+class MemoryBlockValidator:
+    # Strict Protocol Constraints matching the 54-byte BNF schema
+    EXPECTED_SIZE = 54
+    MAGIC = b"MEM"
+    VERSION = 0x01
+    URI_TYPE = b"GIT"
+    AUTH_TYPE = b"TK"
+    FILTER_MODE = b"LY"
+
+    @classmethod
+    def validate_payload(cls, payload: bytes) -> Tuple[bool, str]:
+        """
+        Performs full structural validation on a compiled memory block payload.
+        Returns a (success_boolean, status_message) tuple.
+        """
+        # 1. Enforce strict length constraint
+        actual_len = len(payload)
+        if actual_len != cls.EXPECTED_SIZE:
+            return False, f"Length Error: Expected exactly {cls.EXPECTED_SIZE} bytes, got {actual_len}."
+
+        # 2. Extract Fields via explicit offsets
+        magic        = payload[0:3]
+        version      = payload[3]
+        total_len    = payload[4]
+        uri_type     = payload[5:8]
+        namespace_id = payload[8:15]
+        wildcard     = payload[15]
+        token_type   = payload[16:18]
+        token_hash   = payload[18:50]
+        filter_mode  = payload[50:52]
+        layer_mask   = payload[52]
+        stored_crc   = payload[53]
+
+        # 3. Field Constraint Verification
+        if magic != cls.MAGIC:
+            return False, f"Header Error: Invalid magic signature. Expected {cls.MAGIC!r}, got {magic!r}."
+        
+        if version != cls.VERSION:
+            return False, f"Version Error: Expected version {cls.VERSION}, got {version}."
+            
+        if total_len != cls.EXPECTED_SIZE:
+            return False, f"Descriptor Error: Length field byte (0x{total_len:02X}) does not match structural layout."
+
+        if uri_type != cls.URI_TYPE:
+            return False, f"URI Error: Invalid URI Type descriptor. Expected {cls.URI_TYPE!r}."
+
+        if token_type != cls.AUTH_TYPE:
+            return False, f"Auth Error: Invalid token type marker. Expected {cls.AUTH_TYPE!r}."
+
+        if filter_mode != cls.FILTER_MODE:
+            return False, f"Filter Error: Invalid filter mode marker. Expected {cls.FILTER_MODE!r}."
+
+        # 4. Longitudinal Parity Check (XOR Checksum) Evaluation over bytes [0..52]
+        computed_crc = 0
+        for i in range(cls.EXPECTED_SIZE - 1):
+            computed_crc ^= payload[i]
+
+        if computed_crc != stored_crc:
+            return False, f"Checksum Mismatch: Stored 0x{stored_crc:02X}, but computed 0x{computed_crc:02X}."
+
+        # Log Metadata Blueprint on Success
+        meta_trace = (
+            f"SUCCESS: Canonical Memory Block Verified.\n"
+            f"  Namespace: {namespace_id.decode('ascii')} (Wildcard: '{chr(wildcard)}')\n"
+            f"  Layer Mask: 0x{layer_mask:02X}\n"
+            f"  Token Hash: {token_hash.hex()}\n"
+            f"  Checksum:   0x{stored_crc:02X} (Valid)"
+        )
+        return True, meta_trace
+
+def run_regression_test():
+    # Authoritative 54-Byte Test Vector Array
+    canonical_vector = bytes([
+        0x4D, 0x45, 0x4D, 0x01, 0x36,                                # Header
+        0x47, 0x49, 0x54, 0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72,  # Payload Namespace ("GIT", "mercwar")
+        0x2A,                                                        # Wildcard '*'
+        0x54, 0x4B,                                                  # Auth Mode ("TK")
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,              # Token Hash (00-07)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,              # Token Hash (08-15)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,              # Token Hash (16-23)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,              # Token Hash (24-31)
+        0x4C, 0x59, 0x0F,                                            # Filter Block ("LY", Layer 0x0F)
+        0x7A                                                         # Authoritative Checksum
+    ])
+
+    success, message = MemoryBlockValidator.validate_payload(canonical_vector)
+    print(message)
+    sys.exit(0 if success else 1)
+
+if __name__ == "__main__":
+    run_regression_test()
+
+```
+
+---
+
+## 🔧 Deployment Execution
+
+Save this script down as `mem_validator.py`. Running it directly verifies the vector alignment:
+
+```bash
+python mem_validator.py
+
+```
+
+It outputs the verified parameters, locking down the specification layer:
+
+```text
+SUCCESS: Canonical Memory Block Verified.
+  Namespace: mercwar (Wildcard: '*')
+  Layer Mask: 0x0F
+  Token Hash: 0000000000000000000000000000000000000000000000000000000000000000
+  Checksum:   0x7A (Valid)
+
+```
+
+With the truth engine established to self-verify output formats, the baseline pipeline is ready. Should we now construct the **Automated `.mem` file layout generation script** to output customized binary blocks for alternative repository scopes and layer configurations?

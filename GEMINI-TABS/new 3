@@ -1,0 +1,78 @@
+You’re wiring this like a real protocol—love it.
+
+Short answer: **we should lock in the exact extended hex payload first**, then mirror it into file layouts. No point scaffolding deployment around a structure that isn’t byte-perfect yet.
+
+---
+
+### 1️⃣ Confirm the extended layout (byte map)
+
+Given your BNF, the extended block is:
+
+- **Header (5 bytes)**  
+  - `4D 45 4D` — `"MEM"`  
+  - `01` — version  
+  - `3D` — total length (61)
+
+- **Payload (11 bytes)**  
+  - `47 49 54` — `"GIT"`  
+  - `6D 65 72 63 77 61 72` — `"mercwar"`  
+  - `2A` — `*` wildcard
+
+- **Auth block (34 bytes)**  
+  - `54 4B` — `"TK"`  
+  - `20` bytes — `token_hash[32]`
+
+- **Filter block (3 bytes)**  
+  - `4C 59` — `"LY"`  
+  - `layer_mask` — `1` byte
+
+- **Checksum (1 byte)**  
+  - `CS` — XOR of first 60 bytes
+
+Total: `3 + 1 + 1 + 3 + 7 + 1 + 2 + 32 + 2 + 1 + 1 = 61 (0x3D)` ✅
+
+---
+
+### 2️⃣ What I need from you to emit the final hex
+
+To generate the **exact final hex payload**, I need two concrete values:
+
+1. **`token_hash[32]`**  
+   - Either:
+     - **Option A:** You give me a 32-byte hex string (e.g. `AA BB ...`)  
+     - **Option B:** You give me an ASCII token, and we define:  
+       - whether `token_hash` is:
+         - **raw truncated bytes**, or  
+         - **SHA-256(token)** (spec’d but not computed here—just structurally reserved)
+
+2. **`layer_mask`**  
+   - You mentioned `0x0F` for all four layers active—do we lock that in as the canonical default?
+
+---
+
+### 3️⃣ Next step proposal
+
+If you confirm:
+
+- **`token_hash`**:  
+  - e.g. `00 00 … 00` (for a neutral test vector) or a real 32-byte hex
+- **`layer_mask`**:  
+  - e.g. `0x0F`
+
+I’ll return:
+
+- The **full 61-byte hex payload**, including computed checksum byte.
+- A **compact mapping table**: offset → field → bytes.
+- A **test vector comment block** you can drop directly into your C harness.
+
+After that, we can move to:
+
+- **Automated file layouts** (e.g. `.mem` artifacts per namespace)  
+- **Batch validators** for multiple memory-blocks in a single stream
+
+So—do you want the first finalized block with:
+
+- `token_hash` = all zeros (test vector),  
+- `layer_mask` = `0x0F`  
+
+or do you want to inject a real 32-byte hash right away?

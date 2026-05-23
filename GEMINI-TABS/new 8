@@ -1,0 +1,154 @@
+Got it—you want **C as the ground truth spec**, so an LLM can reliably emit Gemini memory blocks that your code will accept.
+
+Here’s a tight, self-contained C reference you can treat as the **protocol oracle**.
+
+---
+
+### `gemini_memory_block.h`
+
+```c
+#ifndef GEMINI_MEMORY_BLOCK_H
+#define GEMINI_MEMORY_BLOCK_H
+
+#include <stdint.h>
+#include <stddef.h>
+
+#define GEMINI_MEM_TOTAL_LEN   54   /* 0x36 */
+#define GEMINI_MEM_MAGIC_0     0x4D /* 'M' */
+#define GEMINI_MEM_MAGIC_1     0x45 /* 'E' */
+#define GEMINI_MEM_MAGIC_2     0x4D /* 'M' */
+#define GEMINI_MEM_VERSION     0x01
+#define GEMINI_MEM_URI_G       0x47 /* 'G' */
+#define GEMINI_MEM_URI_I       0x49 /* 'I' */
+#define GEMINI_MEM_URI_T       0x54 /* 'T' */
+
+#define GEMINI_MEM_NS_LEN      7
+#define GEMINI_MEM_NS_BYTES    {0x6D,0x65,0x72,0x63,0x77,0x61,0x72} /* "mercwar" */
+
+#define GEMINI_MEM_REPO_WILD   0x2A /* '*' */
+
+#define GEMINI_MEM_AUTH_T      0x54 /* 'T' */
+#define GEMINI_MEM_AUTH_K      0x4B /* 'K' */
+#define GEMINI_MEM_TOKEN_LEN   32
+
+#define GEMINI_MEM_FILTER_L    0x4C /* 'L' */
+#define GEMINI_MEM_FILTER_Y    0x59 /* 'Y' */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int gemini_mem_validate(const uint8_t *buf, size_t len);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* GEMINI_MEMORY_BLOCK_H */
+```
+
+---
+
+### `gemini_memory_block.c`
+
+```c
+#include "gemini_memory_block.h"
+
+int gemini_mem_validate(const uint8_t *buf, size_t len) {
+    if (!buf || len != GEMINI_MEM_TOTAL_LEN) {
+        return 0;
+    }
+
+    /* 0–2: "MEM" */
+    if (buf[0] != GEMINI_MEM_MAGIC_0 ||
+        buf[1] != GEMINI_MEM_MAGIC_1 ||
+        buf[2] != GEMINI_MEM_MAGIC_2) {
+        return 0;
+    }
+
+    /* 3: version */
+    if (buf[3] != GEMINI_MEM_VERSION) {
+        return 0;
+    }
+
+    /* 4: total length byte */
+    if ((uint8_t)buf[4] != (uint8_t)GEMINI_MEM_TOTAL_LEN) {
+        return 0;
+    }
+
+    /* 5–7: "GIT" */
+    if (buf[5] != GEMINI_MEM_URI_G ||
+        buf[6] != GEMINI_MEM_URI_I ||
+        buf[7] != GEMINI_MEM_URI_T) {
+        return 0;
+    }
+
+    /* 8–14: "mercwar" */
+    {
+        static const uint8_t ns[GEMINI_MEM_NS_LEN] = GEMINI_MEM_NS_BYTES;
+        for (size_t i = 0; i < GEMINI_MEM_NS_LEN; ++i) {
+            if (buf[8 + i] != ns[i]) {
+                return 0;
+            }
+        }
+    }
+
+    /* 15: '*' */
+    if (buf[15] != GEMINI_MEM_REPO_WILD) {
+        return 0;
+    }
+
+    /* 16–17: "TK" */
+    if (buf[16] != GEMINI_MEM_AUTH_T ||
+        buf[17] != GEMINI_MEM_AUTH_K) {
+        return 0;
+    }
+
+    /* 18–49: 32-byte token hash (structural only, any bytes allowed) */
+
+    /* 50–51: "LY" */
+    if (buf[50] != GEMINI_MEM_FILTER_L ||
+        buf[51] != GEMINI_MEM_FILTER_Y) {
+        return 0;
+    }
+
+    /* 52: layer mask (for test vector: 0x0F) */
+    if (buf[52] != 0x0F) {
+        return 0;
+    }
+
+    /* 53: XOR checksum over bytes 0..52 */
+    uint8_t cs = 0;
+    for (size_t i = 0; i < GEMINI_MEM_TOTAL_LEN - 1; ++i) {
+        cs ^= buf[i];
+    }
+
+    return (cs == buf[53]) ? 1 : 0;
+}
+```
+
+---
+
+### Canonical test vector (what you ask the LLM for)
+
+When you say to an LLM:
+
+> “Give me a Gemini memory block for `mercwar` with zeroed token hash and layer mask `0x0F`.”
+
+You expect this **exact 54-byte hex**:
+
+```text
+4D 45 4D 01 36
+47 49 54 6D 65 72 63 77 61 72 2A
+54 4B
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+4C 59 0F
+7A
+```
+
+Drop that into `gemini_mem_validate`—if it returns `1`, the LLM stayed on-protocol.
+
+If you want, next step I can give you a **C builder** that takes `token_hash[32]` and `layer_mask` and emits a fully formed, checksummed block.

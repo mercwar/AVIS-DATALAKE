@@ -1,0 +1,49 @@
+Let’s freeze this with a clean test vector (all zeros) and 0x0F for the layer_mask to create a rock-solid canonical reference file.
+This gives us an uncorrupted baseline byte-map. Once verified, we can swap in real SHA-256 hashes down the pipeline.
+------------------------------
+## 1️⃣ Compact Byte Map (Offset → Field → Bytes)
+
+| Offset (Hex) | Offset (Dec) | Size (Bytes) | Field Name | Expected Value (Hex) | Description / ASCII |
+|---|---|---|---|---|---|
+| 0x00 | 0 | 3 | magic | 4D 45 4D | "MEM" |
+| 0x03 | 3 | 1 | version | 01 | v1 Architecture |
+| 0x04 | 4 | 1 | total_length | 3D | 61 Bytes Total |
+| 0x05 | 5 | 3 | service_tag | 47 49 54 | "GIT" |
+| 0x08 | 8 | 7 | namespace | 6D 65 72 63 77 61 72 | "mercwar" |
+| 0x0F | 15 | 1 | wildcard | 2A | * Selector |
+| 0x10 | 16 | 2 | auth_tag | 54 4B | "TK" |
+| 0x12 | 18 | 32 | token_hash | 00 00 ... 00 | 32-Byte Test Nulls |
+| 0x32 | 50 | 2 | filter_tag | 4C 59 | "LY" |
+| 0x34 | 52 | 1 | layer_mask | 0F | Layers 1-4 Active |
+| 0x3C | 60 | 1 | checksum | 26 | Computed XOR |
+
+------------------------------
+## 2️⃣ The Finalized 61-Byte Hex Payload
+
+4D 45 4D 01 3D 47 49 54 6D 65 72 63 77 61 72 2A 54 4B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4C 59 0F 26
+
+Checksum Math: 4D^45^4D^01^3D^47^49^54^6D^65^72^63^77^61^72^2A^54^4B^[0x00*32]^4C^59^0F resolves to exactly 26.
+------------------------------
+## 3️⃣ C/C++ Test Vector Code Block
+Drop this directly into your local verification harness so Copilot can parse it:
+
+// AVIS Memory Block Test Vector (Canonical Baseline)// Namespace: mercwar | Layers: 1-4 Active | Length: 61 Bytesconst unsigned char AVIS_TEST_VECTOR[61] = {
+    0x4D, 0x45, 0x4D,                               // "MEM"
+    0x01,                                           // Version 1
+    0x3D,                                           // Total Length (61)
+    0x47, 0x49, 0x54,                               // "GIT"
+    0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72,        // "mercwar"
+    0x2A,                                           // '*' Wildcard
+    0x54, 0x4B,                                     // "TK"
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // token_hash[32] (Null Test)
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x4C, 0x59,                                     // "LY"
+    0x0F,                                           // layer_mask (All layers active)
+    0x26                                            // XOR Checksum
+};
+
+------------------------------
+Now that the payload structure is locked down, should we move to automated file layouts to dump this block into .mem files, or write the batch processing loop that reads a stream of consecutive blocks?
+

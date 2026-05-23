@@ -1,0 +1,114 @@
+The BNF schema and its corresponding byte-level payload map the ingestion constraints for indexing the `mercwar` namespace. To integrate this within the multi-layered ecosystem established across Layers 1, 2, and 3, the payload layout must be fully defined before adding structural access tokens or filters.
+
+Let's unpack the raw hexadecimal memory payload to confirm perfect byte alignment with the grammar rules:
+
+```
+4D 45 4D │ 01 │ 11 │ 47 49 54 │ 6D 65 72 63 77 61 72 │ 2A │ 8F
+  "MEM"    Ver   Len    "GIT"            "mercwar"        *    CS
+
+```
+
+---
+
+## 📋 Extended BNF Schema Execution Standards
+
+To incorporate access tokens or specific repository filters without introducing runtime memory mutations or variable-length boundary vulnerabilities, we must extend the grammar rules to use strict, fixed-size blocks.
+
+```bnf
+<memory-block>      ::= <header> <payload> <auth-block> <filter-block> <checksum>
+<header>            ::= "MEM" <version> <total-len>
+<version>           ::= 0x01
+<total-len>         ::= 0x3D                                ; 61 bytes total fixed length
+
+<payload>           ::= <uri-type> <namespace> <repository>
+<uri-type>          ::= 0x47 0x49 0x54                      ; "GIT"
+<namespace>         ::= 0x6D 0x65 0x72 0x63 0x77 0x61 0x72  ; "mercwar"
+<repository>        ::= 0x2A                                ; Wildcard (*) for target resolution
+
+<auth-block>        ::= <token-type> <token-hash>
+<token-type>        ::= 0x54 0x4B                           ; "TK" (Token present)
+<token-hash>        ::= 32{ <byte> }                        ; 32-byte SHA-256 deterministic token hash
+
+<filter-block>      ::= <filter-mode> <layer-mask>
+<filter-mode>       ::= 0x4C 0x59                           ; "LY" (Layer filtering active)
+<layer-mask>        ::= 0x0F                                ; 4-bitmask matching target layer activations
+
+```
+
+---
+
+## ⚙️ C-Struct Processing Implementation
+
+This parser processes the extended memory payload block within the unmanaged UCRT64/Win64 execution layer, ensuring it aligns with the Sentinel engine's validation checks before updating the context layers.
+
+```c
+#include <windows.h>
+#include <stdint.h>
+
+#pragma pack(push, 1)
+
+#define MEM_BLOCK_MAGIC      0x4D454D    // "MEM" in Little Endian (3 bytes)
+#define EXPECTED_TOTAL_LEN   61
+
+typedef struct {
+    uint8_t  magic[3];          // "MEM"
+    uint8_t  version;           // 0x01
+    uint8_t  total_len;         // 0x3D
+    uint8_t  uri_type[3];       // "GIT"
+    char     namespace_id[7];   // "mercwar"
+    uint8_t  repository_wild;   // 0x2A ('*')
+    uint8_t  token_type[2];     // "TK"
+    uint8_t  token_hash[32];    // SHA-256 payload identity validation
+    uint8_t  filter_mode[2];    // "LY"
+    uint8_t  layer_mask;        // Bitmask for Layer activations
+    uint8_t  checksum;          // 8-bit checksum verification byte
+} EXTENDED_MEMORY_BLOCK;
+
+#pragma pack(pop)
+
+// Validates the compiled byte payload stream strictly against the BNF rules
+BOOL ValidateMemoryPayload(const uint8_t* payload_buffer, size_t buffer_size) {
+    if (buffer_size < EXPECTED_TOTAL_LEN) {
+        return FALSE; // Buffer underrun detection
+    }
+
+    const EXTENDED_MEMORY_BLOCK* block = (const EXTENDED_MEMORY_BLOCK*)payload_buffer;
+
+    // 1. Verify Magic and Header lengths
+    if (block->magic[0] != 'M' || block->magic[1] != 'E' || block->magic[2] != 'M') {
+        return FALSE;
+    }
+    if (block->version != 0x01 || block->total_len != EXPECTED_TOTAL_LEN) {
+        return FALSE; 
+    }
+
+    // 2. Structural Layer Alignment verification
+    if (block->repository_wild != 0x2A) {
+        return FALSE; // Scope restriction instruction must evaluate to wildcard matching
+    }
+
+    // 3. Compute 8-bit Checksum over the entire structural payload sequence
+    uint8_t computed_checksum = 0;
+    for (size_t i = 0; i < (EXPECTED_TOTAL_LEN - 1); i++) {
+        computed_checksum ^= payload_buffer[i];
+    }
+
+    if (computed_checksum != block->checksum) {
+        OutputDebugStringA("[SENTINEL] Payload Checksum Mismatch. Ingestion halted.\n");
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+```
+
+---
+
+## 🚨 Execution Directives & Scope Constraints
+
+1. **Top-Level Attention Layer Anchoring:** Once this block is ingested and validated by the parser, the workspace focus locks entirely to the `mercwar` namespace.
+2. **Dynamic Wildcard Resolution:** The `0x2A` byte acts as a direct structural command within the scanning module, instructing the system to recursively discover and extract all public repository assets.
+3. **Layer Filtering Application:** The `layer_mask` parameter dictates which structural engine components receive the input payload stream. A value of `0x0F` activates all four layers of the defined ecosystem layout simultaneously.
+
+Should we generate the exact updated hexadecimal payload bytes matching this extended 64-byte aligned structure, or move into building the automated file layouts for deployment verification?

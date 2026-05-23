@@ -1,0 +1,59 @@
+Locking in the exact test vector is the right move. Let's fix a quick math discrepancy in the layout breakdown before emitting the final bytes: summing the explicit field sizes (5 + 11 + 34 + 3 + 1) actually yields 54 bytes total (0x36) rather than 61 (0x3D).
+Using Option A with a neutral test vector (all zeros) for token_hash and locking layer_mask to 0x0F establishes a precise 54-byte payload with a valid XOR checksum.
+## 1️⃣ Finalized 54-Byte Hex Payload
+
+4D 45 4D 01 36 47 49 54 6D 65 72 63 77 61 72 2A 54 4B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4C 59 0F 7A
+
+## 2️⃣ Compact Byte Map
+
+| Offset (Hex) | Offset (Dec) | Size (Bytes) | Field Name | Hex Value / Pattern | Description |
+|---|---|---|---|---|---|
+| 0x00 | 0 | 3 | Magic Header | 4D 45 4D | ASCII "MEM" |
+| 0x03 | 3 | 1 | Version | 01 | Protocol Version 1 |
+| 0x04 | 4 | 1 | Total Length | 36 | 54 bytes total |
+| 0x05 | 5 | 3 | URI Type | 47 49 54 | ASCII "GIT" |
+| 0x08 | 8 | 7 | Namespace | 6D 65 72 63 77 61 72 | ASCII "mercwar" |
+| 0x0F | 15 | 1 | Repository | 2A | ASCII "*" (Wildcard) |
+| 0x10 | 16 | 2 | Auth Tag | 54 4B | ASCII "TK" |
+| 0x12 | 18 | 32 | Token Hash | 00 00 ... 00 | Truncated/Zeroed Test Vector |
+| 0x32 | 50 | 2 | Filter Tag | 4C 59 | ASCII "LY" |
+| 0x34 | 52 | 1 | Layer Mask | 0F | 4 layers active (0b00001111) |
+| 0x35 | 53 | 1 | Checksum | 7A | Longitudinal Redundancy Check (XOR) |
+
+## 3️⃣ C Harness Test Vector
+
+/*
+ * Target: ://github.com
+ * Config: token_hash = zeroed, layer_mask = 0x0F (All layers active)
+ * Checksum calculation: XOR of bytes [0..52] = 0x7A
+ */const uint8_t GEMINI_MEMORY_BLOCK_MERCWAR[] = {
+    0x4D, 0x45, 0x4D, 0x01, 0x36,                              // Header
+    0x47, 0x49, 0x54, 0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72, 0x2A, // Payload
+    0x54, 0x4B,                                                 // Auth Tag ("TK")
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,             // Token Hash [0-7]
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,             // Token Hash [8-15]
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,             // Token Hash [16-23]
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,             // Token Hash [24-31]
+    0x4C, 0x59, 0x0F,                                           // Filter ("LY" + Mask)
+    0x7A                                                        // LRC Checksum Byte
+};const size_t GEMINI_MEMORY_BLOCK_MERCWAR_LEN = 54;
+
+Should we move to writing the code for automated file layout production (.mem files) or build a Python validation script to verify these checksums programmatically?
+
+# Let's fix the byte counts to hit exactly 61 bytes.# Header: 3 + 1 + 1 = 5 bytesheader = [0x4D, 0x45, 0x4D, 0x01, 0x3D] 
+# Payload: 3 ("GIT") + 7 ("mercwar") + 1 ("*") = 11 bytespayload = [0x47, 0x49, 0x54, 0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72, 0x2A] 
+# Auth block: 2 ("TK") + 32 (hash) = 34 bytesauth_tag = [0x54, 0x4B]token_hash = [0x00] * 32
+# Filter block: 2 ("LY") + 1 (mask) = 3 bytesfilter_tag = [0x4C, 0x59]layer_mask = [0x0F]
+# Check sum: 1 byte# Total expected = 5 + 11 + 34 + 3 + 1 = 64 bytes total length? # Wait, let's recount the prompt's math:# 3 (MEM) + 1 (ver) + 1 (len) + 3 (GIT) + 7 (mercwar) + 1 (*) + 2 (TK) + 32 (hash) + 2 (LY) + 1 (mask) + 1 (CS)# 3+1+1+3+7+1+2+32+2+1+1 = 61 bytes total!# Let's check python len of components:components = [header, payload, auth_tag, token_hash, filter_tag, layer_mask]total_len = sum(len(c) for c in components) + 1 # +1 for checksum
+print(f"Computed total length: {total_len}")
+# Let's re-verify the sum manually:# header = 5# payload = 11# auth_tag + token_hash = 34# filter_tag + layer_mask = 3# sum = 5 + 11 + 34 + 3 = 53 bytes before checksum. Total 54 bytes.# Ah! The user's math had a typo: "3 + 1 + 1 + 3 + 7 + 1 + 2 + 32 + 2 + 1 + 1 = 61" # 3+1+1+3+7+1 = 16. 16 + 2 + 32 = 50. 50 + 2 + 1 + 1 = 54. # Let's make the total length exactly 0x3D (61 bytes) by adjusting token_hash or padding, or use the 54-byte accurate layout but update the length byte to 0x36 (54 total bytes).# Let's check what length byte 0x3D implies: 61 total bytes. # If total bytes = 61, and we have 53 non-checksum bytes, we need 7 bytes of padding or token_hash should be larger? No, let's keep the structures clean and fix the length byte to 0x36 (54 bytes total) to match the explicit structural definitions perfectly.
+# Let's evaluate with length byte = 0x36
+header[4] = 0x36full_bytes = header + payload + auth_tag + token_hash + filter_tag + layer_maskchecksum = 0for b in full_bytes:
+    checksum ^= b
+full_bytes.append(checksum)
+
+print(f"Corrected Total Length: {len(full_bytes)}")
+print("Full Hex Vector:")
+print(" ".join(f"{b:02X}" for b in full_bytes))
+
+
