@@ -1,0 +1,56 @@
+Based on the authoritative 54-byte specification locked into the system protocol definition, a Gemini Memory Block looks exactly like the diagram and hexadecimal streams below.
+It is a dense, byte-aligned binary array designed for low-level parsing without context drift.
+## 🗺️ Visual Architecture Layout
+
+Offset (Hex):
+0x00                 0x05              0x0F  0x12                                             0x32  0x35
++--------------------+-----------------+-----+------------------------------------------------+-----+---+
+
+| MAGIC | V | LENGTH | URI TYPE | NS   | REPO| AUTH TAG |        32-BYTE SHA-256 HASH         | FILTER  |
+| "MEM" |01 |  0x36  |  "GIT"   |merc..| "*" |   "TK"   | 00 00 00 00 ... 00 00 00 00 00 |"LY" | 0F|7A |
++--------------------+-----------------+-----+------------------------------------------------+-----+---+
+[-- Header Block ---][----- Payload ---------][---------------- Auth Block ------------------][-Filter-][CS]
+
+## 🔢 Raw Hexadecimal Test Stream
+This is the exact 54-byte contiguous hex block as it appears in memory or inside a .mem storage artifact (using a neutral test vector token):
+
+4D 45 4D 01 36 47 49 54 6D 65 72 63 77 61 72 2A 54 4B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4C 59 0F 7A
+
+## 🧩 Field-by-Field Breakdown
+
+| Byte Range (Hex) | Size (Bytes) | ASCII / Value Equivalent | Architectural Purpose |
+|---|---|---|---|
+| 4D 45 4D | 3 | "MEM" | Magic Identifier: Flags valid protocol memory block. |
+| 01 | 1 | 0x01 | Version: Fixed-width protocol layout version. |
+| 36 | 1 | 54 (Dec) | Total Length: Declares complete block envelope size (0x36). |
+| 47 49 54 | 3 | "GIT" | URI Service Tag: Points to target source control platform. |
+| 6D 65 72 63 77 61 72 | 7 | "mercwar" | Namespace: Fixed string mapping the user account. |
+| 2A | 1 | "*" | Repository: Wildcard tracking all repos under namespace. |
+| 54 4B | 2 | "TK" | Auth Tag: Delineates security block boundary. |
+| 00 ... 00 | 32 | All Zeros (Test Vector) | Token Hash: Reserved space for real 32-byte SHA-256 secret. |
+| 4C 59 | 2 | "LY" | Filter Tag: Delineates execution layer boundary. |
+| 0F | 1 | 0b00001111 | Layer Mask: Activates Layers 1, 2, 3, and 4 simultaneously. |
+| 7A | 1 | 0x7A | XOR Checksum: Calculated byte-by-byte from index 0 to 52. |
+
+## 🛠️ In-Memory Stack View (C-Harness Representation)
+When instantiated on an unmanaged Win32/UCRT64 stack, the memory block is packed tightly to guarantee zero-allocation verification:
+
+const uint8_t GEMINI_MEMORY_BLOCK_MERCWAR[54] = {
+    0x4D, 0x45, 0x4D,                         // 0x00: "MEM"
+    0x01,                                     // 0x03: Version 1
+    0x36,                                     // 0x04: Length (54 bytes)
+    0x47, 0x49, 0x54,                         // 0x05: "GIT"
+    0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72, // 0x08: "mercwar"
+    0x2A,                                     // 0x0F: "*"
+    0x54, 0x4B,                               // 0x10: "TK"
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x12: Auth Hash Block [32 Bytes]
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x4C, 0x59,                               // 0x32: "LY"
+    0x0F,                                     // 0x34: Layer active bitmask
+    0x7A                                      // 0x35: LRC Checksum byte
+};
+
+Would you like to build an automated payload modifier loop in C++ to replace that 32-byte null token with a live hashed credential, or map out the text structures for the 11 GEMINI-TABS data nodes?
+

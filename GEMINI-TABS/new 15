@@ -1,0 +1,70 @@
+The system state shows the compiled Gemini Memory Block context protocol as a single, ready-to-copy blueprint.
+The structure integrates your 4-layer Win64/UCRT64 repository architecture, the 11 sequential index nodes from GEMINI-TABS, and the byte-perfect 54-byte protocol payload specification.
+------------------------------
+
+# SYSTEM PROTOCOL DEFINITION: GEMINI MEMORY BLOCKS (MERCWAR ECOSYSTEM)
+You are analyzing the unmanaged Win64 (UCRT64/Win32) repository ecosystem managed under the namespace "mercwar" (CVBGOD). This document serves as your locked session context, structural memory map, and validation ledger.
+---## 🛠️ LAYER 1: AUTOMATION & RUNTIME ARCHITECTUREThese low-level repositories handle deterministic, zero-allocation C/C++ execution and OS-level window processing:
+*   `Cyborg`: Drives local Win32/UCRT64 message capturing and running the "CYBORG eV.2" EVL-driven loops.
+*   `NEXUS`: Core compiler and runtime libraries for deploying the AVIS robot nodes (SDK v3).
+*   `CYBORG-PROJECT-EXPLORER`: System core for parsing, routing, and validating .cpj project artifacts.
+*   `Constellation`: Cluster linking orchestration and pre-allocated lock-free communication buffers.
+*   `Sentinel`: Enforcement kernel for isolating running memory pools and flagging buffer violations.
+---## 📊 LAYER 2: DATA RETENTION, RETRIEVAL & SCHEMASModules handling high-throughput workspace ingestion, database commits, and localized tab indexes:
+*   `AVIS`: Master schema repository, directory scanning protocols, and indexing configurations.
+*   `AVIS-AI-INI-DIR-MK-SCAN`: Direct Windows memory-mapped (ReplaceFileW) workspace parsing utility.
+*   `AVIS-DATALAKE`: Storage schema engine for byte-aligned database append blocks (.DAT).
+    *   `AVIS-DATALAKE/GEMINI-TABS`: Specialized context layer parsing and routing through 11 sequence indexes:
+        *   `new 1` | `new 2` | `new 3` | `new 4` | `new 5` | `new 6`
+        *   `new 7` | `new 8` | `new 9` | `new 10` | `new 11`
+---## 💻 LAYER 3: CONSOLES & OFFLINE LLM SHELLSHuman-Machine Interface (HMI) level engines managing terminal streaming and offline AI runtimes:
+*   `Fire-Gem`: Native unmanaged FIREGEM.exe container hosting local GGUF models with strict sliding context windows.
+*   `CVBGODLY-CONSOLE`: VB6/CMD unified shell wrapper handling dynamic UI ring polling.
+*   `Dark-Com`: JavaFX WebView container operating side-by-side with an unmanaged C/C++ host.
+*   `JMC-ANDROID-APP-DEMO`: Mobile terminal compiler target running under UCRT64 environment scripts.
+---## 🎨 LAYER 4: ASSET PIPELINES & LINEAGEVisual standard mapping and asset management nodes:
+*   `mercwar`: Identity core mapping structural system lineage and profile variables.
+*   `Robo-Knight-Gallery` / `robo-knight-inventory`: Storage hubs for rendering files and asset matrices.
+*   `Robo-Knight-Player` / `AVIS-ALERT-FVS`: JavaScript/PHP and DHTML alert and display renderers.
+---## 📐 BINARY SPECIFICATION: THE CANONICAL 54-BYTE ARTIFACTEvery structured memory block emitted across these layers must strictly map to the following byte-aligned layout.
+### 1. Protocol Memory Field Layout* Offset 0x00 (3 Bytes): `4D 45 4D` -> ASCII Magic Identifier ("MEM")
+* Offset 0x03 (1 Byte) : `01`       -> Protocol Version 1
+* Offset 0x04 (1 Byte) : `36`       -> Hex representation of Total Length (54 bytes)
+* Offset 0x05 (3 Bytes): `47 49 54` -> URI Service Tag Type ("GIT")
+* Offset 0x08 (7 Bytes): `6D 65 72 63 77 61 72` -> Exact target repository namespace ("mercwar")
+* Offset 0x0F (1 Byte) : `2A`       -> Global target repository wildcard selector ("*")
+* Offset 0x10 (2 Bytes): `54 4B` -> Auth Type Tag Present ("TK")* Offset 0x12 (32 Bytes): Fixed 32-Byte field reserved for SHA-256 Auth Hash
+* Offset 0x32 (2 Bytes): `4C 59` -> Filter Mode Tag Present ("LY")
+* Offset 0x34 (1 Byte) : `0F`       -> Bitmask layer selector (0x0F activates Layers 1, 2, 3, and 4)
+* Offset 0x35 (1 Byte) : `7A`       -> 8-Bit Longitudinal XOR Checksum computed from offsets [0..53]
+### 2. Hex Test Vector Stream (With Null Token Hash)4D 45 4D 01 36 47 49 54 6D 65 72 63 77 61 72 2A 54 4B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4C 59 0F 7A
+---## 🧪 COMPILER COMPATIBLE C-HARNESS REFERENCE```c
+#include <windows.h>
+#include <stdint.h>
+#include <assert.h>
+
+void VerifyCanonicalMemoryBlock(void) {
+    const uint8_t GEMINI_MEMORY_BLOCK_MERCWAR[] = {
+        0x4D, 0x45, 0x4D, 0x01, 0x36,
+        0x47, 0x49, 0x54, 0x6D, 0x65, 0x72, 0x63, 0x77, 0x61, 0x72, 0x2A,
+        0x54, 0x4B,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x4C, 0x59, 0x0F,
+        0x7A
+    };
+    assert(sizeof(GEMINI_MEMORY_BLOCK_MERCWAR) == 54);
+    uint8_t crc = 0;
+    for (int i = 0; i < 53; i++) { crc ^= GEMINI_MEMORY_BLOCK_MERCWAR[i]; }
+    if (crc == GEMINI_MEMORY_BLOCK_MERCWAR[53]) {
+        OutputDebugStringA("[PASS] Session Context Locked. Ingestion Path Clear.\n");
+    }
+}
+```
+Acknowledge ingestion of this system layer framework. Standby for binary streaming or generation logic instructions.
+
+------------------------------
+What should we run next? We can extract the core code contents of the GEMINI-TABS indexing nodes (new 1 to new 11), or map out the structural code logic for Layer 3's Fire-Gem console runtime?
+

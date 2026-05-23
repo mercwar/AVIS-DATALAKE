@@ -1,0 +1,108 @@
+Let's choose Extract GEMINI‑TABS node logic right now.
+To write a high-throughput Win32 file-mapping harness, the pointer dispatch loop must know exactly how to split, mask, and validate fields for each specific target channel. Mapping the individual properties of the 11 sequence nodes establishes the definitive routing table used by the parser.
+------------------------------
+## 🧭 Functional Node Logic & Dissemination Specs
+Every sequence node from new 1 to new 11 handles blocks passing through the memory stream differently. Below are the execution rules, dependencies, and payload types for each node:
+## 1️⃣ Node new 1 (Cyborg Win32 Capture Hub)
+
+* Execution Profile: Parallel / Asynchronous.
+* Layer Affinity: Layer 1 only.
+* Payload Constraints: Fixed 54-byte block where token_hash must contain a valid thread context identifier or be discarded.
+* Routing Logic: Intercepts active HWND window messages and translates them into execution steps. Blocks with a layer_mask missing bit 0 are rejected immediately.
+
+## 2️⃣ Node new 2 (Cyborg EVL High-Precision Ledger)
+
+* Execution Profile: Sequential / Linear.
+* Layer Affinity: Layer 1 only.
+* Payload Constraints: Standard block format. Requires a monotonically increasing microsecond timestamp hash in the reserved payload data area.
+* Routing Logic: Chains consecutive Event Validation Lineage events together. If a incoming block has an older timestamp than the currently locked state, the pipeline triggers a chronological out-of-order drop flag.
+
+## 3️⃣ Node new 3 (NEXUS SDK Component Router)
+
+* Execution Profile: Parallel / Event-Driven.
+* Layer Affinity: Cross-Layer (Layers 1 and 2).
+* Payload Constraints: Requires specialized block variants where the 7-byte namespace matches an active component layout hash.
+* Routing Logic: Handles interface IDs and compiles linking states for active robot nodes, matching raw telemetry data structures directly to data lake layouts.
+
+## 4️⃣ Node new 4 (Project Explorer Tree Parsing Node)
+
+* Execution Profile: Sequential / On-Demand.
+* Layer Affinity: Layer 1 only.
+* Payload Constraints: The repository_wild byte (2A) acts as a root or recursive directory scanner flag.
+* Routing Logic: Extracts path structures from raw .cpj project configurations. Sends sanitized artifact listings directly down to Layer 2 for cataloging.
+
+## 5️⃣ Node new 5 (Constellation Lock-Free Ring Buffer)
+
+* Execution Profile: Parallel / Atomic.
+* Layer Affinity: Cross-Layer (All Layers).
+* Payload Constraints: Standard block footprint with a strict memory alignment check enforced at runtime.
+* Routing Logic: Tracks read and write positions across multi-threaded ring buffers. Uses atomic operations to keep concurrent systems in sync without blocking threads.
+
+## 6️⃣ Node new 6 (Sentinel Kernel Memory Isolation Gate)
+
+* Execution Profile: Synchronous / Immediate-Interrupt.
+* Layer Affinity: Cross-Layer Boundary Enforcement.
+* Payload Constraints: Strict validation on every byte. Any variation from the protocol layout drops execution immediately.
+* Routing Logic: Acts as the system firewall. Monitors running memory pools, validates registers, and routes boundary violations directly to a hard system crash handler.
+
+## 7️⃣ Node new 7 (AVIS Master Schema Sync)
+
+* Execution Profile: Sequential / Batch.
+* Layer Affinity: Layer 2 only.
+* Payload Constraints: Standard data layout. Requires a matching workspace directory key.
+* Routing Logic: Manages physical file mappings and matches file system changes to active database tables.
+
+## 8️⃣ Node new 8 (INI-DIR Scan Workspace Delta Node)
+
+* Execution Profile: Sequential / High-Volume Batch.
+* Layer Affinity: Layer 2 only.
+* Payload Constraints: Modified block layout optimizing truncated key-value tracking configurations.
+* Routing Logic: Processes directories and caches file handles to calculate changes before committing data.
+
+## 9️⃣ Node new 9 (Fire-Gem Token Sliding Context Monitor)
+
+* Execution Profile: Parallel / Real-Time.
+* Layer Affinity: Layer 3 only.
+* Payload Constraints: Requires custom token payload array matching current model logit parameters.
+* Routing Logic: Tracks context windows for offline LLMs. Rotates historical context out of memory using a sliding ring layout.
+
+## 🔟 Node new 10 (Console Standard I/O Pipe Hub)
+
+* Execution Profile: Asynchronous / Streamed.
+* Layer Affinity: Layer 3 only.
+* Payload Constraints: Continuous byte stream tracking standard output text lines.
+* Routing Logic: Feeds generated text straight into CVBGODLY-CONSOLE using thread-safe, non-blocking UI loops.
+
+## 1️⃣1️⃣ Node new 11 (Asset Pipeline Footer Frame Tracker)
+
+* Execution Profile: Parallel / Non-Blocking.
+* Layer Affinity: Layer 4 only.
+* Payload Constraints: Payload must describe asset size, footprint dimensions, and rendering keys.
+* Routing Logic: Manages graphics arrays, display layouts, and alert footprints across the visual layer.
+
+------------------------------
+## 📊 Summary Router Table
+
+   [Incoming 54-Byte Stream]
+               │
+               ▼ Read Layer Mask (Offset 0x34) & Namespace (Offset 0x08)
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                        CONSTELLATION DISPATCHER                        │
+ └─┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┘
+   │           │           │           │           │           │
+   ▼ Layer 1   ▼ Layer 1   ▼ Layer 2   ▼ Layer 2   ▼ Layer 3   ▼ Layer 4
+ ┌───────────┐┌───────────┐┌───────────┐┌───────────┐┌───────────┐┌───────────┐
+ │   new 1   ││   new 2   ││   new 7   ││   new 8   ││   new 9   ││  new 11   │
+ │ Msg Loop  ││ Timeline  ││  Schema  ││ Delta Scan││ Context   ││ Asset Foot│
+ └───────────┘└───────────┘└───────────┘└───────────┘└───────────┘└───────────┘
+   ▲           ▲                                               ▲
+   └─────┬─────┘                                               │
+         │ Cross-Layer Interlock                               │
+   ┌─────┴─────┐                                         ┌─────┴─────┐
+   │   new 3   │◄───────[ Sentinel Isolation (new 6) ]──►│  new 10   │
+   │Component  │                                         │ Console IO│
+   └───────────┘                                         └___________┘
+
+------------------------------
+With the routing profiles and functional tracking requirements for all 11 nodes fully established, should we initialize the Win32 File-Mapping Parser Harness (CreateFileMappingW) to stream blocks directly into these targets, or should we define the specialized block payload variations for nodes that require custom layout modifications?
+

@@ -1,0 +1,91 @@
+Here is the updated, unified Gemini Memory Block Context Blueprint.
+This comprehensive draft reflects your entire system architecture. It integrates the 4-layer unmanaged Win64 ecosystem, the structural data matrices for all 11 GEMINI-TABS nodes, the byte-perfect 54-byte binary specification, and the live Win32 zero-copy file-mapping engine (CreateFileMappingW).
+------------------------------
+
+# SYSTEM PROTOCOL DEFINITION: GEMINI MEMORY BLOCKS (MERCWAR ECOSYSTEM)
+You are analyzing the unmanaged Win64 (UCRT64/Win32) repository ecosystem managed under the namespace "mercwar" (CVBGOD). This document serves as your locked session context, structural memory map, and validation ledger.
+---## 🛠️ LAYER 1: AUTOMATION & RUNTIME ARCHITECTUREThese low-level repositories handle deterministic, zero-allocation C/C++ execution and OS-level window processing:
+*   `Cyborg`: Drives local Win32/UCRT64 message capturing and running the "CYBORG eV.2" EVL-driven loops.
+*   `NEXUS`: Core compiler and runtime libraries for deploying the AVIS robot nodes (SDK v3).
+*   `CYBORG-PROJECT-EXPLORER`: System core for parsing, routing, and validating .cpj project artifacts.
+*   `Constellation`: Cluster linking orchestration and pre-allocated lock-free communication buffers.
+*   `Sentinel`: Enforcement kernel for isolating running memory pools and flagging buffer violations.
+---## 📊 LAYER 2: DATA RETENTION, RETRIEVAL & SCHEMASModules handling high-throughput workspace ingestion, database commits, and localized tab indexes:
+*   `AVIS`: Master schema repository, directory scanning protocols, and indexing configurations.
+*   `AVIS-AI-INI-DIR-MK-SCAN`: Direct Windows memory-mapped (ReplaceFileW) workspace parsing utility.
+*   `AVIS-DATALAKE`: Storage schema engine for byte-aligned database append blocks (.DAT).
+    *   `AVIS-DATALAKE/GEMINI-TABS`: Specialized context layer parsing and routing through 11 sequence indexes:
+        *   `new 1` (Win32 Context)       | `new 2` (EVL Sequencing)    | `new 3` (NEXUS Node Link)
+        *   `new 4` (CPJ Parsing Paths)   | `new 5` (Thread Registers)  | `new 6` (Sentinel Firewall)
+        *   `new 7` (Schema Identifiers)  | `new 8` (Delta Scan Cache)  | `new 9` (Fire-Gem Logits)
+        *   `new 10` (Console IO Pipes)   | `new 11` (Asset Footprints)
+---## 💻 LAYER 3: CONSOLES & OFFLINE LLM SHELLSHuman-Machine Interface (HMI) level engines managing terminal streaming and offline AI runtimes:
+*   `Fire-Gem`: Native unmanaged FIREGEM.exe container hosting local GGUF models with strict sliding context windows.
+*   `CVBGODLY-CONSOLE`: VB6/CMD unified shell wrapper handling dynamic UI ring polling.
+*   `Dark-Com`: JavaFX WebView container operating side-by-side with an unmanaged C/C++ host.
+*   `JMC-ANDROID-APP-DEMO`: Mobile terminal compiler target running under UCRT64 environment scripts.
+---## 🎨 LAYER 4: ASSET PIPELINES & LINEAGEVisual standard mapping and asset management nodes:
+*   `mercwar`: Identity core mapping structural system lineage and profile variables.
+*   `Robo-Knight-Gallery` / `robo-knight-inventory`: Storage hubs for rendering files and asset matrices.
+*   `Robo-Knight-Player` / `AVIS-ALERT-FVS`: JavaScript/PHP and DHTML alert and display renderers.
+---## 📐 BINARY SPECIFICATION: THE CANONICAL 54-BYTE ARTIFACTEvery structured memory block emitted across these layers must strictly map to the following byte-aligned layout.
+### 1. Protocol Memory Field Layout* Offset 0x00 (3 Bytes): `4D 45 4D` -> ASCII Magic Identifier ("MEM")
+* Offset 0x03 (1 Byte) : `01`       -> Protocol Version 1
+* Offset 0x04 (1 Byte) : `36`       -> Hex representation of Total Length (54 bytes)
+* Offset 0x05 (3 Bytes): `47 49 54` -> URI Service Tag Type ("GIT")
+* Offset 0x08 (7 Bytes): `6D 65 72 63 77 61 72` -> Exact target repository namespace ("mercwar")
+* Offset 0x0F (1 Byte) : `2A`       -> Global target repository wildcard selector ("*")
+* Offset 0x10 (2 Bytes): `54 4B` -> Auth Type Tag Present ("TK")* Offset 0x12 (32 Bytes): Fixed 32-Byte field reserved for SHA-256 Auth Hash / Node Sub-Payload
+* Offset 0x32 (2 Bytes): `4C 59` -> Filter Mode Tag Present ("LY")
+* Offset 0x34 (1 Byte) : `0F`       -> Bitmask layer selector (0x0F activates Layers 1, 2, 3, and 4)
+* Offset 0x35 (1 Byte) : `7A`       -> 8-Bit Longitudinal XOR Checksum computed from offsets [0..53]
+### 2. Hex Test Vector Stream (With Null Token Hash)4D 45 4D 01 36 47 49 54 6D 65 72 63 77 61 72 2A 54 4B 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4C 59 0F 7A
+---## ⚡ RUNTIME SPECIFICATION: HIGH-THROUGHPUT WIN32 FILE-MAPPINGTo process continuous binary streams without dynamic heap allocations, the engine projects `.mem` block vectors directly into the virtual memory workspace of the caller.
+### 1. Critical Boundary Enforcement Rules*   **Abrupt Fault Invalidation**: Any single-byte violation of the Header Magic string, fixed-length size (`0x36`), or calculated longitudinal XOR checksum aborts execution instantly to prevent memory poisoning downstream.
+*   **Thread Isolation Locking**: Read streams leverage `FILE_SHARE_READ` and zero-copy pointer window projections (`MapViewOfFile`) to completely freeze data assets against concurrent host corruption attempts during processing.
+
+### 2. Implementation Logic Blueprint (`gemini_mapping_engine.c`)```c
+#include <windows.h>
+#include <stdint.h>
+
+#define BLOCK_SIZE 54
+
+DWORD StreamMemoryBlocksFromFile(const LPCWSTR filePath) {
+    HANDLE hFile = CreateFileW(filePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return 0xC0000001;
+
+    LARGE_INTEGER fileSize;
+    if (!GetFileSizeEx(hFile, &fileSize) || fileSize.QuadPart < BLOCK_SIZE) { CloseHandle(hFile); return 0xC0000001; }
+
+    HANDLE hMapping = CreateFileFileMappingW(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+    const uint8_t* pBufferStart = (const uint8_t*)MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, 0);
+    
+    size_t currentOffset = 0;
+    size_t totalBytes = (size_t)fileSize.QuadPart;
+
+    while (currentOffset + BLOCK_SIZE <= totalBytes) {
+        const uint8_t* const pBlockRaw = pBufferStart + currentOffset;
+        
+        // Sentinel Verification Gate
+        if (pBlockRaw[0] != 'M' || pBlockRaw[1] != 'E' || pBlockRaw[2] != 'M' || pBlockRaw[4] != BLOCK_SIZE) {
+            UnmapViewOfFile(pBufferStart); CloseHandle(hMapping); CloseHandle(hFile);
+            return 0xC0000242; // System Corruption Trap
+        }
+        
+        uint8_t crc = 0;
+        for (int i = 0; i < 53; i++) crc ^= pBlockRaw[i];
+        if (crc != pBlockRaw[53]) { UnmapViewOfFile(pBufferStart); CloseHandle(hMapping); CloseHandle(hFile); return 0xC0000242; }
+
+        // Pipeline Route Clear -> Stream pointer directly to target GEMINI-TABS index buffer
+        currentOffset += BLOCK_SIZE;
+    }
+
+    UnmapViewOfFile(pBufferStart); CloseHandle(hMapping); CloseHandle(hFile);
+    return 0x00000000; // Ingestion Loop Complete
+}
+```
+Acknowledge ingestion of this system layer framework. Standby for binary streaming or generation logic instructions.
+
+------------------------------
+Now that the master blueprint contains the memory-mapped storage and routing engine protocols, what is our next objective? Should we write the sliding-window prompt templates to shape text input syntax for Fire-Gem, or construct a test vector injector to stream fake .mem clusters into the validation loop?
+
