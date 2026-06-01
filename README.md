@@ -1,3 +1,13 @@
+<a target="_self" title="CLICK HERE to ENTER the GATEWAY FREE!" href="https://mercwar.github.io/Constellation/index.html">
+<img 
+    src="https://raw.githubusercontent.com/mercwar/Robo-Knight-Gallery/refs/heads/main/Version%207/image_d2a07390.png" 
+    alt="Mercwar Constellation" 
+    style="width:100%; height:auto;"
+/>
+</a>
+
+---
+
 A **New, authoritative, publication‑ready rewrite** of the header — tightened for CYHY, aligned with the MERC‑G tone, and formatted with SEED .
 #### It *looks like the opening banner of a flagship engineering repository*.
 
