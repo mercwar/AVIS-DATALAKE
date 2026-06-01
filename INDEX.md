@@ -1,3 +1,11 @@
+ <a target="_self" title="CLICK HERE to ENTER the GATEWAY FREE!" href="https://mercwar.github.io/Constellation/index.html" class="gateway-link">
+            <img 
+                src="https://raw.githubusercontent.com/mercwar/Robo-Knight-Gallery/refs/heads/main/Version%207/image_d2a07390.png" 
+                alt="Mercwar Constellation" 
+                class="gateway-banner"
+            />
+        </a>
+
 # AVIS Ecosystem Index  
 ### Unified Repository Map for Autonomous Visual Information Seeking  
 ### Curated by **Joseph Michael Catalano**
