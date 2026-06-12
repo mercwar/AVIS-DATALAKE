@@ -1,0 +1,34 @@
+AVIS2026
+begin.ev3.primemap;
+
+primemap.id."EV3-ART-PRIME-MAP";
+primemap.version."1.0";
+primemap.role."root-cosmology-map";
+
+load.prime."AVIS-DATALAKE/Artifacts/EV3-ART/prime.ev3";
+load.primeledger."AVIS-DATALAKE/Artifacts/EV3-ART/prime-ledger.ev3";
+
+primemap.universes [
+    { id."MERCWAR-PRIMARY"; role."root-universe" },
+    { id."ROBOROOK-FANCLUB"; role."linked-universe" },
+    { id."BYETHOST-LEGACY"; role."linked-universe" }
+];
+
+primemap.authority {
+    root."PRIME";
+    overseer."OVERSEER";
+    nexus."NEXUS";
+    hypervisor."HYPERVISOR";
+}
+
+primemap.graph {
+    source."MERCWAR.MULTIVERSE.GRAPH";
+    unified."true";
+}
+
+primemap.emit {
+    file."MERCWAR.PRIME.MAP";
+    log."EV3-ART-PRIME-MAP.LOG";
+}
+
+end.ev3.primemap;
