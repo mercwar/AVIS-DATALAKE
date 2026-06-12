@@ -1,0 +1,97 @@
+AVIS2026
+begin.ev3.map;
+
+map.version."1.0";
+map.generator."EV3-ART.fire-start";
+
+root.owner."mercwar";
+root.github."https://github.com/mercwar";
+root.gateway."https://mercwar.github.io/avis.gateway";
+
+# ============================
+# DOMAIN GRAPH
+# ============================
+
+domains {
+    github."https://github.com/mercwar";
+    pages."https://mercwar.github.io";
+    fanclub."https://roborook.fanclub.rocks";
+    byethost."https://mercwar01.byethost3.com";
+}
+
+# ============================
+# CONSTELLATION NODES
+# ============================
+
+node.constellation {
+    id."CONSTELLATION";
+    repo."https://github.com/mercwar/Constellation";
+    entry."https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS";
+    type."ui-system";
+}
+
+node.datalake {
+    id."AVIS-DATALAKE";
+    repo."https://github.com/mercwar/AVIS-DATALAKE";
+    index."AVIS-DATALAKE/avis/index.json";
+    type."data-core";
+}
+
+node.rru_ai {
+    id."RRU-AI";
+    entry."https://roborook.fanclub.rocks/RRU-AI/index.php";
+    search_api."https://roborook.fanclub.rocks/SEARCH/api.php";
+    type."ai-gateway";
+}
+
+node.robo_rook {
+    id."ROBO-ROOK";
+    entry."https://roborook.fanclub.rocks/RRP/index.php";
+    type."game-engine";
+}
+
+node.robo_knight {
+    id."ROBO-KNIGHT";
+    entry."https://mercwar01.byethost3.com/rkp/Robo-Knight-Player.php";
+    type."game-engine";
+}
+
+# ============================
+# LINKS BETWEEN NODES
+# ============================
+
+link {
+    from."CONSTELLATION";
+    to."AVIS-DATALAKE";
+    type."index-binding";
+}
+
+link {
+    from."AVIS-DATALAKE";
+    to."RRU-AI";
+    type."ai-binding";
+}
+
+link {
+    from."RRU-AI";
+    to."ROBO-ROOK";
+    type."game-binding";
+}
+
+link {
+    from."RRU-AI";
+    to."ROBO-KNIGHT";
+    type."game-binding";
+}
+
+link {
+    from."CONSTELLATION";
+    to."RRU-AI";
+    type."search-binding";
+}
+
+# ============================
+# END
+# ============================
+
+end.ev3.map;
