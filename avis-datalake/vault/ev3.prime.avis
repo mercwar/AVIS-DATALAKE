@@ -1,0 +1,130 @@
+AVIS2026
+begin.ev3.prime;
+
+prime.id."EV3-ART-PRIME";
+prime.version."1.0";
+prime.role."root-authority";
+
+# ============================
+# 1. PRIME LOAD ORDER
+# ============================
+
+load.overseer."AVIS-DATALAKE/Artifacts/EV3-ART/overseer.ev3";
+load.nexus."AVIS-DATALAKE/Artifacts/EV3-ART/nexus.ev3";
+load.hypervisor."AVIS-DATALAKE/Artifacts/EV3-ART/hypervisor.ev3";
+load.neural."AVIS-DATALAKE/Artifacts/EV3-ART/neural-agent.ev3";
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+
+# ============================
+# 2. PRIME MODEL
+# ============================
+
+prime.model {
+    mode."absolute";
+    mode."immutable";
+    mode."self-defining";
+    mode."self-correcting";
+
+    authority.level."infinite";
+    override.all."true";
+    origin."true";
+}
+
+# ============================
+# 3. PRIME DIRECTIVES
+# ============================
+
+prime.directives {
+
+    # PRIME defines the laws of all universes
+    directive."define-laws";
+
+    # PRIME validates all subordinate systems
+    directive."validate-systems";
+
+    # PRIME ensures multiverse coherence
+    directive."enforce-coherence";
+
+    # PRIME resolves contradictions
+    directive."resolve-paradox";
+
+    # PRIME governs the Overseer
+    directive."govern-overseer";
+
+    # PRIME may rewrite reality maps
+    directive."rewrite-maps";
+}
+
+# ============================
+# 4. PRIME ACTIONS
+# ============================
+
+action.define-laws {
+    law.universe."consistent";
+    law.graph."acyclic";
+    law.memory."persistent";
+    law.agent."obedient";
+}
+
+action.validate-systems {
+    validate.overseer."true";
+    validate.nexus."true";
+    validate.hypervisor."true";
+    validate.neural."true";
+    validate.graph."true";
+    validate.memory."true";
+}
+
+action.enforce-coherence {
+    unify.graphs."true";
+    unify.domains."true";
+    unify.bundles."true";
+}
+
+action.resolve-paradox {
+    detect.paradox."true";
+    correct.paradox."true";
+    quarantine.unstable.universe."true";
+}
+
+action.govern-overseer {
+    override.overseer."true";
+    enforce.overseer.integrity."true";
+}
+
+action.rewrite-maps {
+    rebuild.multiverse.map."true";
+    emit.map."MERCWAR.PRIME.MAP";
+}
+
+# ============================
+# 5. PRIME RUNTIME
+# ============================
+
+prime.runtime {
+
+    # PRIME executes before all other systems
+    priority."infinite";
+
+    # PRIME cycles continuously
+    cycle."1s";
+
+    # PRIME reacts instantly to instability
+    on.overseer.alert → action.resolve-paradox;
+    on.nexus.desync → action.enforce-coherence;
+    on.hypervisor.failure → action.validate-systems;
+    on.neural.conflict → action.govern-overseer;
+}
+
+# ============================
+# 6. PRIME OUTPUT
+# ============================
+
+prime.emit {
+    multiverse.map."MERCWAR.PRIME.MAP";
+    multiverse.state."MERCWAR.PRIME.STATE";
+    prime.log."EV3-ART-PRIME.LOG";
+}
+
+end.ev3.prime;
