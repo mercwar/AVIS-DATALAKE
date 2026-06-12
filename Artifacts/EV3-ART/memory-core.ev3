@@ -1,0 +1,106 @@
+AVIS2026
+begin.ev3.memory;
+
+memory.id."EV3-ART-MEMORY-CORE";
+memory.version."1.0";
+memory.role."persistent-universe-memory";
+
+# ============================
+# 1. MEMORY STRUCTURE
+# ============================
+
+memory.structures {
+    store.types [
+        "graph",
+        "bundle",
+        "artifact",
+        "system",
+        "domain",
+        "index",
+        "map"
+    ];
+
+    store.format."ev3-memory";
+    store.encoding."utf8";
+}
+
+# ============================
+# 2. MEMORY PATHS
+# ============================
+
+memory.paths {
+    graph."AVIS-DATALAKE/Artifacts/EV3-ART/memory/graph/";
+    bundle."AVIS-DATALAKE/Artifacts/EV3-ART/memory/bundle/";
+    artifacts."AVIS-DATALAKE/Artifacts/EV3-ART/memory/artifacts/";
+    systems."AVIS-DATALAKE/Artifacts/EV3-ART/memory/systems/";
+    domains."AVIS-DATALAKE/Artifacts/EV3-ART/memory/domains/";
+}
+
+# ============================
+# 3. MEMORY OPERATIONS
+# ============================
+
+memory.operations {
+    op.store."store(item, type)";
+    op.load."load(type)";
+    op.merge."merge(existing, new)";
+    op.flush."flush(type)";
+    op.snapshot."snapshot()";
+}
+
+# ============================
+# 4. RUNTIME BEHAVIOR
+# ============================
+
+memory.runtime {
+    on.graph.build → store.graph;
+    on.bundle.compile → store.bundle;
+    on.artifact.scan → store.artifact;
+    on.system.learn → store.system;
+    on.domain.follow → store.domain;
+
+    autosave."true";
+    autosave.interval."5s";
+}
+
+# ============================
+# 5. MEMORY RULES
+# ============================
+
+memory.rules {
+    allow.overwrite."true";
+    allow.merge."true";
+    allow.expand."true";
+
+    deny.delete."false";   # robots may delete if needed
+    deny.corrupt."true";   # corruption protection
+}
+
+# ============================
+# 6. SNAPSHOT ENGINE
+# ============================
+
+memory.snapshot {
+    snapshot.file."AVIS-DATALAKE/Artifacts/EV3-ART/memory/snapshots/MERCWAR.SNAPSHOT";
+    snapshot.include [
+        "graph",
+        "bundle",
+        "systems",
+        "domains",
+        "artifacts"
+    ];
+    snapshot.compress."true";
+}
+
+# ============================
+# 7. OUTPUT
+# ============================
+
+memory.emit {
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    bundle."MERCWAR.UNIVERSE.COMPLETE";
+    snapshot."MERCWAR.SNAPSHOT";
+    log."EV3-ART-MEMORY.LOG";
+}
+
+end.ev3.memory;
