@@ -1,0 +1,119 @@
+AVIS2026
+begin.ev3.hypervisor;
+
+hypervisor.id."EV3-ART-HYPERVISOR";
+hypervisor.version."1.0";
+hypervisor.role."multi-agent-orchestration";
+
+# ============================
+# 1. LOAD ALL AGENTS
+# ============================
+
+load.runtime."AVIS-DATALAKE/Artifacts/EV3-ART/fire-run.avis";
+load.compiler."AVIS-DATALAKE/Artifacts/EV3-ART/bin/ev3-art-compiler.avis";
+load.crawler."AVIS-DATALAKE/Artifacts/EV3-ART/robot-crawler.ev3";
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+load.shell."AVIS-DATALAKE/Artifacts/EV3-ART/shell.ev3";
+load.visual."AVIS-DATALAKE/Artifacts/EV3-ART/visualizer.ev3";
+load.neural."AVIS-DATALAKE/Artifacts/EV3-ART/neural-agent.ev3";
+
+# ============================
+# 2. AGENT ROLES
+# ============================
+
+agents {
+    runtime."executor";
+    compiler."interpreter";
+    crawler."explorer";
+    graph."mapper";
+    memory."storage";
+    shell."interface";
+    visual."renderer";
+    neural."decision-core";
+}
+
+# ============================
+# 3. ORCHESTRATION RULES
+# ============================
+
+hypervisor.rules {
+
+    # Runtime always initializes first
+    order.init."runtime → compiler → memory → graph → crawler → neural → visual → shell";
+
+    # Crawler triggers graph updates
+    on.crawler.complete → trigger.graph.rebuild;
+
+    # Graph updates trigger memory writes
+    on.graph.rebuild → trigger.memory.snapshot;
+
+    # Neural agent decides next actions
+    on.neural.decision → trigger.runtime.execute;
+
+    # Shell commands override neural decisions
+    on.shell.command → override.neural;
+
+    # Visualizer updates when graph changes
+    on.graph.change → trigger.visual.render;
+}
+
+# ============================
+# 4. SCHEDULER
+# ============================
+
+scheduler {
+    mode."round-robin";
+    cycle."100ms";
+
+    priority {
+        neural."10";
+        crawler."9";
+        graph."8";
+        memory."7";
+        runtime."6";
+        compiler."5";
+        visual."4";
+        shell."3";
+    }
+}
+
+# ============================
+# 5. EVENT BUS
+# ============================
+
+event.bus {
+    channels [
+        "graph.update",
+        "memory.update",
+        "crawler.complete",
+        "neural.decision",
+        "shell.command",
+        "runtime.execute"
+    ];
+
+    broadcast."true";
+    async."true";
+}
+
+# ============================
+# 6. SUPERVISION
+# ============================
+
+supervisor {
+    monitor.agents."true";
+    restart.on.fail."true";
+    log.events."true";
+    enforce.stability."true";
+}
+
+# ============================
+# 7. OUTPUT
+# ============================
+
+hypervisor.emit {
+    state."MERCWAR.UNIVERSE.STATE";
+    log."EV3-ART-HYPERVISOR.LOG";
+}
+
+end.ev3.hypervisor;
