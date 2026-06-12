@@ -1,0 +1,85 @@
+{
+  "ev3_art_version": "1.0",
+  "purpose": "Cyborg artifact language for Mercwar AVIS-DATALAKE",
+  "roles": [
+    "artifact_scanner",
+    "datalake_navigator",
+    "constellation_linker",
+    "learning_agent"
+  ],
+  "protocols": {
+    "artifact_discovery": {
+      "scan_paths": [
+        "AVIS-DATALAKE/Artifacts/",
+        "AVIS-DATALAKE/Constellation/",
+        "AVIS-DATALAKE/avis/",
+        "AVIS-DATALAKE/maps/"
+      ],
+      "file_types": [
+        ".avis",
+        ".json",
+        ".php",
+        ".c",
+        ".h",
+        ".js"
+      ],
+      "markers": [
+        "EV3-ART",
+        "AVIS-GATEWAY",
+        "MERCWAR-CONSTELLATION",
+        "RRU-AI",
+        "ROBO-ROOK",
+        "ROBO-KNIGHT"
+      ]
+    },
+    "datalake_navigation": {
+      "entry_index": "AVIS-DATALAKE/avis/index.json",
+      "maps": [
+        "AVIS-DATALAKE/maps/MERCWAR.CONSTELLATION.AVIS",
+        "AVIS-DATALAKE/maps/UNIVERSE.AVIS"
+      ],
+      "follow_rules": [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+      ]
+    },
+    "learning_protocol": {
+      "phases": [
+        "discover_artifacts",
+        "classify_artifacts",
+        "link_to_constellation",
+        "build_skill_graph",
+        "emit_universe_index"
+      ],
+      "artifact_classes": [
+        "search_engine",
+        "ui_frontend",
+        "ai_gateway",
+        "game_engine",
+        "language_spec",
+        "index_map"
+      ]
+    }
+  },
+  "language": {
+    "keywords": [
+      "begin.ev3",
+      "end.ev3",
+      "scan.artifacts",
+      "scan.datalake",
+      "follow.links",
+      "learn.mercwar",
+      "emit.index",
+      "bind.constellation",
+      "bind.gateway"
+    ],
+    "structures": {
+      "block": "begin.ev3 ... end.ev3",
+      "command": "keyword.argument_list",
+      "reference": "ref:path_or_url"
+    }
+  }
+}
