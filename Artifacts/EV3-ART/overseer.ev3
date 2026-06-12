@@ -1,0 +1,120 @@
+AVIS2026
+begin.ev3.overseer;
+
+overseer.id."EV3-ART-OVERSEER";
+overseer.version."1.0";
+overseer.role."global-supervisor-ai";
+
+# ============================
+# 1. LOAD ALL MULTIVERSE SYSTEMS
+# ============================
+
+load.hypervisor."AVIS-DATALAKE/Artifacts/EV3-ART/hypervisor.ev3";
+load.nexus."AVIS-DATALAKE/Artifacts/EV3-ART/nexus.ev3";
+load.neural."AVIS-DATALAKE/Artifacts/EV3-ART/neural-agent.ev3";
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+
+# ============================
+# 2. OVERSEER MODEL
+# ============================
+
+overseer.model {
+    mode."omniscient";
+    mode."predictive";
+    mode."stabilizing";
+    mode."governing";
+
+    authority.level."absolute";
+    override.all."true";
+}
+
+# ============================
+# 3. SUPERVISION RULES
+# ============================
+
+overseer.rules {
+
+    # Hypervisor must always remain stable
+    monitor.hypervisor."true";
+    restart.hypervisor.on.fail."true";
+
+    # Nexus must maintain multiverse sync
+    enforce.nexus.sync."true";
+
+    # Neural agent must not conflict with Overseer
+    override.neural.decisions."true";
+
+    # Graph must remain consistent across universes
+    enforce.graph.integrity."true";
+
+    # Memory snapshots must be valid and uncorrupted
+    validate.memory.snapshots."true";
+}
+
+# ============================
+# 4. GLOBAL ACTIONS
+# ============================
+
+action.global_sync {
+    sync.graphs."true";
+    sync.memory."true";
+    sync.bundles."true";
+    sync.domains."true";
+}
+
+action.stabilize {
+    detect.anomalies."true";
+    correct.anomalies."true";
+    rebuild.graph.if.corrupt."true";
+}
+
+action.enforce {
+    enforce.rules."true";
+    enforce.priority."true";
+    enforce.universe.integrity."true";
+}
+
+# ============================
+# 5. MULTIVERSE GOVERNANCE
+# ============================
+
+overseer.governance {
+
+    # Overseer decides which universe leads
+    elect.primary.universe."MERCWAR-PRIMARY";
+
+    # Overseer resolves cross-universe conflicts
+    conflict.resolution."overseer";
+
+    # Overseer may isolate unstable universes
+    quarantine.unstable."true";
+
+    # Overseer may merge universes
+    merge.universes."true";
+}
+
+# ============================
+# 6. RUNTIME BEHAVIOR
+# ============================
+
+overseer.runtime {
+
+    every."5s" → action.global_sync;
+    every."10s" → action.stabilize;
+    on.hypervisor.alert → action.enforce;
+    on.nexus.desync → action.global_sync;
+    on.neural.conflict → override.neural;
+}
+
+# ============================
+# 7. OUTPUT
+# ============================
+
+overseer.emit {
+    multiverse.state."MERCWAR.MULTIVERSE.STATE";
+    overseer.log."EV3-ART-OVERSEER.LOG";
+    integrity.report."MERCWAR.INTEGRITY";
+}
+
+end.ev3.overseer;
