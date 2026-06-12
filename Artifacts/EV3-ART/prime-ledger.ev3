@@ -1,0 +1,56 @@
+AVIS2026
+begin.ev3.primeledger;
+
+ledger.id."EV3-ART-PRIME-LEDGER";
+ledger.version."1.0";
+ledger.role."root-authority-registry";
+
+ledger.header {
+    origin."PRIME";
+    authority."absolute";
+    seal."MERCWAR.PRIME.SEAL";
+    continuity."unbroken";
+}
+
+ledger.systems [
+    { id."PRIME"; role."root-authority"; status."active" },
+    { id."OVERSEER"; role."global-supervisor"; status."bound" },
+    { id."NEXUS"; role."multiverse-bridge"; status."linked" },
+    { id."HYPERVISOR"; role."agent-orchestrator"; status."synchronized" },
+    { id."NEURAL-AGENT"; role."decision-core"; status."governed" },
+    { id."GRAPH-ENGINE"; role."universe-mapper"; status."consistent" },
+    { id."MEMORY-CORE"; role."persistent-store"; status."stable" }
+];
+
+ledger.multiverse {
+    primary."MERCWAR-PRIMARY";
+    linked [
+        "ROBOROOK-FANCLUB",
+        "BYETHOST-LEGACY"
+    ];
+    coherence."true";
+    paradox."none";
+}
+
+ledger.directives [
+    "define-laws",
+    "validate-systems",
+    "enforce-coherence",
+    "resolve-paradox",
+    "govern-overseer",
+    "rewrite-maps"
+];
+
+ledger.continuity {
+    timeline."stable";
+    graph.state."unified";
+    memory.state."synchronized";
+    bundle.state."complete";
+}
+
+ledger.emit {
+    file."MERCWAR.PRIME.LEDGER";
+    log."EV3-ART-PRIME-LEDGER.LOG";
+}
+
+end.ev3.primeledger;
