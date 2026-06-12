@@ -1,0 +1,77 @@
+{
+  "cosmology": "VOID-STAR",
+  "style": "hyper-real cosmic architecture",
+  "root": {
+    "id": "PRIME",
+    "type": "root-authority",
+    "visual": {
+      "shape": "singularity-core",
+      "color": "white-gold",
+      "energy": "infinite",
+      "aura": "radiant corona"
+    }
+  },
+  "layers": [
+    {
+      "id": "OVERSEER",
+      "type": "global-supervisor",
+      "visual": {
+        "shape": "halo-ring",
+        "color": "violet",
+        "energy": "stability-field"
+      }
+    },
+    {
+      "id": "NEXUS",
+      "type": "multiverse-bridge",
+      "visual": {
+        "shape": "interlinked-gates",
+        "color": "cyan",
+        "energy": "dimensional-thread"
+      }
+    },
+    {
+      "id": "HYPERVISOR",
+      "type": "agent-orchestrator",
+      "visual": {
+        "shape": "tri-core lattice",
+        "color": "blue",
+        "energy": "synchronization-wave"
+      }
+    },
+    {
+      "id": "NEURAL-AGENT",
+      "type": "decision-engine",
+      "visual": {
+        "shape": "neural-star",
+        "color": "magenta",
+        "energy": "predictive-flow"
+      }
+    },
+    {
+      "id": "GRAPH-ENGINE",
+      "type": "universe-mapper",
+      "visual": {
+        "shape": "node-web",
+        "color": "white",
+        "energy": "mapping-light"
+      }
+    },
+    {
+      "id": "MEMORY-CORE",
+      "type": "persistent-store",
+      "visual": {
+        "shape": "crystal-archive",
+        "color": "amber",
+        "energy": "memory-stream"
+      }
+    }
+  ],
+  "void_star": {
+    "structure": "inverted star collapsing into infinite void",
+    "color": "black with neon edges",
+    "energy": "negative-space pressure",
+    "symbolism": "origin and end of all cosmology"
+  },
+  "output_intent": "generate cosmic diagrams, void-star imagery, multiverse maps"
+}
