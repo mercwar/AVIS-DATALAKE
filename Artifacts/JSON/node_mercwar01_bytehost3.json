@@ -1,0 +1,22 @@
+{
+  "node_id": "MERCWAR01_BYTEHOST3",
+  "domain": "mercwar01.bytehost3.com",
+  "classification": "Host Mirror / Redundant Storage Engine",
+  "scope": "egress_mirror",
+  "anchors": {
+    "gateway_path": "/avis/gateway.avis",
+    "manifest_path": "/Artifacts/manifest.json"
+  },
+  "navigation": {
+    "live_viewer_link": "https://github.io",
+    "resolved_vector": "0x4d45524357415230315f42595445484f5354335f4d",
+    "fallback_url": "http://bytehost3.com"
+  },
+  "linked_resources": [
+    {
+      "file_name": "mirror.i.o.live",
+      "file_path": "/data/mirror.i.o.live",
+      "type": "egress_state_array"
+    }
+  ]
+}
