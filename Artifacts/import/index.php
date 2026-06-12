@@ -1,7 +1,7 @@
 <?php
 /* ============================================================
    AVIS-ARTIFACT
-   FILE: Artifacts/import/index.php
+   FILE: /Artifacts/import/index.php
    PURPOSE: Execution Entry Point & Gateway Orchestrator
    WITH PIPELINE ROUTING + MAP SYNCHRONIZATION
    ============================================================ */
@@ -9,7 +9,7 @@
 // AVIS: core_init | scope="global_router" | layer="orchestration"
 define('AVIS_CORE_SECURE', true);
 
-// Pull in the core functions and logging utilities
+// Pull in the core functions and logging utilities from the local directory
 require_once __DIR__ . '/functions.php';
 
 // AVIS: route_handling | engine="nexus_resolver"
