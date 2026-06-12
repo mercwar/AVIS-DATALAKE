@@ -1,0 +1,58 @@
+AVIS2026
+begin.ev3.bundle;
+
+bundle.version."1.0";
+bundle.generator."EV3-ART.fire-start";
+
+# ============================
+# ARTIFACT PAYLOAD
+# ============================
+
+payload.artifacts [
+    "AVIS-DATALAKE/avis/index.json",
+    "AVIS-DATALAKE/Artifacts/EV3-ART/fire-start.avis",
+    "AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3",
+    "AVIS-DATALAKE/Artifacts/EV3-ART/bin/spec-ev3-art.json",
+    "AVIS-DATALAKE/Artifacts/RRU-AI/*",
+    "AVIS-DATALAKE/Artifacts/GAMES/*",
+    "Constellation/LIVE/*",
+    "Constellation/SEARCH/api.php",
+    "roborook.fanclub.rocks/RRP/*",
+    "roborook.fanclub.rocks/RRU/*",
+    "roborook.fanclub.rocks/RRU-AI/*",
+    "mercwar01.byethost3.com/RRP/*",
+    "mercwar01.byethost3.com/rkp/*"
+];
+
+# ============================
+# FOLLOW RULES
+# ============================
+
+payload.follow [
+    "avis://*",
+    "https://github.com/mercwar/*",
+    "https://mercwar.github.io/*",
+    "https://roborook.fanclub.rocks/*",
+    "https://mercwar01.byethost3.com/*"
+];
+
+# ============================
+# FILE TYPES
+# ============================
+
+payload.collect [
+    "*.avis",
+    "*.json",
+    "*.php",
+    "*.js",
+    "*.c",
+    "*.h"
+];
+
+# ============================
+# OUTPUT DECLARATION
+# ============================
+
+bundle.output."MERCWAR.UNIVERSE.COMPLETE";
+
+end.ev3.bundle;
