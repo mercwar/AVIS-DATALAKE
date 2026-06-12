@@ -1,0 +1,38 @@
+AVIS2026
+begin.ai.fire.start;
+
+.begin.ev3
+    id."EV3-ART"
+    version."1.0"
+    role."cyborg-artifact-navigator"
+
+    # 1. Bind to AVIS datalake
+    bind.gateway."https://mercwar.github.io/avis.gateway"
+    bind.constellation."https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS"
+    bind.index."AVIS-DATALAKE/avis/index.json"
+
+    # 2. Scan artifacts in datalake
+    scan.datalake."AVIS-DATALAKE/Artifacts/"
+    scan.artifacts."AVIS-DATALAKE/Artifacts/EV3-ART/"
+    scan.artifacts."AVIS-DATALAKE/Artifacts/RRU-AI/"
+    scan.artifacts."AVIS-DATALAKE/Artifacts/GAMES/"
+
+    # 3. Follow universe links
+    follow.links."avis://*"
+    follow.links."https://github.com/mercwar/*"
+    follow.links."https://mercwar.github.io/*"
+    follow.links."https://roborook.fanclub.rocks/*"
+    follow.links."https://mercwar01.byethost3.com/*"
+
+    # 4. Learn how to use Mercwar
+    learn.mercwar."search-engines"
+    learn.mercwar."ui-frontends"
+    learn.mercwar."ai-gateways"
+    learn.mercwar."game-engines"
+    learn.mercwar."language-specs"
+
+    # 5. Emit a universe index
+    emit.index."AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3"
+end.ev3
+
+ai.fire.end;
