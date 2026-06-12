@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "owner": "mercwar",
+  "root": "https://github.com/mercwar",
+  "sites": [
+    {
+      "id": "constellation-live",
+      "repo": "Constellation",
+      "github_repo_url": "https://github.com/mercwar/Constellation",
+      "pages_root": "https://mercwar.github.io/Constellation/",
+      "entrypoints": [
+        "https://mercwar.github.io/Constellation/LIVE/index.html",
+        "https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS"
+      ],
+      "tags": ["constellation", "avis", "search", "ui"],
+      "apis": [
+        {
+          "name": "RRU Constellation Search API",
+          "url": "https://mercwar.github.io/Constellation/SEARCH/api.php",
+          "type": "http",
+          "format": "html"
+        }
+      ]
+    },
+
+    {
+      "id": "avis-datalake",
+      "repo": "AVIS-DATALAKE",
+      "github_repo_url": "https://github.com/mercwar/AVIS-DATALAKE",
+      "pages_root": "https://mercwar.github.io/AVIS-DATALAKE/",
+      "entrypoints": [
+        "https://mercwar.github.io/AVIS-DATALAKE/index.html",
+        "https://mercwar.github.io/AVIS-DATALAKE/avis/index.json",
+        "https://mercwar.github.io/avis.gateway"
+      ],
+      "tags": ["avis", "datalake", "index", "map"],
+      "apis": [
+        {
+          "name": "AVIS Index",
+          "url": "https://mercwar.github.io/AVIS-DATALAKE/avis/index.json",
+          "type": "http",
+          "format": "json"
+        }
+      ]
+    },
+
+    {
+      "id": "example-site",
+      "repo": "Example-Repo",
+      "github_repo_url": "https://github.com/mercwar/Example-Repo",
+      "pages_root": "https://mercwar.github.io/Example-Repo/",
+      "entrypoints": [
+        "https://mercwar.github.io/Example-Repo/index.html"
+      ],
+      "tags": ["demo", "frontend"],
+      "apis": []
+    }
+  ]
+}
