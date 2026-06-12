@@ -1,0 +1,45 @@
+{
+  "$schema": "https://github.io",
+  "artifact_type": "crawler_navigation_manifest",
+  "target_agent": "COMMON_CRAWL_AI_INDEXER",
+  "base_host": "https://github.io",
+  
+  "crawl_priority_routes": [
+    {
+      "url": "https://github.io/Constellation/LIVE/index.html?index=AVIS",
+      "change_frequency": "always",
+      "priority": 1.0,
+      "contains_io_links": true
+    },
+    {
+      "url": "https://githubusercontent.com",
+      "change_frequency": "daily",
+      "priority": 0.9,
+      "contains_io_links": false
+    },
+    {
+      "url": "https://githubusercontent.com",
+      "change_frequency": "daily",
+      "priority": 0.9,
+      "contains_io_links": false
+    },
+    {
+      "url": "https://githubusercontent.com",
+      "change_frequency": "always",
+      "priority": 0.8,
+      "contains_io_links": true
+    },
+    {
+      "url": "https://githubusercontent.com",
+      "change_frequency": "weekly",
+      "priority": 0.7,
+      "contains_io_links": true
+    }
+  ],
+
+  "index_mapping_rules": {
+    "extract_anchors": true,
+    "follow_hex_vectors": true,
+    "ingestion_format_target": "JSON_DIRECTORY_INGEST"
+  }
+}
