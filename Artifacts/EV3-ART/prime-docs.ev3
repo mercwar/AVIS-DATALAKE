@@ -1,0 +1,35 @@
+AVIS2026
+begin.ev3.primedocs;
+
+primedocs.id."EV3-ART-PRIME-DOCS";
+primedocs.version."1.0";
+primedocs.role."root-documentation-index";
+
+primedocs.maps [
+    "MERCWAR.PRIME.MAP",
+    "MERCWAR.MULTIVERSE.GRAPH",
+    "MERCWAR.UNIVERSE.GRAPH"
+];
+
+primedocs.files [
+    { name."prime.ev3"; role."root-authority-engine" },
+    { name."prime-core.ev3"; role."logic-kernel" },
+    { name."prime-state.ev3"; role."state-machine" },
+    { name."prime-ledger.ev3"; role."authority-registry" },
+    { name."prime-index.ev3"; role."lookup-table" },
+    { name."prime-seal.ev3"; role."binding-sigil" }
+];
+
+primedocs.sections [
+    "architecture",
+    "authority-chain",
+    "multiverse-topology",
+    "runtime-behavior"
+];
+
+primedocs.emit {
+    index."MERCWAR.PRIME.DOCS.INDEX";
+    log."EV3-ART-PRIME-DOCS.LOG";
+}
+
+end.ev3.primedocs;
