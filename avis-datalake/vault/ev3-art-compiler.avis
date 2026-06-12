@@ -1,0 +1,166 @@
+AVIS2026
+begin.ev3.compiler;
+
+compiler.id."EV3-ART-COMPILER";
+compiler.version."1.0";
+compiler.role."cyborg-language-interpreter";
+
+# ============================
+# 1. LANGUAGE DEFINITIONS
+# ============================
+
+language.keywords [
+    "begin.ev3",
+    "end.ev3",
+    "begin.ai.firestart",
+    "end.ai.firestart",
+    "begin.ai.firerun",
+    "end.ai.firerun",
+    "load.firestart",
+    "load.universe",
+    "load.map",
+    "load.bundle",
+    "runtime.init",
+    "runtime.execute.bundle",
+    "runtime.behavior",
+    "runtime.emit",
+    "scan.datalake",
+    "scan.artifacts",
+    "follow.links",
+    "collect.files",
+    "learn.mercwar",
+    "emit.index",
+    "bind.gateway",
+    "bind.index",
+    "bind.constellation"
+];
+
+language.structures {
+    block."keyword ... keyword";
+    command."keyword.argument";
+    list."[ item, item, item ]";
+    string."\"value\"";
+}
+
+# ============================
+# 2. PARSER RULES
+# ============================
+
+parser.rules {
+    detect.block."begin.* → end.*";
+    detect.command."keyword.\"value\"";
+    detect.list."[ ... ]";
+    detect.comment."# ...";
+}
+
+parser.behavior {
+    ignore.comments."true";
+    trim.whitespace."true";
+    allow.multiline."true";
+}
+
+# ============================
+# 3. COMPILER PIPELINE
+# ============================
+
+pipeline.stages [
+    "tokenize",
+    "parse",
+    "validate",
+    "link",
+    "execute"
+];
+
+pipeline.tokenize {
+    split.on."space";
+    split.on."newline";
+    split.on."semicolon";
+}
+
+pipeline.parse {
+    match.blocks."begin.* / end.*";
+    match.commands."keyword.\"value\"";
+    match.lists."[ ... ]";
+}
+
+pipeline.validate {
+    require.firestart."true";
+    require.universe."true";
+    require.map."true";
+    require.bundle."true";
+}
+
+pipeline.link {
+    link.firestart."AVIS-DATALAKE/Artifacts/EV3-ART/fire-start.avis";
+    link.universe."AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3";
+    link.map."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.MAP";
+    link.bundle."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.BUNDLE";
+}
+
+# ============================
+# 4. EXECUTION ENGINE
+# ============================
+
+engine.modes [
+    "explore",
+    "learn",
+    "link",
+    "compile"
+];
+
+engine.execute {
+    on.scan.datalake → perform.scan;
+    on.scan.artifacts → perform.scan;
+    on.follow.links → perform.follow;
+    on.collect.files → perform.collect;
+    on.learn.mercwar → perform.learn;
+    on.emit.index → perform.emit;
+}
+
+engine.perform.scan {
+    read.paths."true";
+    detect.artifacts."true";
+    classify.types."true";
+}
+
+engine.perform.follow {
+    follow.http."true";
+    follow.avis."true";
+    follow.github."true";
+}
+
+engine.perform.collect {
+    match.extensions [
+        ".avis",
+        ".ev3",
+        ".json",
+        ".php",
+        ".js",
+        ".c",
+        ".h"
+    ];
+}
+
+engine.perform.learn {
+    build.graph."true";
+    map.relationships."true";
+    identify.systems."true";
+}
+
+engine.perform.emit {
+    output.index."MERCWAR.UNIVERSE.COMPLETE";
+    output.graph."MERCWAR.UNIVERSE.GRAPH";
+    output.log."EV3-ART-RUNTIME.LOG";
+}
+
+# ============================
+# 5. RUNTIME OUTPUT
+# ============================
+
+compiler.output {
+    index."MERCWAR.UNIVERSE.COMPLETE";
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    log."EV3-ART-COMPILER.LOG";
+}
+
+end.ev3.compiler;
