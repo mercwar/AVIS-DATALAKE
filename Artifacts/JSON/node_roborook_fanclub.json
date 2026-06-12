@@ -1,0 +1,22 @@
+{
+  "node_id": "ROBOROOK_FANCLUB",
+  "domain": "roborook.fanclub.rocks",
+  "classification": "Community Vertex / Distributed Node",
+  "scope": "network_expansion",
+  "anchors": {
+    "gateway_path": "/avis/gateway.avis",
+    "manifest_path": "/Artifacts/manifest.json"
+  },
+  "navigation": {
+    "live_viewer_link": "https://github.io",
+    "resolved_vector": "0x524f424f524f4f4b5f46414e434c55425f4e4f4445",
+    "fallback_url": "http://fanclub.rocks"
+  },
+  "linked_resources": [
+    {
+      "file_name": "roborook.i.o.live",
+      "file_path": "/live/roborook.i.o.live",
+      "type": "live_hex_stream_matrix"
+    }
+  ]
+}
