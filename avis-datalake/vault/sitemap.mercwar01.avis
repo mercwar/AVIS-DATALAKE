@@ -1,0 +1,58 @@
+{
+  "id": "mercwar-byethost",
+  "domain": "https://mercwar01.byethost3.com",
+  "owner": "mercwar",
+  "type": "legacy-host",
+  "entrypoints": [
+    {
+      "url": "https://mercwar01.byethost3.com/index.php",
+      "role": "root"
+    },
+    {
+      "url": "https://mercwar01.byethost3.com/RRP/index.php",
+      "role": "robo-rook-player"
+    },
+    {
+      "url": "https://mercwar01.byethost3.com/rkp/Robo-Knight-Player.php",
+      "role": "robo-knight-player"
+    },
+    {
+      "url": "https://mercwar01.byethost3.com/RRU/index.php",
+      "role": "universe"
+    }
+  ],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/mercwar"
+    },
+    {
+      "type": "constellation",
+      "url": "https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS"
+    }
+  ],
+  "apis": [
+    {
+      "name": "RRU-AI Search API",
+      "url": "https://mercwar01.byethost3.com/SEARCH/api.php",
+      "method": "GET",
+      "params": ["q"],
+      "format": "html"
+    }
+  ],
+  "robots": {
+    "follow": [
+      "https://mercwar01.byethost3.com/*",
+      "https://github.com/mercwar/*",
+      "avis://*"
+    ],
+    "collect": [
+      "*.php",
+      "*.json",
+      "*.avis",
+      "*.js",
+      "*.c",
+      "*.h"
+    ]
+  }
+}
