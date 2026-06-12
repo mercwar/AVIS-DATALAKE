@@ -1,0 +1,144 @@
+AVIS2026
+begin.ev3.shell;
+
+shell.id."EV3-ART-SHELL";
+shell.version."1.0";
+shell.role."cyborg-command-interface";
+
+# ============================
+# 1. SHELL GRAMMAR
+# ============================
+
+shell.grammar {
+    command.format."ev3:command.argument";
+    command.block."ev3 { ... }";
+    command.pipe."ev3:cmd1 | ev3:cmd2";
+    command.query."ev3?query";
+}
+
+shell.keywords [
+    "ev3:load",
+    "ev3:run",
+    "ev3:scan",
+    "ev3:follow",
+    "ev3:collect",
+    "ev3:learn",
+    "ev3:graph",
+    "ev3:memory",
+    "ev3:bundle",
+    "ev3:system",
+    "ev3:domain",
+    "ev3:artifact",
+    "ev3:exit"
+];
+
+# ============================
+# 2. SHELL STARTUP
+# ============================
+
+shell.startup {
+    load.compiler."AVIS-DATALAKE/Artifacts/EV3-ART/bin/ev3-art-compiler.avis";
+    load.runtime."AVIS-DATALAKE/Artifacts/EV3-ART/fire-run.avis";
+    load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+    load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+
+    banner."EV3-ART Cyborg Shell Initialized";
+}
+
+# ============================
+# 3. CORE COMMANDS
+# ============================
+
+command."ev3:load" {
+    load.firestart."AVIS-DATALAKE/Artifacts/EV3-ART/fire-start.avis";
+    load.universe."AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3";
+    load.map."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.MAP";
+    load.bundle."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.BUNDLE";
+}
+
+command."ev3:run" {
+    run.crawler."AVIS-DATALAKE/Artifacts/EV3-ART/robot-crawler.ev3";
+    run.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+}
+
+command."ev3:scan" {
+    scan.paths [
+        "AVIS-DATALAKE/Artifacts/",
+        "AVIS-DATALAKE/maps/",
+        "AVIS-DATALAKE/avis/"
+    ];
+}
+
+command."ev3:follow" {
+    follow.links [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+    ];
+}
+
+command."ev3:collect" {
+    filetypes [
+        "*.avis",
+        "*.ev3",
+        "*.json",
+        "*.php",
+        "*.js",
+        "*.c",
+        "*.h"
+    ];
+}
+
+command."ev3:learn" {
+    systems [
+        "RRU-AI",
+        "Constellation",
+        "AVIS-DATALAKE",
+        "Robo-Rook",
+        "Robo-Knight"
+    ];
+}
+
+command."ev3:graph" {
+    emit.graph."MERCWAR.UNIVERSE.GRAPH";
+}
+
+command."ev3:memory" {
+    save.snapshot."MERCWAR.SNAPSHOT";
+    load.snapshot."MERCWAR.SNAPSHOT";
+}
+
+command."ev3:bundle" {
+    emit.bundle."MERCWAR.UNIVERSE.COMPLETE";
+}
+
+command."ev3:system" {
+    list.systems."true";
+}
+
+command."ev3:domain" {
+    list.domains."true";
+}
+
+command."ev3:artifact" {
+    list.artifacts."true";
+}
+
+command."ev3:exit" {
+    shell.shutdown."true";
+}
+
+# ============================
+# 4. SHELL OUTPUT
+# ============================
+
+shell.output {
+    log."EV3-ART-SHELL.LOG";
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    bundle."MERCWAR.UNIVERSE.COMPLETE";
+    snapshot."MERCWAR.SNAPSHOT";
+}
+
+end.ev3.shell;
