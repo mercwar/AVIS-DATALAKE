@@ -1,0 +1,179 @@
+AVIS2026
+begin.ev3.graph;
+
+graph.id."EV3-ART-GRAPH-ENGINE";
+graph.version."1.0";
+graph.role."universe-relationship-engine";
+
+# ============================
+# 1. LOAD UNIVERSE COMPONENTS
+# ============================
+
+load.index."AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3";
+load.map."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.MAP";
+load.bundle."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.BUNDLE";
+
+# ============================
+# 2. GRAPH MODEL
+# ============================
+
+graph.model {
+    node.types [
+        "system",
+        "domain",
+        "artifact",
+        "gateway",
+        "index",
+        "map",
+        "bundle"
+    ];
+
+    edge.types [
+        "binds",
+        "links",
+        "references",
+        "contains",
+        "executes",
+        "learns",
+        "follows"
+    ];
+}
+
+# ============================
+# 3. NODE DEFINITIONS
+# ============================
+
+graph.nodes {
+    system."CONSTELLATION" {
+        url."https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS";
+        repo."https://github.com/mercwar/Constellation";
+        type."system";
+    }
+
+    system."AVIS-DATALAKE" {
+        url."AVIS-DATALAKE/avis/index.json";
+        repo."https://github.com/mercwar/AVIS-DATALAKE";
+        type."system";
+    }
+
+    system."RRU-AI" {
+        url."https://roborook.fanclub.rocks/RRU-AI/index.php";
+        type."system";
+    }
+
+    system."ROBO-ROOK" {
+        url."https://roborook.fanclub.rocks/RRP/index.php";
+        type."system";
+    }
+
+    system."ROBO-KNIGHT" {
+        url."https://mercwar01.byethost3.com/rkp/Robo-Knight-Player.php";
+        type."system";
+    }
+
+    domain."GITHUB" {
+        url."https://github.com/mercwar";
+        type."domain";
+    }
+
+    domain."GITHUB-PAGES" {
+        url."https://mercwar.github.io";
+        type."domain";
+    }
+
+    domain."FANCLUB" {
+        url."https://roborook.fanclub.rocks";
+        type."domain";
+    }
+
+    domain."BYETHOST" {
+        url."https://mercwar01.byethost3.com";
+        type."domain";
+    }
+}
+
+# ============================
+# 4. EDGE DEFINITIONS
+# ============================
+
+graph.edges {
+
+    # Constellation binds to Datalake
+    edge {
+        from."CONSTELLATION";
+        to."AVIS-DATALAKE";
+        type."binds";
+    }
+
+    # Datalake links to RRU-AI
+    edge {
+        from."AVIS-DATALAKE";
+        to."RRU-AI";
+        type."links";
+    }
+
+    # RRU-AI links to game engines
+    edge {
+        from."RRU-AI";
+        to."ROBO-ROOK";
+        type."links";
+    }
+
+    edge {
+        from."RRU-AI";
+        to."ROBO-KNIGHT";
+        type."links";
+    }
+
+    # Domains contain systems
+    edge {
+        from."GITHUB-PAGES";
+        to."CONSTELLATION";
+        type."contains";
+    }
+
+    edge {
+        from."FANCLUB";
+        to."RRU-AI";
+        type."contains";
+    }
+
+    edge {
+        from."FANCLUB";
+        to."ROBO-ROOK";
+        type."contains";
+    }
+
+    edge {
+        from."BYETHOST";
+        to."ROBO-KNIGHT";
+        type."contains";
+    }
+
+    # Systems follow domains
+    edge {
+        from."RRU-AI";
+        to."GITHUB";
+        type."follows";
+    }
+
+    edge {
+        from."CONSTELLATION";
+        to."GITHUB-PAGES";
+        type."follows";
+    }
+}
+
+# ============================
+# 5. GRAPH OUTPUT
+# ============================
+
+graph.emit {
+    file."MERCWAR.UNIVERSE.GRAPH";
+    format."ev3-graph";
+    include.nodes."true";
+    include.edges."true";
+    include.types."true";
+}
+
+end.ev3.graph;
