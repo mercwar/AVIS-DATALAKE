@@ -1,0 +1,8 @@
+{
+  "prompt": "VOID-STAR: an inverted star collapsing into an infinite void; central singularity core glowing white-gold with radiant corona; surrounding negative space like torn velvet; neon cyan and magenta edges; crystalline archive shards orbiting in slow, deliberate motion; hyper-real detail, volumetric light, cinematic depth, ultra-high resolution, photoreal + sci-fi hybrid",
+  "negative_prompt": "cartoon, low-res, grain, lens-flare overexposed, text, watermark",
+  "style_tags": ["hyper-real", "cinematic", "sci-fi", "photoreal"],
+  "aspect_ratio": "16:9",
+  "seed": 420420,
+  "notes": "Use long exposure motion blur on orbiting shards; emphasize negative space pressure."
+}
