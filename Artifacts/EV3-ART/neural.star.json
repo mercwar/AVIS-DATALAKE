@@ -1,0 +1,8 @@
+{
+  "prompt": "VOID-STAR neural-star: magenta neural filaments radiating from a tri-core lattice; halo-ring overseer above; interlinked gates of cyan nexus in background; node-web mapping light connecting shards; high contrast, painterly cosmic, dramatic rim lighting",
+  "negative_prompt": "faces, animals, text, logos, low-detail",
+  "style_tags": ["abstract", "concept-art", "high-contrast"],
+  "aspect_ratio": "3:2",
+  "seed": 1337,
+  "notes": "Good for concept thumbnails and hero banners."
+}
