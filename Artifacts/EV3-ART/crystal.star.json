@@ -1,0 +1,8 @@
+{
+  "prompt": "VOID-STAR memory-core closeup: amber crystal archive facets reflecting mapping-light; micro‑fractures with tiny white-gold cores; shallow depth of field, macro detail, photoreal textures, specular highlights",
+  "negative_prompt": "blurry, noisy, low-detail",
+  "style_tags": ["macro", "photoreal", "textural"],
+  "aspect_ratio": "1:1",
+  "seed": 777777,
+  "notes": "Use for UI panels and documentation hero images."
+}
