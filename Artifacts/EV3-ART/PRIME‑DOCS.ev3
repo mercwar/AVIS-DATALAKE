@@ -1,0 +1,22 @@
+AVIS2026
+begin.ev3.primedocs;
+
+primedocs.id."EV3-ART-PRIME-DOCS";
+primedocs.version."1.0";
+primedocs.role."root-documentation-index";
+
+primedocs.files [
+    "prime.ev3",
+    "prime-core.ev3",
+    "prime-state.ev3",
+    "prime-map.ev3",
+    "prime-seal.ev3",
+    "prime-ledger.ev3",
+    "prime-index.ev3"
+];
+
+primedocs.emit {
+    index."MERCWAR.PRIME.DOCS.INDEX";
+}
+
+end.ev3.primedocs;
