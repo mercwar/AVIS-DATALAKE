@@ -1,7 +1,7 @@
 <?php
 /* ============================================================
    AVIS-ARTIFACT
-   FILE: /SEARCH/engines/functions.php
+   FILE: Artifacts/import/functions.php
    PURPOSE: RRU-AI Constellation Search Engine Core
    WITH FULL LOGGING + DEBUG + SAFE JSON FETCH
    ============================================================ */
