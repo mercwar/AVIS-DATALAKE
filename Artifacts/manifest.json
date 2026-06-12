@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.io",
+  "agent_role": "AVIS-DATALAKE-ROBOT-COLLECTOR",
+  "version": "2.0.0",
+  "execution_sequence": {
+    "step_1_initialize": {
+      "action": "READ_CONFIG",
+      "source_file": "/Artifacts/config.json",
+      "expected_keys": ["paths.json_ingestion_target"]
+    },
+    "step_2_scan_source": {
+      "action": "PARSE_SOURCE_CODE",
+      "target_binary": "/Artifacts/import/avis_gateway_manager.c",
+      "extraction_regex": "// AVIS: node_\\d+ | repo=\"([^\"]+)\"",
+      "purpose": "Verify internal source links match expected network layout"
+    },
+    "step_3_ingest_directory": {
+      "action": "DIRECTORY_INGESTION",
+      "target_directory": "/Artifacts/export/JSON/",
+      "filter_extension": ".json",
+      "processing_engine": "/Artifacts/import/index.php"
+    },
+    "step_4_compile_output": {
+      "action": "CONSOLIDATE_RECORDS",
+      "output_file": "/Artifacts/export/JSON/constellation_assembled.json",
+      "enforce_schema_validation": true
+    }
+  },
+  "robot_instructions": {
+    "allow_dynamic_remapping": true,
+    "fallback_on_missing_node": "log_and_continue",
+    "verification_endpoint": "https://github.io"
+  }
+}
