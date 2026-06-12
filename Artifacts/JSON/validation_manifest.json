@@ -1,0 +1,50 @@
+{
+  "$schema": "https://github.io",
+  "artifact_type": "integrity_verification_matrix",
+  "system_scope": "AVIS-DATALAKE-VALIDATION",
+  "generated_epoch": 1774351200,
+  
+  "compilation_targets": {
+    "expected_json_payloads": [
+      "/Artifacts/export/JSON/constellation_complete_registry.json",
+      "/Artifacts/export/JSON/node_datalake.json",
+      "/Artifacts/export/JSON/node_cyborg.json",
+      "/Artifacts/export/JSON/node_sentinel.json"
+    ],
+    "verification_engines": {
+      "c_binary": "/Artifacts/import/avis_gateway_manager.c",
+      "php_router": "/Artifacts/import/index.php"
+    }
+  },
+
+  "hex_vector_registry": {
+    "enforce_hex_matching": true,
+    "strict_address_bounds": {
+      "prefix": "0x",
+      "required_length": 42
+    },
+    "static_signatures": [
+      {
+        "node_id": "AVIS_INGRESS",
+        "expected_vector": "0x415649535f434f4e54524f4c5f504c414e455f30",
+        "file_binding": "avis/gateway.avis"
+      },
+      {
+        "node_id": "CYBORG_EV2",
+        "expected_vector": "0x4359424f52475f5452414e534c4154494f4e5f31",
+        "file_binding": "topology/cyborg.i.o.live"
+      },
+      {
+        "node_id": "SENTINEL",
+        "expected_vector": "0x53454e54494e454c5f4547524553535f4d415452",
+        "file_binding": "security/sentinel.i.o.live"
+      }
+    ]
+  },
+
+  "robot_compliance": {
+    "common_crawl_visible": true,
+    "allow_dynamic_remapping": false,
+    "error_handling_protocol": "CRITICAL_HALT_ON_MISMATCH"
+  }
+}
