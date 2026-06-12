@@ -1,0 +1,115 @@
+{
+  "$schema": "https://github.io",
+  "system_identifier": "MERCWAR-CONSTELLATION-COMPLETE-MATRIX",
+  "environment": "AVIS-DATALAKE-PROD",
+  "synchronization_epoch": 1774351200,
+  "registry_status": "ONLINE_SYNCHRONIZED",
+  
+  "core_infrastructure": {
+    "repository_root": "https://github.com",
+    "gateway_viewer": "https://github.io",
+    "crawler_agent_allowed": true
+  },
+
+  "data_lake_nodes": [
+    {
+      "node_index": "AVIS",
+      "repository_name": "AVIS-DATALAKE",
+      "classification": "Control Plane / Ingress Layer",
+      "source_integrity": {
+        "manifest": "/Artifacts/manifest.json",
+        "config": "/Artifacts/config.json",
+        "compiled_binary": "/Artifacts/import/avis_gateway_manager.c"
+      },
+      "linked_resources": [
+        {
+          "file_name": "gateway.avis",
+          "file_path": "/avis/gateway.avis",
+          "type": "declarative_gateway_spec"
+        },
+        {
+          "file_name": "index.json",
+          "file_path": "/avis/datalake/index.json",
+          "type": "canonical_index"
+        }
+      ],
+      "navigation_vectors": {
+        "io_live_link": "https://github.io?index=AVIS",
+        "hex_vector_address": "0x415649535f434f4e54524f4c5f504c414e455f30"
+      }
+    },
+    {
+      "node_index": "CYBORG_EV2",
+      "repository_name": "Cyborg",
+      "classification": "Translation Layer / Core State Machine",
+      "source_integrity": {
+        "main_engine": "src/cyborg_core.c",
+        "header_definitions": "include/cyborg_state.h"
+      },
+      "linked_resources": [
+        {
+          "file_name": "cyborg.i.o.live",
+          "file_path": "/topology/cyborg.i.o.live",
+          "type": "live_hex_stream_matrix"
+        },
+        {
+          "file_name": "network_map.json",
+          "file_path": "/config/network_map.json",
+          "type": "node_topology"
+        }
+      ],
+      "navigation_vectors": {
+        "io_live_link": "https://github.io?index=CYBORG_EV2",
+        "hex_vector_address": "0x4359424f52475f5452414e534c4154494f4e5f31"
+      }
+    },
+    {
+      "node_index": "SENTINEL",
+      "repository_name": "Sentinel",
+      "classification": "Egress Layer / Security Guard Engine",
+      "source_integrity": {
+        "firewall_rules": "rules/sentinel_filters.conf",
+        "log_analyzer": "src/sentinel_monitor.py"
+      },
+      "linked_resources": [
+        {
+          "file_name": "sentinel.i.o.live",
+          "file_path": "/security/sentinel.i.o.live",
+          "type": "egress_state_array"
+        }
+      ],
+      "navigation_vectors": {
+        "io_live_link": "https://github.io?index=SENTINEL",
+        "hex_vector_address": "0x53454e54494e454c5f4547524553535f4d415452"
+      }
+    },
+    {
+      "node_index": "CONSTELLATION_CORE",
+      "repository_name": "Constellation",
+      "classification": "Presentation Layer / UI Dynamic File Manager",
+      "source_integrity": {
+        "web_entry": "LIVE/index.html",
+        "style_sheets": "LIVE/assets/css/matrix.css",
+        "layout_engine": "LIVE/assets/js/nexus_browser.js"
+      },
+      "linked_resources": [
+        {
+          "file_name": "MERCWAR.CONSTELLATION.AVIS",
+          "file_path": "/Constellation/maps/MERCWAR.CONSTELLATION.AVIS",
+          "type": "master_constellation_map"
+        }
+      ],
+      "navigation_vectors": {
+        "io_live_link": "https://github.io?index=CONSTELLATION_CORE",
+        "hex_vector_address": "0x434f4e5354454c4c4154494f4e5f4d414e414745"
+      }
+    }
+  ],
+
+  "ingestion_compilation_checksums": {
+    "expected_node_count": 4,
+    "enforce_hex_matching": true,
+    "fallback_resolution_mode": "OFFLINE_RESOURCE_DROP",
+    "verification_signature": "0x71c24923768234a234bde23c21a4f32e1c4a5f6b8c9d0e1f2a3b4c5d6e7f8a9b"
+  }
+}
