@@ -1,0 +1,46 @@
+{
+  "$schema": "https://github.io",
+  "artifact_type": "application_resource_drop",
+  "target_layer": "AVIS-DATALAKE",
+  "release_version": "2.0.0",
+  "timestamp": 1774351200,
+
+  "application_drop": {
+    "engine_binary": "/Artifacts/import/avis_gateway_manager.c",
+    "search_core": "/Artifacts/import/functions.php",
+    "router_entry": "/Artifacts/import/index.php"
+  },
+
+  "resource_drop": {
+    "host_platform": "https://github.com",
+    "index_pointer": "AVIS",
+    
+    "constellation_matrix": [
+      {
+        "repo_name": "AVIS-DATALAKE",
+        "live_file_path": "avis/gateway.avis",
+        "io_link": "https://github.io",
+        "validation_role": "ingress"
+      },
+      {
+        "repo_name": "Cyborg",
+        "live_file_path": "topology/cyborg.i.o.live",
+        "io_link": "https://github.io",
+        "validation_role": "translator"
+      },
+      {
+        "repo_name": "Sentinel",
+        "live_file_path": "security/sentinel.i.o.live",
+        "io_link": "https://github.io",
+        "validation_role": "egress"
+      }
+    ]
+  },
+
+  "compilation_rules": {
+    "enforce_hex_matching": true,
+    "allow_dynamic_paths": true,
+    "fallback_mode": "offline_resource_drop"
+  }
+}
+
