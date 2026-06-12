@@ -1,19 +1,18 @@
 <?php
 /* ============================================================
    AVIS-ARTIFACT
-   FILE: Artifacts/import/functions.php
+   FILE: /Artifacts/import/functions.php
    PURPOSE: RRU-AI Constellation Search Engine Core
    WITH FULL LOGGING + DEBUG + SAFE JSON FETCH
    ============================================================ */
 
-// Prevent direct script execution if loaded outside application scope
 if (!defined('AVIS_CORE_SECURE') && basename($_SERVER['SCRIPT_FILENAME']) == 'functions.php') {
     define('AVIS_CORE_SECURE', true);
 }
 
 // AVIS: config_init | channel="debug_logging" | state="active"
 define('AVIS_DEBUG_MODE', true);
-define('AVIS_LOG_FILE', __DIR__ . '/../logs/constellation_search.log');
+define('AVIS_LOG_FILE', __DIR__ . '/constellation_search.log');
 
 /**
  * Custom logging facility to track crawler mappings, index hits, and failures.
@@ -25,7 +24,6 @@ function avis_logger($message, $level = 'INFO') {
     $timestamp = date('Y-m-d H:i:s');
     $log_entry = sprintf("[%s] [%s] %s%s", $timestamp, $level, $message, PHP_EOL);
     
-    // Ensure the log directory exists safely
     $log_dir = dirname(AVIS_LOG_FILE);
     if (!is_dir($log_dir)) {
         mkdir($log_dir, 0755, true);
@@ -46,7 +44,6 @@ function avis_safe_fetch_json($url) {
         return null;
     }
 
-    // Initialize clean cURL instance to interact safely with GitHub endpoints
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -92,7 +89,6 @@ function avis_parse_gateway_file($file_contents) {
     $records = [];
     $pattern = '/repo\.root\."([^"]+)"\s+repo\.name\."([^"]+)"\s+repo\.io_link\."([^"]+)"/';
     
-    // Normalize string variants for direct matching checks
     $clean_contents = preg_replace('/\s+/', ' ', $file_contents);
     
     if (preg_match_all($pattern, $clean_contents, $matches, PREG_SET_ORDER)) {
