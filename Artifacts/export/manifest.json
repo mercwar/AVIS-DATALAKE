@@ -1,0 +1,38 @@
+{
+  "$schema": "https://github.io",
+  "artifact_type": "nexus_blueprint_map",
+  "target_layer": "AVIS-DATALAKE",
+  "release_version": "2.0.0",
+  "timestamp": 1774351200,
+
+  "assembler_blueprint": {
+    "target_manager_url": "https://github.io",
+    "index_pointer": "AVIS",
+    "pipelines": [
+      {
+        "repo_name": "AVIS-DATALAKE",
+        "live_file_path": "avis/gateway.avis",
+        "sequence_order": 1,
+        "validation_role": "ingress_AVIS"
+      },
+      {
+        "repo_name": "Cyborg",
+        "live_file_path": "topology/cyborg.i.o.live",
+        "sequence_order": 2,
+        "validation_role": "translator_AVIS"
+      },
+      {
+        "repo_name": "Sentinel",
+        "live_file_path": "security/sentinel.i.o.live",
+        "sequence_order": 3,
+        "validation_role": "egress_AVIS"
+      }
+    ]
+  },
+
+  "export_meta": {
+    "generator_source": "/Artifacts/import/avis_gateway_manager.c",
+    "output_format": "gateway.avis",
+    "discoverable": true
+  }
+}
