@@ -1,0 +1,121 @@
+AVIS2026
+begin.ev3.universe;
+
+meta.version."1.0";
+meta.generator."EV3-ART.fire-start";
+meta.timestamp."2026-06-12T14:10:00-04:00";
+
+universe.owner."mercwar";
+universe.root."https://github.com/mercwar";
+universe.gateway."https://mercwar.github.io/avis.gateway";
+
+# ============================
+# 1. PRIMARY SYSTEMS
+# ============================
+
+system.constellation {
+    entry."https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS";
+    repo."https://github.com/mercwar/Constellation";
+    maps [
+        "AVIS-DATALAKE/maps/MERCWAR.CONSTELLATION.AVIS",
+        "AVIS-DATALAKE/maps/UNIVERSE.AVIS"
+    ];
+}
+
+system.datalake {
+    index."AVIS-DATALAKE/avis/index.json";
+    artifacts."AVIS-DATALAKE/Artifacts/";
+    protocols."AVIS-DATALAKE/Artifacts/EV3-ART/bin/spec-ev3-art.json";
+}
+
+system.ai {
+    rru_ai."https://roborook.fanclub.rocks/RRU-AI/index.php";
+    search_api."https://roborook.fanclub.rocks/SEARCH/api.php";
+    search_api_alt."https://mercwar01.byethost3.com/SEARCH/api.php";
+}
+
+# ============================
+# 2. DOMAIN NETWORK
+# ============================
+
+domains {
+    primary [
+        "https://mercwar.github.io",
+        "https://roborook.fanclub.rocks",
+        "https://mercwar01.byethost3.com"
+    ];
+    github."https://github.com/mercwar";
+}
+
+# ============================
+# 3. ARTIFACT CLASSES
+# ============================
+
+artifacts.search_engines [
+    "Constellation/SEARCH/api.php",
+    "RRU-AI/search_engines/*",
+    "AVIS-DATALAKE/Artifacts/RRU-AI/*"
+];
+
+artifacts.ui_frontends [
+    "Constellation/LIVE/",
+    "roborook.fanclub.rocks/RRP/",
+    "roborook.fanclub.rocks/RRU/",
+    "mercwar01.byethost3.com/RRP/",
+    "mercwar01.byethost3.com/rkp/"
+];
+
+artifacts.ai_gateways [
+    "RRU-AI/index.php",
+    "RRU-AI/SEARCH/api.php"
+];
+
+artifacts.game_engines [
+    "Robo-Rook Player",
+    "Robo-Knight Player",
+    "Mercwar Game Scripts"
+];
+
+artifacts.language_specs [
+    "EV3-ART",
+    "FIRE-LANG",
+    "AVIS-LAW",
+    "RRU-AI Protocols"
+];
+
+# ============================
+# 4. FOLLOW RULES
+# ============================
+
+follow.rules {
+    allow [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+    ];
+}
+
+# ============================
+# 5. FILE DISCOVERY RULES
+# ============================
+
+collect.files [
+    "*.avis",
+    "*.json",
+    "*.php",
+    "*.js",
+    "*.c",
+    "*.h"
+];
+
+# ============================
+# 6. OUTPUT DECLARATION
+# ============================
+
+emit.bundle."MERCWAR.UNIVERSE.BUNDLE";
+emit.map."MERCWAR.UNIVERSE.MAP";
+emit.ready."true";
+
+end.ev3.universe;
