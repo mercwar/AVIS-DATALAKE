@@ -1,0 +1,59 @@
+AVIS2026
+begin.ev3.primeindex;
+
+primeindex.id."EV3-ART-PRIME-INDEX";
+primeindex.version."1.0";
+primeindex.role."root-lookup-table";
+
+# ============================
+# 1. REGISTER PRIME COMPONENTS
+# ============================
+
+primeindex.components [
+    { name."PRIME"; file."prime.ev3"; role."root-authority" },
+    { name."PRIME-SEAL"; file."prime-seal.ev3"; role."binding-sigil" },
+    { name."PRIME-LEDGER"; file."prime-ledger.ev3"; role."authority-registry" }
+];
+
+# ============================
+# 2. MAP AUTHORITY CHAIN
+# ============================
+
+primeindex.authority {
+    root."PRIME";
+    seal."PRIME-SEAL";
+    registry."PRIME-LEDGER";
+}
+
+# ============================
+# 3. MAP OUTPUT FILES
+# ============================
+
+primeindex.outputs {
+    map."MERCWAR.PRIME.MAP";
+    state."MERCWAR.PRIME.STATE";
+    seal."MERCWAR.PRIME.SEAL";
+    ledger."MERCWAR.PRIME.LEDGER";
+}
+
+# ============================
+# 4. LOOKUP RULES
+# ============================
+
+primeindex.rules {
+    lookup.by.name."true";
+    lookup.by.role."true";
+    lookup.by.file."true";
+    lookup.strict."true";
+}
+
+# ============================
+# 5. OUTPUT
+# ============================
+
+primeindex.emit {
+    index."MERCWAR.PRIME.INDEX";
+    log."EV3-ART-PRIME-INDEX.LOG";
+}
+
+end.ev3.primeindex;
