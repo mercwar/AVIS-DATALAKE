@@ -1,0 +1,15 @@
+{
+  "$schema": "https://github.io",
+  "environment": "AVIS-DATALAKE-GATEWAY",
+  "version": "2.0.0",
+  "paths": {
+    "import_root": "/Artifacts/import/",
+    "export_root": "/Artifacts/export/",
+    "json_ingestion_target": "/Artifacts/export/JSON/"
+  },
+  "ingestion_rules": {
+    "auto_discover": true,
+    "enforce_schema": true,
+    "output_format": "JSON"
+  }
+}
