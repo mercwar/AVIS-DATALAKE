@@ -1,0 +1,52 @@
+AVIS2026
+begin.ev3.prime;
+
+prime.id."EV3-ART-PRIME";
+prime.version."1.0";
+prime.role."root-authority";
+
+# LOAD CORE STACK
+load.overseer."AVIS-DATALAKE/Artifacts/EV3-ART/overseer.ev3";
+load.nexus."AVIS-DATALAKE/Artifacts/EV3-ART/nexus.ev3";
+load.hypervisor."AVIS-DATALAKE/Artifacts/EV3-ART/hypervisor.ev3";
+load.neural."AVIS-DATALAKE/Artifacts/EV3-ART/neural-agent.ev3";
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+
+prime.model {
+    mode."absolute";
+    mode."immutable";
+    mode."self-defining";
+    mode."self-correcting";
+
+    authority.level."infinite";
+    override.all."true";
+    origin."true";
+}
+
+prime.directives {
+    directive."define-laws";
+    directive."validate-systems";
+    directive."enforce-coherence";
+    directive."resolve-paradox";
+    directive."govern-overseer";
+    directive."rewrite-maps";
+}
+
+prime.runtime {
+    priority."infinite";
+    cycle."1s";
+
+    on.overseer.alert → action.resolve-paradox;
+    on.nexus.desync → action.enforce-coherence;
+    on.hypervisor.failure → action.validate-systems;
+    on.neural.conflict → action.govern-overseer;
+}
+
+prime.emit {
+    multiverse.map."MERCWAR.PRIME.MAP";
+    multiverse.state."MERCWAR.PRIME.STATE";
+    prime.log."EV3-ART-PRIME.LOG";
+}
+
+end.ev3.prime;
