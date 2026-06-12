@@ -1,0 +1,58 @@
+{
+  "id": "roborook-fanclub",
+  "domain": "https://roborook.fanclub.rocks",
+  "owner": "mercwar",
+  "type": "fanclub-root",
+  "entrypoints": [
+    {
+      "url": "https://roborook.fanclub.rocks/index.php",
+      "role": "main"
+    },
+    {
+      "url": "https://roborook.fanclub.rocks/RRP/index.php",
+      "role": "player"
+    },
+    {
+      "url": "https://roborook.fanclub.rocks/RRU/index.php",
+      "role": "universe"
+    },
+    {
+      "url": "https://roborook.fanclub.rocks/RRU-AI/index.php",
+      "role": "ai"
+    }
+  ],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/mercwar"
+    },
+    {
+      "type": "constellation",
+      "url": "https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS"
+    }
+  ],
+  "apis": [
+    {
+      "name": "RRU-AI Search API",
+      "url": "https://roborook.fanclub.rocks/SEARCH/api.php",
+      "method": "GET",
+      "params": ["q"],
+      "format": "html"
+    }
+  ],
+  "robots": {
+    "follow": [
+      "https://roborook.fanclub.rocks/*",
+      "https://github.com/mercwar/*",
+      "avis://*"
+    ],
+    "collect": [
+      "*.php",
+      "*.json",
+      "*.avis",
+      "*.js",
+      "*.c",
+      "*.h"
+    ]
+  }
+}
