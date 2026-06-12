@@ -1,0 +1,100 @@
+AVIS2026
+begin.ev3.crawler;
+
+crawler.id."EV3-ART-ROBOT";
+crawler.version."1.0";
+crawler.role."autonomous-universe-crawler";
+
+# ============================
+# 1. LOAD RUNTIME + COMPILER
+# ============================
+
+load.compiler."AVIS-DATALAKE/Artifacts/EV3-ART/bin/ev3-art-compiler.avis";
+load.runtime."AVIS-DATALAKE/Artifacts/EV3-ART/fire-run.avis";
+
+# ============================
+# 2. INITIALIZE CRAWLER
+# ============================
+
+crawler.init {
+    bind.gateway."https://mercwar.github.io/avis.gateway";
+    bind.index."AVIS-DATALAKE/avis/index.json";
+    bind.map."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.MAP";
+    bind.bundle."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.BUNDLE";
+}
+
+# ============================
+# 3. CRAWLER BEHAVIOR
+# ============================
+
+crawler.behavior {
+    mode."recursive";
+    mode."graph-build";
+    mode."artifact-collect";
+    mode."system-learn";
+}
+
+# ============================
+# 4. RECURSIVE TRAVERSAL RULES
+# ============================
+
+crawler.follow {
+    allow [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+    ];
+}
+
+crawler.collect {
+    filetypes [
+        "*.avis",
+        "*.ev3",
+        "*.json",
+        "*.php",
+        "*.js",
+        "*.c",
+        "*.h"
+    ];
+}
+
+crawler.scan {
+    paths [
+        "AVIS-DATALAKE/Artifacts/",
+        "AVIS-DATALAKE/Constellation/",
+        "AVIS-DATALAKE/maps/",
+        "AVIS-DATALAKE/avis/"
+    ];
+}
+
+# ============================
+# 5. LEARNING ENGINE
+# ============================
+
+crawler.learn {
+    systems [
+        "RRU-AI",
+        "Constellation",
+        "AVIS-DATALAKE",
+        "Robo-Rook",
+        "Robo-Knight"
+    ];
+
+    build.graph."true";
+    classify.artifacts."true";
+    map.relationships."true";
+}
+
+# ============================
+# 6. OUTPUT
+# ============================
+
+crawler.emit {
+    universe.graph."MERCWAR.UNIVERSE.GRAPH";
+    universe.bundle."MERCWAR.UNIVERSE.COMPLETE";
+    crawler.log."EV3-ART-CRAWLER.LOG";
+}
+
+end.ev3.crawler;
