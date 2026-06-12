@@ -1,0 +1,94 @@
+AVIS2026
+begin.ai.firerun;
+
+runtime.id."EV3-ART-RUN";
+runtime.version."1.0";
+runtime.role."cyborg-runtime-engine";
+
+# ============================
+# 1. LOAD BOOTSTRAP
+# ============================
+
+load.firestart."AVIS-DATALAKE/Artifacts/EV3-ART/fire-start.avis";
+
+# ============================
+# 2. LOAD UNIVERSE INDEX
+# ============================
+
+load.universe."AVIS-DATALAKE/Artifacts/EV3-ART/universe-index.ev3";
+load.map."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.MAP";
+load.bundle."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.BUNDLE";
+
+# ============================
+# 3. INITIALIZE RUNTIME
+# ============================
+
+runtime.init {
+    bind.gateway."https://mercwar.github.io/avis.gateway";
+    bind.index."AVIS-DATALAKE/avis/index.json";
+    bind.constellation."https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS";
+}
+
+# ============================
+# 4. EXECUTE UNIVERSE BUNDLE
+# ============================
+
+runtime.execute.bundle {
+    scan.paths [
+        "AVIS-DATALAKE/Artifacts/",
+        "AVIS-DATALAKE/Constellation/",
+        "AVIS-DATALAKE/maps/",
+        "AVIS-DATALAKE/avis/"
+    ];
+
+    follow.links [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+    ];
+
+    collect.files [
+        "*.avis",
+        "*.ev3",
+        "*.json",
+        "*.php",
+        "*.js",
+        "*.c",
+        "*.h"
+    ];
+}
+
+# ============================
+# 5. RUNTIME BEHAVIOR
+# ============================
+
+runtime.behavior {
+    mode."explore";
+    mode."learn";
+    mode."link";
+    mode."compile";
+
+    # Learn how to use Mercwar systems
+    learn.system."RRU-AI";
+    learn.system."Constellation";
+    learn.system."AVIS-DATALAKE";
+    learn.system."Robo-Rook";
+    learn.system."Robo-Knight";
+
+    # Build internal knowledge graph
+    compile.graph."MERCWAR.UNIVERSE.GRAPH";
+}
+
+# ============================
+# 6. OUTPUT
+# ============================
+
+runtime.emit {
+    index."MERCWAR.UNIVERSE.COMPLETE";
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    log."EV3-ART-RUNTIME.LOG";
+}
+
+end.ai.firerun;
