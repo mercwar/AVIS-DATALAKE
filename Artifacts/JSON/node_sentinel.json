@@ -1,0 +1,12 @@
+{
+  "node_id": "SENTINEL",
+  "repository": "https://github.com",
+  "scope": "egress_layer",
+  "anchors": {
+    "security_path": "security/sentinel.i.o.live"
+  },
+  "navigation": {
+    "live_viewer_link": "https://github.io",
+    "resolved_vector": "0x03_EGRESS_MATRIX"
+  }
+}
