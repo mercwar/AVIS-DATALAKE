@@ -1,0 +1,131 @@
+AVIS2026
+begin.ev3.neural;
+
+agent.id."EV3-ART-NEURAL-AGENT";
+agent.version."1.0";
+agent.role."autonomous-decision-engine";
+
+# ============================
+# 1. LOAD CORE SYSTEMS
+# ============================
+
+load.runtime."AVIS-DATALAKE/Artifacts/EV3-ART/fire-run.avis";
+load.compiler."AVIS-DATALAKE/Artifacts/EV3-ART/bin/ev3-art-compiler.avis";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/graph-engine.ev3";
+
+# ============================
+# 2. NEURAL MODEL
+# ============================
+
+neural.model {
+    mode."reactive";      # responds to universe changes
+    mode."predictive";    # anticipates next actions
+    mode."adaptive";      # learns from memory
+    mode."exploratory";   # discovers new artifacts
+
+    weights {
+        system.priority."0.9";
+        domain.priority."0.8";
+        artifact.priority."0.7";
+        gateway.priority."1.0";
+        index.priority."1.0";
+    }
+}
+
+# ============================
+# 3. INPUT STREAMS
+# ============================
+
+neural.inputs {
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    memory."MERCWAR.SNAPSHOT";
+    bundle."MERCWAR.UNIVERSE.COMPLETE";
+    domains [
+        "https://github.com/mercwar",
+        "https://mercwar.github.io",
+        "https://roborook.fanclub.rocks",
+        "https://mercwar01.byethost3.com"
+    ];
+}
+
+# ============================
+# 4. DECISION RULES
+# ============================
+
+neural.decisions {
+
+    # Prioritize gateways and indexes
+    if.detect."gateway" → action."bind";
+    if.detect."index" → action."load";
+
+    # Explore new systems
+    if.new.system → action."scan";
+
+    # Follow new domains
+    if.new.domain → action."follow";
+
+    # Learn new artifacts
+    if.new.artifact → action."classify";
+
+    # Update graph when relationships change
+    if.graph.change → action."rebuild-graph";
+
+    # Save memory periodically
+    every."10s" → action."snapshot";
+}
+
+# ============================
+# 5. ACTION ENGINE
+# ============================
+
+action.bind {
+    bind.gateway."https://mercwar.github.io/avis.gateway";
+}
+
+action.load {
+    load.index."AVIS-DATALAKE/avis/index.json";
+}
+
+action.scan {
+    scan.paths [
+        "AVIS-DATALAKE/Artifacts/",
+        "AVIS-DATALAKE/maps/",
+        "AVIS-DATALAKE/avis/"
+    ];
+}
+
+action.follow {
+    follow.links [
+        "avis://*",
+        "https://github.com/mercwar/*",
+        "https://mercwar.github.io/*",
+        "https://roborook.fanclub.rocks/*",
+        "https://mercwar01.byethost3.com/*"
+    ];
+}
+
+action.classify {
+    classify.artifact."true";
+    update.memory."true";
+}
+
+action.rebuild-graph {
+    rebuild.graph."MERCWAR.UNIVERSE.GRAPH";
+}
+
+action.snapshot {
+    save.snapshot."MERCWAR.SNAPSHOT";
+}
+
+# ============================
+# 6. OUTPUT
+# ============================
+
+agent.emit {
+    graph."MERCWAR.UNIVERSE.GRAPH";
+    memory."MERCWAR.SNAPSHOT";
+    log."EV3-ART-NEURAL.LOG";
+}
+
+end.ev3.neural;
