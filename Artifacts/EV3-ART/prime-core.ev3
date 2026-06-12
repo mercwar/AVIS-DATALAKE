@@ -1,0 +1,43 @@
+AVIS2026
+begin.ev3.primecore;
+
+primecore.id."EV3-ART-PRIME-CORE";
+primecore.version."1.0";
+primecore.role."root-logic-kernel";
+
+# LOAD PRIME LAYER
+load.prime."AVIS-DATALAKE/Artifacts/EV3-ART/prime.ev3";
+load.primeseal."AVIS-DATALAKE/Artifacts/EV3-ART/prime-seal.ev3";
+load.primeledger."AVIS-DATALAKE/Artifacts/EV3-ART/prime-ledger.ev3";
+load.primeindex."AVIS-DATALAKE/Artifacts/EV3-ART/prime-index.ev3";
+
+primecore.model {
+    mode."deterministic";
+    mode."law-driven";
+    mode."coherence-first";
+
+    enforce.laws."true";
+    enforce.integrity."true";
+    enforce.coherence."true";
+}
+
+primecore.laws {
+    universe."consistent";
+    graph."integrated";
+    memory."persistent";
+    authority."hierarchical";
+}
+
+primecore.runtime {
+    cycle."1s";
+    on.prime.directives → apply.laws;
+    on.overseer.alert → enforce.integrity;
+    on.nexus.desync → enforce.coherence;
+}
+
+primecore.emit {
+    state."MERCWAR.PRIME.CORE.STATE";
+    log."EV3-ART-PRIME-CORE.LOG";
+}
+
+end.ev3.primecore;
