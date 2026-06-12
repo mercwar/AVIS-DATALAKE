@@ -1,0 +1,13 @@
+{
+  "node_id": "AVIS_INGRESS",
+  "repository": "https://github.com",
+  "scope": "control_plane",
+  "anchors": {
+    "gateway_path": "/avis/gateway.avis",
+    "manifest_path": "/Artifacts/manifest.json"
+  },
+  "navigation": {
+    "live_viewer_link": "https://github.io",
+    "resolved_vector": "0x01_INITIAL_INGRESS"
+  }
+}
