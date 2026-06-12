@@ -1,0 +1,38 @@
+{
+  "id": "constellation-live",
+  "name": "RRU Constellation LIVE",
+  "owner": "mercwar",
+  "github_repo_url": "https://github.com/mercwar/Constellation",
+  "pages_root": "https://mercwar.github.io/Constellation/",
+  "entrypoints": [
+    {
+      "url": "https://mercwar.github.io/Constellation/LIVE/index.html",
+      "type": "ui",
+      "role": "main"
+    },
+    {
+      "url": "https://mercwar.github.io/Constellation/LIVE/index.html?index=AVIS",
+      "type": "ui",
+      "role": "avis-index"
+    }
+  ],
+  "apis": [
+    {
+      "name": "RRU Constellation Search API",
+      "url": "https://mercwar.github.io/Constellation/SEARCH/api.php",
+      "method": "GET",
+      "params": ["q"],
+      "format": "html"
+    }
+  ],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/mercwar/Constellation"
+    },
+    {
+      "type": "datalake",
+      "url": "https://mercwar.github.io/AVIS-DATALAKE/avis/index.json"
+    }
+  ]
+}
