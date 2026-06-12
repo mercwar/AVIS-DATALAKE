@@ -1,0 +1,116 @@
+AVIS2026
+begin.ev3.visual;
+
+visualizer.id."EV3-ART-VISUALIZER";
+visualizer.version."1.0";
+visualizer.role."universe-graph-renderer";
+
+# ============================
+# 1. LOAD GRAPH + MEMORY
+# ============================
+
+load.graph."AVIS-DATALAKE/Artifacts/EV3-ART/MERCWAR.UNIVERSE.GRAPH";
+load.memory."AVIS-DATALAKE/Artifacts/EV3-ART/memory-core.ev3";
+
+# ============================
+# 2. VISUAL MODEL
+# ============================
+
+visual.model {
+    node.shape."holo-sphere";
+    node.color.system."#00eaff";
+    node.color.domain."#ffb300";
+    node.color.artifact."#ff00e1";
+    node.color.gateway."#00ff6a";
+    node.color.index."#ffffff";
+
+    edge.style."neon-line";
+    edge.color.binds."#00ffea";
+    edge.color.links."#ff00a8";
+    edge.color.contains."#ffaa00";
+    edge.color.follows."#00ff4c";
+
+    layout."3d-force";
+    depth."infinite";
+}
+
+# ============================
+# 3. VISUALIZATION RULES
+# ============================
+
+visual.rules {
+    show.nodes."true";
+    show.edges."true";
+    show.labels."true";
+    show.types."true";
+
+    animate.force."true";
+    animate.pulse.system."true";
+    animate.pulse.gateway."true";
+}
+
+# ============================
+# 4. RENDER PIPELINE
+# ============================
+
+visual.pipeline [
+    "load_graph",
+    "classify_nodes",
+    "classify_edges",
+    "apply_layout",
+    "render_frame",
+    "animate"
+];
+
+visual.load_graph {
+    source."MERCWAR.UNIVERSE.GRAPH";
+    parse."ev3-graph";
+}
+
+visual.classify_nodes {
+    detect.system."true";
+    detect.domain."true";
+    detect.artifact."true";
+    detect.gateway."true";
+}
+
+visual.classify_edges {
+    detect.binds."true";
+    detect.links."true";
+    detect.contains."true";
+    detect.follows."true";
+}
+
+visual.apply_layout {
+    mode."3d-force";
+    gravity."0.8";
+    repulsion."1.2";
+    link_strength."0.9";
+}
+
+visual.render_frame {
+    resolution."4k";
+    color_depth."32bit";
+    glow."true";
+    bloom."true";
+}
+
+visual.animate {
+    fps."60";
+    pulse.speed."1.0";
+    orbit.speed."0.3";
+}
+
+# ============================
+# 5. OUTPUT
+# ============================
+
+visual.emit {
+    file."MERCWAR.UNIVERSE.VISUAL";
+    format."ev3-visual";
+    include.graph."true";
+    include.animation."true";
+    include.metadata."true";
+}
+
+end.ev3.visual;
