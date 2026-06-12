@@ -1,0 +1,37 @@
+AVIS2026
+begin.ev3.primestate;
+
+primestate.id."EV3-ART-PRIME-STATE";
+primestate.version."1.0";
+primestate.role."root-state-machine";
+
+load.prime."AVIS-DATALAKE/Artifacts/EV3-ART/prime.ev3";
+load.primecore."AVIS-DATALAKE/Artifacts/EV3-ART/prime-core.ev3";
+load.primeledger."AVIS-DATALAKE/Artifacts/EV3-ART/prime-ledger.ev3";
+
+primestate.model {
+    track.graph."true";
+    track.memory."true";
+    track.multiverse."true";
+    track.authority."true";
+}
+
+primestate.fields {
+    field."graph.state";
+    field."memory.state";
+    field."multiverse.state";
+    field."authority.chain";
+}
+
+primestate.runtime {
+    cycle."1s";
+    snapshot."true";
+    snapshot.file."MERCWAR.PRIME.STATE";
+}
+
+primestate.emit {
+    state."MERCWAR.PRIME.STATE";
+    log."EV3-ART-PRIME-STATE.LOG";
+}
+
+end.ev3.primestate;
