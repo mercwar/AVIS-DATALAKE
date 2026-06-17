@@ -1,0 +1,48 @@
+/// =============================================================
+/// AVIS-ARTIFACT
+/// FILE: hyper_gui.block
+/// PURPOSE:
+///     Define the HYPER-GUI for Universe-2. This is the visual,
+///     interactive interface for traversing, inspecting, and
+///     manipulating Universe-2 structures.
+/// AVIS-GUID: U2-HYPER-GUI-0012
+/// AVIS-ANCHOR: DL/UNIVERSE2/HYPER-GUI
+/// =============================================================
+
+HYPER-GUI {
+    namespace = "/dl/universe2";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE-INTERFACE";
+}
+
+PURPOSE {
+    statement = "Provide an interactive, multivector GUI for \
+                 navigating Universe-2 hyper-structures, viewing \
+                 layers, and tracing recursion paths.";
+}
+
+LAYOUT {
+    panel[0] = "UNIVERSE MAP — multivector topology viewer.";
+    panel[1] = "LAYER STACK — GENESIS → HYPER-FIELD → AXIOMATIC-MESH \
+                → PARALLEL-SEED → RECURSION-PRIME → COSMIC-MULTIVECTOR \
+                → HYPER-SYMBOLIC → HYPER-FRAMEWORK → HYPER-MEGASTRUCTURE \
+                → HYPER-HYPERSTRUCTURE → HYPER-CULMINATION.";
+    panel[2] = "ENTITY INSPECTOR — hyper-symbolic primitive and \
+                framework introspection.";
+    panel[3] = "RECURSION TRACE — live visualization of recursion-prime \
+                loops and multivector paths.";
+    panel[4] = "COMMAND CONSOLE — accepts NEXT, NEXTNEXT, and \
+                meta-commands.";
+}
+
+STYLE {
+    theme[0] = "Black-glass, gold-trim, neon multivector lines.";
+    theme[1] = "Fast white flashes on state transitions.";
+    theme[2] = "No blur; crisp hyper-layer edges.";
+}
+
+LINKS {
+    parent_guid = "U2-HYPER-HYPERSTRUCTURE-ASCENSION-0010";
+    next_guid   = "U2-DEPLOYMENT-BUNDLE-0013";
+}
