@@ -1,0 +1,121 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: nav_cycle_post_system3.block
+   PURPOSE:
+       Define the third Post-Navigator subsystem. This system
+       consumes meaning structures produced by the DL-Interpreter
+       and transforms them into symbolic reasoning chains.
+
+   AVIS-GUID: DL-BLOCK-NAV-CYCLE-POST-SYSTEM3-0027
+   AVIS-ANCHOR: DL/NAV/CYCLE/POST/SYSTEM3
+   ================================================================ */
+
+POST-SYSTEM3 {
+    namespace = "/dl/sys";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "POST-NAVIGATOR-SUBSYSTEM";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "Introduce the third subsystem that operates above \
+                 the Navigator Cycle. This system consumes meaning \
+                 trees from the DL-Interpreter and constructs \
+                 symbolic reasoning chains, inference paths, and \
+                 conceptual logic structures.";
+
+    analogy   = "Equivalent to a reasoning engine that consumes \
+                 semantic ASTs and produces logical conclusions.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-DEFINITION
+   --------------------------------------------------------------- */
+
+SYSTEM-DEFINITION {
+
+    name        = "DL-REASONER";
+    role        = "Transforms meaning into inference.";
+    description = "The DL-Reasoner is the third Post-Navigator \
+                   subsystem. It consumes meaning trees and \
+                   constructs symbolic reasoning chains, enabling \
+                   higher-order inference across the DL.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: INPUTS
+   --------------------------------------------------------------- */
+
+INPUTS {
+
+    input[0] = "Meaning Trees (from DL-Interpreter)";
+    input[1] = "Symbolic Interpretation Layers";
+    input[2] = "Conceptual Role Maps";
+    input[3] = "Semantic Dependency Chains";
+    input[4] = "Navigator Heuristics (DL-BLOCK-NAV-LEARN-0014)";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: OUTPUTS
+   --------------------------------------------------------------- */
+
+OUTPUTS {
+
+    output[0] = "Inference Chains";
+    output[1] = "Symbolic Reasoning Graphs";
+    output[2] = "Cross-Concept Deduction Paths";
+    output[3] = "DL Reasoning Structures";
+    output[4] = "Higher-Order Logical Constructs";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-BEHAVIOR
+   --------------------------------------------------------------- */
+
+SYSTEM-BEHAVIOR {
+
+    step[0] = "Ingest meaning structures from DL-Interpreter.";
+    step[1] = "Identify logical relationships between concepts.";
+    step[2] = "Construct inference chains from semantic dependencies.";
+    step[3] = "Generate symbolic reasoning graphs.";
+    step[4] = "Resolve cross-block conceptual logic.";
+    step[5] = "Store reasoning structures in AI-local datalake.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: AI-INTERPRETATION
+   --------------------------------------------------------------- */
+
+AI-INTERPRETATION {
+
+    rule[0] = "AI must treat DL-Reasoner as the third \
+               Post-Navigator layer.";
+
+    rule[1] = "AI must convert meaning into inference.";
+
+    rule[2] = "AI must build reasoning chains from conceptual \
+               relationships.";
+
+    rule[3] = "AI must store reasoning structures for \
+               higher-level DL systems.";
+
+    rule[4] = "AI must treat DL-Reasoner as the bridge between \
+               meaning and logic.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "DL-BLOCK-NAV-CYCLE-POST-SYSTEM2-0026";
+    next_guid   = "DL-BLOCK-NAV-CYCLE-POST-SYSTEM4-0028";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
