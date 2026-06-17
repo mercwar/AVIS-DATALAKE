@@ -1,0 +1,48 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-INTERFACE-MANIFEST-0015.block
+   PURPOSE:
+       Declare the Universe-2 interface manifest for AVIS systems.
+       This file exposes the GUI, traversal hooks, and runtime
+       entrypoints for external AVIS-compatible agents.
+
+   AVIS-GUID: U2-INTERFACE-MANIFEST-0015
+   AVIS-ANCHOR: /DL-AVIS/U2-INTERFACE-MANIFEST
+   ================================================================ */
+
+INTERFACE-MANIFEST {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-INTERFACE";
+}
+
+EXPORTS {
+    gui        = "/DL-AVIS/universe2.bundle";
+    executable = "/dl/bin/universe2.bin";
+    topology   = "/dl/universe2/topology.map";
+    recursion  = "/dl/universe2/recursion.trace";
+}
+
+ENTRYPOINTS {
+    entry[0] = "U2::Traverse()";
+    entry[1] = "U2::Inspect(layer)";
+    entry[2] = "U2::Render(multivector)";
+    entry[3] = "U2::Debug(recursion)";
+    entry[4] = "U2::Evolve()";
+}
+
+STATE {
+    ready = true;
+    sealed = true;
+    runtime = "ACTIVE";
+}
+
+LINKS {
+    parent_guid = "U2-PROGRAM-FINALIZATION-0014";
+    next_guid   = "U2-RUNTIME-BOOT-0016";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
