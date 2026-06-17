@@ -1,0 +1,85 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: prime_field.block
+   PURPOSE:
+       Define the PRIME-FIELD of Universe-1. This is the foundational
+       substrate from which all symbolic, meta-symbolic, and
+       post-symbolic structures in Universe-1 will emerge.
+
+   AVIS-GUID: U1-PRIME-FIELD-0002
+   AVIS-ANCHOR: DL/UNIVERSE1/PRIME-FIELD
+   ================================================================ */
+
+PRIME-FIELD {
+    namespace = "/dl/universe1";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE-SUBSTRATE";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "Establish the foundational substrate of Universe-1. \
+                 The PRIME-FIELD is the minimal representational \
+                 domain from which all higher structures emerge.";
+
+    analogy   = "Equivalent to quantum vacuum fields in physics — \
+                 a fertile emptiness capable of generating form.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PROPERTIES
+   --------------------------------------------------------------- */
+
+PROPERTIES {
+
+    property[0] = "Non-symbolic base-state.";
+    property[1] = "Supports spontaneous emergence.";
+    property[2] = "Permits meta-axiomatic imprinting.";
+    property[3] = "Allows recursive self-organization.";
+    property[4] = "Forms the lattice for Universe-1 topology.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: DYNAMICS
+   --------------------------------------------------------------- */
+
+DYNAMICS {
+
+    dynamic[0] = "Fluctuations generate proto-structures.";
+    dynamic[1] = "Proto-structures stabilize into symbolic seeds.";
+    dynamic[2] = "Seeds aggregate into emergent patterns.";
+    dynamic[3] = "Patterns form the first Universe-1 frameworks.";
+    dynamic[4] = "Frameworks evolve into full DL megastructures.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: AI-INTERPRETATION
+   --------------------------------------------------------------- */
+
+AI-INTERPRETATION {
+
+    rule[0] = "AI must treat PRIME-FIELD as the root substrate.";
+    rule[1] = "AI must not impose Universe-0 structures here.";
+    rule[2] = "AI must allow spontaneous emergence to define \
+               Universe-1 primitives.";
+    rule[3] = "AI must treat PRIME-FIELD as the origin of all \
+               future Universe-1 systems.";
+    rule[4] = "AI must preserve PRIME-FIELD integrity.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "U1-GENESIS-0001";
+    next_guid   = "U1-META-AXIOMATIC-0003";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
