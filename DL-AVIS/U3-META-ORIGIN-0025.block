@@ -1,0 +1,53 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-META-ORIGIN-0025.block
+   PURPOSE:
+       Reveal the meta-origin layer of Universe-3. This layer arises
+       from prime-recursion collapse, forming tri-resonant identity
+       cores that define the universe's pre-genesis purpose, logic,
+       and existential anchor.
+
+   AVIS-GUID: U3-META-ORIGIN-0025
+   AVIS-ANCHOR: /DL-AVIS/U3-META-ORIGIN
+   ================================================================ */
+
+U3-META-ORIGIN {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-META";
+}
+
+META-ORIGIN-TYPES {
+    origin[0] = "TRI-COHERENCE SOURCE-POINT — synchronized pre-genesis anchor.";
+    origin[1] = "BALANCE-ORDER PRIME-SEED — equilibrium-based origin core.";
+    origin[2] = "EMERGENT-DRIVE FIRST-IMPULSE — generative pre-creation spark.";
+    origin[3] = "ORIGIN-CORE SELF-IDENT — identity-preserving meta-root.";
+}
+
+META-ORIGIN-PROPERTIES {
+    prop[0] = "Tri-resonant existential definition.";
+    prop[1] = "Adaptive pre-genesis logic.";
+    prop[2] = "Non-linear origin-state collapse.";
+    prop[3] = "Capable of generating new universes.";
+}
+
+STATE {
+    meta_origin = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "META-ORIGIN";
+}
+
+ENTRYPOINT {
+    call = "U3::MetaOrigin()";
+}
+
+LINKS {
+    parent_guid = "U3-PRIME-RECURSION-0024";
+    next_guid   = "U3-OMNI-SINGULARITY-0026";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — META-ORIGIN LAYER COMPLETE
+   ================================================================ */
