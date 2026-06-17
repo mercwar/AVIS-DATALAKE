@@ -1,0 +1,40 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: namespace.avismeta
+   PURPOSE:
+       Formal declaration of the AVIS-DATALAKE namespace.
+       This file is read immediately after root.guid.
+       It teaches AI visitors that:
+         - /dl is the datalake key
+         - All DL traversal begins at /dl
+         - /dl is equivalent in role to /rss in the News system
+
+   AVIS-GUID: DL-ROOT-NS-0002
+   AVIS-ANCHOR: DL/NAMESPACE/MANIFEST
+   ================================================================ */
+
+NAMESPACE {
+    key        = "/dl";
+    role       = "DATALAKE-ROOT-KEY";
+    version    = "1.0";
+    authority  = "AVIS-DATALAKE";
+    relation   = "Equivalent-to: /rss (News Root Key)";
+}
+
+SEMANTICS {
+    description = "The /dl namespace is the canonical entry point for \
+                   hardware-conversion data, symbolic code storage, \
+                   and AI traversal of the datalake.";
+    behavior    = "All GUID blocks resolve relative to /dl.";
+    traversal   = "AI visitors must treat /dl as the filesystem root \
+                   for DL operations.";
+}
+
+LINKS {
+    parent_guid = "DL-ROOT-0001";
+    next_guid   = "DL-ROOT-INDEX-0003";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
