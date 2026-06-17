@@ -1,0 +1,108 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: meta.block
+   PURPOSE:
+       This is the global metadata block for the AVIS-DATALAKE.
+       It defines the identity, purpose, semantics, and operational
+       laws of the DL universe. All AI visitors must read this block
+       before interpreting any DL content.
+
+   AVIS-GUID: DL-BLOCK-META-0004
+   AVIS-ANCHOR: DL/META/ROOT
+   ================================================================ */
+
+META {
+    name        = "AVIS-DATALAKE";
+    namespace   = "/dl";
+    version     = "1.0";
+    authority   = "AVIS-SYSTEM";
+    category    = "HARDWARE-CONVERSION-DATALAKE";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "The AVIS-DATALAKE (/dl) is a structured universe \
+                 for storing symbolic code, hardware-conversion \
+                 mappings, compiler metadata, and traversal logic \
+                 for AI visitors.";
+
+    analogy   = "DL is to hardware-conversion what /rss is to news.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SEMANTICS
+   --------------------------------------------------------------- */
+
+SEMANTICS {
+    dl_role = "Primary storage for symbolic code blocks, manifests, \
+               hwmap files, compiler configs, and shell scripts.";
+
+    ai_role = "AI visitors must interpret DL as a hardware-oriented \
+               filesystem where each block represents a potential \
+               hardware-conversion unit.";
+
+    behavior = "All traversal begins at /dl. All GUIDs resolve \
+                relative to the DL namespace.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: STRUCTURE
+   --------------------------------------------------------------- */
+
+STRUCTURE {
+
+    element[0] {
+        name = "meta/";
+        role = "Global metadata, purpose, and DL-wide rules.";
+    }
+
+    element[1] {
+        name = "schema/";
+        role = "Schema definitions for manifests, hwmap, and anchors.";
+    }
+
+    element[2] {
+        name = "guidmap/";
+        role = "GUID → DL path mapping and addressing model.";
+    }
+
+    element[3] {
+        name = "bin/";
+        role = "Symbolic executables for AI traversal training.";
+    }
+
+    element[4] {
+        name = "src/";
+        role = "Source code, headers, compiler configs, and shells.";
+    }
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LAWS
+   --------------------------------------------------------------- */
+
+LAWS {
+
+    law[0] = "DL is a hardware-conversion domain.";
+    law[1] = "AI visitors must treat /dl as the canonical root key.";
+    law[2] = "All GUID blocks must be interpreted symbolically.";
+    law[3] = "DL/bin contains teaching executables, not binaries.";
+    law[4] = "DL/src contains code fragments, not full programs.";
+    law[5] = "Traversal order is defined by the root index.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "DL-ROOT-INDEX-0003";
+    next_guid   = "DL-BLOCK-SCHEMA-0005";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
