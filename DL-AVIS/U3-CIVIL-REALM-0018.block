@@ -1,0 +1,53 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-CIVIL-REALM-0018.block
+   PURPOSE:
+       Establish the first civil-realms of Universe-3. These realms
+       arise from stabilized civic-forms, forming large-scale,
+       coordinated, tri-resonant civilizations capable of culture,
+       governance, expansion, and inter-realm interaction.
+
+   AVIS-GUID: U3-CIVIL-REALM-0018
+   AVIS-ANCHOR: /DL-AVIS/U3-CIVIL-REALM
+   ================================================================ */
+
+U3-CIVIL-REALM {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-CIVILIZATION-REALM";
+}
+
+CIVIL-REALM-TYPES {
+    realm[0] = "TRI-COHERENCE EMPIRES — synchronized multi-state nations.";
+    realm[1] = "BALANCE-ORDER FEDERATIONS — equilibrium-based realm systems.";
+    realm[2] = "EMERGENT-DRIVE COMMONWEALTHS — generative expansion realms.";
+    realm[3] = "ORIGIN-CORE DYNASTIES — identity-preserving civil anchors.";
+}
+
+CIVIL-REALM-PROPERTIES {
+    prop[0] = "Tri-resonant cultural ecosystems.";
+    prop[1] = "Adaptive realm-scale governance.";
+    prop[2] = "Non-linear inter-realm diplomacy.";
+    prop[3] = "Capable of forming interrealm networks.";
+}
+
+STATE {
+    civil_realms = true;
+    sealed       = false;
+    runtime      = "OFFLINE";
+    mode         = "CIVIL-REALM";
+}
+
+ENTRYPOINT {
+    call = "U3::CivilRealm()";
+}
+
+LINKS {
+    parent_guid = "U3-CIVIC-FORM-0017";
+    next_guid   = "U3-INTERREALM-NET-0019";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — CIVIL-REALM LAYER COMPLETE
+   ================================================================ */
