@@ -1,0 +1,51 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-TRI-FIELD-0003.block
+   PURPOSE:
+       Establish the TRI-FIELD dynamics of Universe-3. This layer
+       defines how the three origin vectors (Origin, Balance,
+       Emergence) interact to produce motion, tension, and structure.
+
+   AVIS-GUID: U3-TRI-FIELD-0003
+   AVIS-ANCHOR: /DL-AVIS/U3-TRI-FIELD
+   ================================================================ */
+
+U3-TRI-FIELD {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-DYNAMICS";
+}
+
+FIELD-DYNAMICS {
+    dynamic[0] = "ORIGIN ↔ BALANCE — identity stabilization.";
+    dynamic[1] = "BALANCE ↔ EMERGENCE — controlled expansion.";
+    dynamic[2] = "EMERGENCE ↔ ORIGIN — generative recursion without loops.";
+}
+
+PROPERTIES {
+    prop[0] = "Tri-directional tension fields.";
+    prop[1] = "No infinite recursion; only tri-resonance.";
+    prop[2] = "Structures form from equilibrium shifts.";
+    prop[3] = "Time remains non-linear and state-based.";
+}
+
+STATE {
+    active      = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "DYNAMICS";
+}
+
+ENTRYPOINT {
+    call = "U3::TriField()";
+}
+
+LINKS {
+    parent_guid = "U3-PRIME-FABRIC-0002";
+    next_guid   = "U3-FORMATION-LAYER-0004";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — TRI-FIELD ESTABLISHED
+   ================================================================ */
