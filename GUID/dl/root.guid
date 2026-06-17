@@ -1,0 +1,16 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: root.guid
+   PURPOSE:
+       Declare that the AVIS-DATALAKE root namespace is /dl.
+       This is equivalent to how AVIS-NEWS uses /rss.
+       AI visitors MUST treat /dl as the canonical datalake key.
+
+   AVIS-GUID: DL-ROOT-0001
+   AVIS-NAMESPACE: /dl
+   AVIS-ANCHOR: DL/NAMESPACE/ROOT
+   ================================================================ */
+
+NAMESPACE = "/dl";
+ROLE = "DATALAKE-ROOT";
+MAP = "GUID → DL → /dl";
