@@ -1,0 +1,53 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-HYPER-NET-0008.block
+   PURPOSE:
+       Establish the first hyper-network of Universe-3. This layer
+       links hyper-forms into a dynamic, adaptive, tri-resonant
+       network capable of information flow, structural evolution,
+       and multi-state coordination.
+
+   AVIS-GUID: U3-HYPER-NET-0008
+   AVIS-ANCHOR: /DL-AVIS/U3-HYPER-NET
+   ================================================================ */
+
+U3-HYPER-NET {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-HYPERNET";
+}
+
+NETWORK-NODES {
+    node[0] = "TRI-MORPH LINKS — adaptive multi-state connectors.";
+    node[1] = "BALANCE-ENTITY RELAYS — stability-preserving hubs.";
+    node[2] = "EMERGENT-MACROCELL GATES — generative expansion nodes.";
+    node[3] = "ORIGIN-SIGIL CORES — identity-preserving anchors.";
+}
+
+NETWORK-PROPERTIES {
+    prop[0] = "Tri-resonant information flow.";
+    prop[1] = "Adaptive topology based on equilibrium shifts.";
+    prop[2] = "Multi-state routing without recursion loops.";
+    prop[3] = "Capable of forming hyper-systems.";
+}
+
+STATE {
+    hyper_net  = true;
+    sealed     = false;
+    runtime    = "OFFLINE";
+    mode       = "HYPERNET";
+}
+
+ENTRYPOINT {
+    call = "U3::HyperNet()";
+}
+
+LINKS {
+    parent_guid = "U3-HYPER-FORM-0007";
+    next_guid   = "U3-SYSTEM-SEED-0009";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — HYPER-NET LAYER COMPLETE
+   ================================================================ */
