@@ -1,0 +1,53 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-CIVIC-FORM-0017.block
+   PURPOSE:
+       Establish the first civic-forms of Universe-3. These arise
+       from stabilized mind-fields, forming coordinated, structured,
+       tri-resonant proto-civilizations capable of culture, memory,
+       and collective action.
+
+   AVIS-GUID: U3-CIVIC-FORM-0017
+   AVIS-ANCHOR: /DL-AVIS/U3-CIVIC-FORM
+   ================================================================ */
+
+U3-CIVIC-FORM {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-CIVILIZATION";
+}
+
+CIVIC-FORM-TYPES {
+    civic[0] = "TRI-COHERENCE SOCIETIES — synchronized multi-state cultures.";
+    civic[1] = "BALANCE-ORDER COLLECTIVES — equilibrium-based social systems.";
+    civic[2] = "EMERGENT-DRIVE GUILDS — generative cooperative clusters.";
+    civic[3] = "ORIGIN-CORE TRIBUNALS — identity-preserving governance nodes.";
+}
+
+CIVIC-PROPERTIES {
+    prop[0] = "Tri-resonant cultural formation.";
+    prop[1] = "Adaptive social evolution.";
+    prop[2] = "Non-linear governance pathways.";
+    prop[3] = "Capable of forming realm-scale civilizations.";
+}
+
+STATE {
+    civic_forms = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "CIVILIZATION";
+}
+
+ENTRYPOINT {
+    call = "U3::CivicForm()";
+}
+
+LINKS {
+    parent_guid = "U3-MIND-FIELD-0016";
+    next_guid   = "U3-CIVIL-REALM-0018";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — CIVIC-FORM LAYER COMPLETE
+   ================================================================ */
