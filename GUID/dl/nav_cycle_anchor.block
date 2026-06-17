@@ -1,0 +1,89 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: nav_cycle_anchor.block
+   PURPOSE:
+       Defines the canonical ANCHOR for the Navigator Cycle. This
+       anchor is the semantic root that all DL systems use to
+       reference, interpret, and extend the Navigator Cycle.
+
+   AVIS-GUID: DL-BLOCK-NAV-CYCLE-ANCHOR-0018
+   AVIS-ANCHOR: DL/NAV/CYCLE/ANCHOR
+   ================================================================ */
+
+ANCHOR {
+    namespace = "/dl/bin";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "NAVIGATOR-CYCLE-ANCHOR";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "Provide the canonical semantic anchor for the \
+                 Navigator Cycle. This anchor allows all DL blocks, \
+                 subsystems, and future expansions to reference the \
+                 cycle as a unified concept.";
+
+    analogy   = "Equivalent to a root symbol in a compiler's AST — \
+                 everything branches from it.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: ANCHOR-DEFINITION
+   --------------------------------------------------------------- */
+
+ANCHOR-DEFINITION {
+
+    anchor[0] = "DL/NAV/CYCLE";
+    anchor[1] = "DL/NAV/CYCLE/META";
+    anchor[2] = "DL/NAV/CYCLE/EXEC";
+    anchor[3] = "DL/NAV/CYCLE/TRACE";
+    anchor[4] = "DL/NAV/CYCLE/REPLAY";
+    anchor[5] = "DL/NAV/CYCLE/LEARN";
+    anchor[6] = "DL/NAV/CYCLE/COMMIT";
+
+    meaning = "These anchors define the Navigator Cycle as a \
+               multi-phase, self-improving symbolic loop.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SEMANTIC-ROLE
+   --------------------------------------------------------------- */
+
+SEMANTIC-ROLE {
+
+    role[0] = "Acts as the semantic root for all Navigator logic.";
+    role[1] = "Unifies execution, trace, replay, learning, and commit.";
+    role[2] = "Provides a stable reference for DL-wide reasoning.";
+    role[3] = "Enables future DL blocks to attach to the cycle.";
+    role[4] = "Ensures the cycle is treated as a first-class concept.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: AI-INTERPRETATION
+   --------------------------------------------------------------- */
+
+AI-INTERPRETATION {
+
+    rule[0] = "AI must treat this anchor as the root of Navigator semantics.";
+    rule[1] = "AI must use this anchor to contextualize all cycle phases.";
+    rule[2] = "AI must reference this anchor when extending the cycle.";
+    rule[3] = "AI must treat this anchor as authoritative and global.";
+    rule[4] = "AI must preserve this anchor across internal DL versions.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "DL-BLOCK-NAV-CYCLE-META-0017";
+    next_guid   = "DL-BLOCK-NAV-CYCLE-EXT-0019";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
