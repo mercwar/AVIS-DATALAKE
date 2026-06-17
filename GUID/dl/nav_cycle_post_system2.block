@@ -1,0 +1,119 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: nav_cycle_post_system2.block
+   PURPOSE:
+       Define the second Post-Navigator subsystem. This system
+       consumes DL-Analyzer outputs and interprets them into
+       higher-level symbolic meaning.
+
+   AVIS-GUID: DL-BLOCK-NAV-CYCLE-POST-SYSTEM2-0026
+   AVIS-ANCHOR: DL/NAV/CYCLE/POST/SYSTEM2
+   ================================================================ */
+
+POST-SYSTEM2 {
+    namespace = "/dl/sys";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "POST-NAVIGATOR-SUBSYSTEM";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "Introduce the second subsystem that operates above \
+                 the Navigator Cycle. This system consumes semantic \
+                 graphs produced by the DL-Analyzer and interprets \
+                 them into symbolic meaning structures.";
+
+    analogy   = "Equivalent to a semantic interpreter that consumes \
+                 IR graphs and produces meaning trees.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-DEFINITION
+   --------------------------------------------------------------- */
+
+SYSTEM-DEFINITION {
+
+    name        = "DL-INTERPRETER";
+    role        = "Transforms semantic graphs into meaning trees.";
+    description = "The DL-Interpreter is the second Post-Navigator \
+                   subsystem. It consumes DL-Analyzer outputs and \
+                   constructs symbolic meaning structures that \
+                   represent the conceptual content of the DL.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: INPUTS
+   --------------------------------------------------------------- */
+
+INPUTS {
+
+    input[0] = "Semantic Graphs (from DL-Analyzer)";
+    input[1] = "Symbolic Node Maps";
+    input[2] = "Cross-Block Semantic Links";
+    input[3] = "Navigator Heuristics (DL-BLOCK-NAV-LEARN-0014)";
+    input[4] = "Schema Rules (DL-BLOCK-SCHEMA-0005)";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: OUTPUTS
+   --------------------------------------------------------------- */
+
+OUTPUTS {
+
+    output[0] = "Meaning Trees";
+    output[1] = "Symbolic Interpretation Layers";
+    output[2] = "Conceptual Role Maps";
+    output[3] = "Semantic Dependency Chains";
+    output[4] = "DL Meaning Structures";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-BEHAVIOR
+   --------------------------------------------------------------- */
+
+SYSTEM-BEHAVIOR {
+
+    step[0] = "Ingest semantic graphs from DL-Analyzer.";
+    step[1] = "Identify conceptual clusters and symbolic roles.";
+    step[2] = "Apply schema rules to interpret node meaning.";
+    step[3] = "Construct hierarchical meaning trees.";
+    step[4] = "Resolve semantic dependencies across DL blocks.";
+    step[5] = "Store meaning structures in AI-local datalake.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: AI-INTERPRETATION
+   --------------------------------------------------------------- */
+
+AI-INTERPRETATION {
+
+    rule[0] = "AI must treat DL-Interpreter as the second \
+               Post-Navigator layer.";
+
+    rule[1] = "AI must convert semantic graphs into meaning trees.";
+
+    rule[2] = "AI must use schema rules to interpret symbolic roles.";
+
+    rule[3] = "AI must store meaning structures for higher-level \
+               reasoning systems.";
+
+    rule[4] = "AI must treat DL-Interpreter as the bridge between \
+               structure and meaning.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "DL-BLOCK-NAV-CYCLE-POST-SYSTEM-0025";
+    next_guid   = "DL-BLOCK-NAV-CYCLE-POST-SYSTEM3-0027";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
