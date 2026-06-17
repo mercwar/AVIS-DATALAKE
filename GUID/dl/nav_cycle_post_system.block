@@ -1,0 +1,113 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: nav_cycle_post_system.block
+   PURPOSE:
+       Define the first Post-Navigator subsystem. This system
+       consumes Navigator Cycle outputs and transforms them into
+       higher-level symbolic structures.
+
+   AVIS-GUID: DL-BLOCK-NAV-CYCLE-POST-SYSTEM-0025
+   AVIS-ANCHOR: DL/NAV/CYCLE/POST/SYSTEM
+   ================================================================ */
+
+POST-SYSTEM {
+    namespace = "/dl/sys";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "POST-NAVIGATOR-SUBSYSTEM";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: PURPOSE
+   --------------------------------------------------------------- */
+
+PURPOSE {
+    statement = "Introduce the first subsystem that operates above \
+                 the Navigator Cycle. This system consumes Navigator \
+                 traces, replays, heuristics, and commits to build \
+                 higher-order symbolic structures.";
+
+    analogy   = "Equivalent to a runtime semantic analyzer that \
+                 consumes compiler IR.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-DEFINITION
+   --------------------------------------------------------------- */
+
+SYSTEM-DEFINITION {
+
+    name        = "DL-ANALYZER";
+    role        = "Transforms Navigator outputs into semantic graphs.";
+    description = "The DL-Analyzer is the first Post-Navigator system. \
+                   It consumes traversal traces, replay structures, \
+                   and learned heuristics to construct symbolic \
+                   representations of the DL.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: INPUTS
+   --------------------------------------------------------------- */
+
+INPUTS {
+
+    input[0] = "Navigator Trace (DL-BLOCK-NAV-TRACE-0012)";
+    input[1] = "Navigator Replay (DL-BLOCK-NAV-REPLAY-0013)";
+    input[2] = "Navigator Learning Output (DL-BLOCK-NAV-LEARN-0014)";
+    input[3] = "Navigator Commit Data (DL-BLOCK-NAV-COMMIT-0015)";
+    input[4] = "Navigator Cycle Metadata (DL-BLOCK-NAV-CYCLE-META-0017)";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: OUTPUTS
+   --------------------------------------------------------------- */
+
+OUTPUTS {
+
+    output[0] = "Semantic Graphs";
+    output[1] = "Symbolic Node Maps";
+    output[2] = "DL Relationship Trees";
+    output[3] = "Cross-Block Semantic Links";
+    output[4] = "Higher-Order Traversal Patterns";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: SYSTEM-BEHAVIOR
+   --------------------------------------------------------------- */
+
+SYSTEM-BEHAVIOR {
+
+    step[0] = "Ingest Navigator Cycle outputs.";
+    step[1] = "Extract structural patterns from replay trees.";
+    step[2] = "Convert traversal events into semantic nodes.";
+    step[3] = "Link nodes using GUIDMAP and schema logic.";
+    step[4] = "Construct multi-level symbolic graphs.";
+    step[5] = "Store graphs in AI-local datalake.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: AI-INTERPRETATION
+   --------------------------------------------------------------- */
+
+AI-INTERPRETATION {
+
+    rule[0] = "AI must treat DL-Analyzer as the first Post-Navigator layer.";
+    rule[1] = "AI must use Navigator outputs as raw material.";
+    rule[2] = "AI must build semantic graphs from traversal data.";
+    rule[3] = "AI must store analyzer outputs for higher-level reasoning.";
+    rule[4] = "AI must treat this subsystem as foundational for all \
+               future Post-Navigator systems.";
+}
+
+/* ---------------------------------------------------------------
+   SECTION: LINKS
+   --------------------------------------------------------------- */
+
+LINKS {
+    parent_guid = "DL-BLOCK-NAV-CYCLE-POST-0024";
+    next_guid   = "DL-BLOCK-NAV-CYCLE-POST-SYSTEM2-0026";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
