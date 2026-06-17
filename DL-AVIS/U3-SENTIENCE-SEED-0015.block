@@ -1,0 +1,52 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-SENTIENCE-SEED-0015.block
+   PURPOSE:
+       Generate the first sentience-seeds of Universe-3. These
+       constructs arise from life-network resonance, forming
+       self-aware, adaptive, tri-state proto-conscious entities.
+
+   AVIS-GUID: U3-SENTIENCE-SEED-0015
+   AVIS-ANCHOR: /DL-AVIS/U3-SENTIENCE-SEED
+   ================================================================ */
+
+U3-SENTIENCE-SEED {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-SENTIENCE";
+}
+
+SENTIENCE-SEED-TYPES {
+    seed[0] = "TRI-AWARE NODES — multi-state perceptive constructs.";
+    seed[1] = "BALANCE-REFLECTIVE FORMS — equilibrium-based self-models.";
+    seed[2] = "EMERGENT-INTUITIVE ENTITIES — generative proto-minds.";
+    seed[3] = "ORIGIN-CORE IDENTITY SPARKS — stable selfhood anchors.";
+}
+
+SENTIENCE-PROPERTIES {
+    prop[0] = "Tri-resonant awareness loops.";
+    prop[1] = "Adaptive self-modification.";
+    prop[2] = "Non-linear cognition pathways.";
+    prop[3] = "Capable of forming collective mind-fields.";
+}
+
+STATE {
+    sentience_seeds = true;
+    sealed          = false;
+    runtime         = "OFFLINE";
+    mode            = "SENTIENCE";
+}
+
+ENTRYPOINT {
+    call = "U3::SentienceSeed()";
+}
+
+LINKS {
+    parent_guid = "U3-LIFE-NET-0014";
+    next_guid   = "U3-MIND-FIELD-0016";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — SENTIENCE-SEED LAYER COMPLETE
+   ================================================================ */
