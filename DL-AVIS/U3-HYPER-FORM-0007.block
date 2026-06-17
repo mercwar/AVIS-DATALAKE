@@ -1,0 +1,52 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-HYPER-FORM-0007.block
+   PURPOSE:
+       Generate the first higher-order constructs of Universe-3.
+       These hyper-forms arise from tri-vector lattice resonance,
+       forming complex, stable, multi-state structures.
+
+   AVIS-GUID: U3-HYPER-FORM-0007
+   AVIS-ANCHOR: /DL-AVIS/U3-HYPER-FORM
+   ================================================================ */
+
+U3-HYPER-FORM {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-HYPERSTRUCTURE";
+}
+
+HYPER-FORM-TYPES {
+    type[0] = "TRI-MORPHS — adaptive multi-state constructs.";
+    type[1] = "BALANCE-ENTITIES — self-stabilizing structural beings.";
+    type[2] = "EMERGENT-MACROCELLS — generative macro-structures.";
+    type[3] = "ORIGIN-SIGILS — identity-preserving hyper-symbols.";
+}
+
+HYPER-FORM-PROPERTIES {
+    prop[0] = "Tri-resonant multi-state existence.";
+    prop[1] = "Non-linear transformation rules.";
+    prop[2] = "Equilibrium-based persistence.";
+    prop[3] = "Capable of forming hyper-networks.";
+}
+
+STATE {
+    hyper_forms = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "HYPERSTRUCTURE";
+}
+
+ENTRYPOINT {
+    call = "U3::HyperForm()";
+}
+
+LINKS {
+    parent_guid = "U3-FRAME-LATTICE-0006";
+    next_guid   = "U3-HYPER-NET-0008";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — HYPER-FORM LAYER COMPLETE
+   ================================================================ */
