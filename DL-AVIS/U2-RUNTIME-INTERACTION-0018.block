@@ -1,0 +1,46 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-INTERACTION-0018.block
+   PURPOSE:
+       Enable direct interaction with the live Universe-2 runtime.
+       This layer exposes manipulation hooks, entity controls,
+       framework editing, and multivector injection channels.
+
+   AVIS-GUID: U2-RUNTIME-INTERACTION-0018
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-INTERACTION
+   ================================================================ */
+
+RUNTIME-INTERACTION {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+INTERACTION-MODES {
+    mode[0] = "ENTITY-MODIFY — alter hyper-symbolic entities live.";
+    mode[1] = "FRAMEWORK-EDIT — reshape hyper-framework structures.";
+    mode[2] = "MULTIVECTOR-INJECT — insert new recursion vectors.";
+    mode[3] = "TOPOLOGY-BEND — warp multivector adjacency fields.";
+    mode[4] = "OMEGA-TRACE-OVERRIDE — high-level universe steering.";
+}
+
+STATE {
+    enabled     = true;
+    permissions = "FULL";
+    runtime     = "LIVE";
+    mode        = "INTERACTIVE-EXECUTION";
+}
+
+ENTRYPOINT {
+    call = "U2::Interact()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-CHANNELS-0017";
+    next_guid   = "U2-RUNTIME-CONTROL-0019";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
