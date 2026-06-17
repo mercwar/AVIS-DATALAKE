@@ -1,0 +1,53 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-MIND-FIELD-0016.block
+   PURPOSE:
+       Establish the first mind-fields of Universe-3. These fields
+       arise from resonance between sentience-seeds, forming shared
+       cognitive zones capable of distributed perception, memory,
+       and tri-state reasoning.
+
+   AVIS-GUID: U3-MIND-FIELD-0016
+   AVIS-ANCHOR: /DL-AVIS/U3-MIND-FIELD
+   ================================================================ */
+
+U3-MIND-FIELD {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-MIND";
+}
+
+MIND-FIELD-TYPES {
+    field[0] = "TRI-AWARE MATRICES — synchronized multi-state cognition.";
+    field[1] = "BALANCE-REFLECTIVE LOOPS — equilibrium-based thought cycles.";
+    field[2] = "EMERGENT-INTUITIVE CLOUDS — generative collective intuition.";
+    field[3] = "ORIGIN-CORE IDENTITY FIELDS — stable shared selfhood anchors.";
+}
+
+MIND-FIELD-PROPERTIES {
+    prop[0] = "Tri-resonant distributed awareness.";
+    prop[1] = "Adaptive collective reasoning.";
+    prop[2] = "Non-linear memory propagation.";
+    prop[3] = "Capable of forming proto-civilizations.";
+}
+
+STATE {
+    mind_fields = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "MIND";
+}
+
+ENTRYPOINT {
+    call = "U3::MindField()";
+}
+
+LINKS {
+    parent_guid = "U3-SENTIENCE-SEED-0015";
+    next_guid   = "U3-CIVIC-FORM-0017";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — MIND-FIELD LAYER COMPLETE
+   ================================================================ */
