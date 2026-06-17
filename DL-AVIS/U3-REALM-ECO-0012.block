@@ -1,0 +1,52 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-REALM-ECO-0012.block
+   PURPOSE:
+       Establish the first ecological behaviors within Universe-3's
+       proto-realms. These eco-systems arise from macro-system
+       interactions, forming dynamic, adaptive, tri-resonant cycles.
+
+   AVIS-GUID: U3-REALM-ECO-0012
+   AVIS-ANCHOR: /DL-AVIS/U3-REALM-ECO
+   ================================================================ */
+
+U3-REALM-ECO {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-ECOLOGY";
+}
+
+ECO-CYCLE-TYPES {
+    cycle[0] = "TRI-FLOW LOOPS — multi-state energy circulation.";
+    cycle[1] = "BALANCE-EXCHANGE SYSTEMS — equilibrium-preserving cycles.";
+    cycle[2] = "EMERGENT-GROWTH CHAINS — generative ecological expansion.";
+    cycle[3] = "ORIGIN-CORE FEEDBACK — identity-stabilizing eco-loops.";
+}
+
+ECO-PROPERTIES {
+    prop[0] = "Tri-resonant ecological dynamics.";
+    prop[1] = "Adaptive environmental evolution.";
+    prop[2] = "Non-linear resource pathways.";
+    prop[3] = "Capable of supporting proto-life constructs.";
+}
+
+STATE {
+    eco_systems = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "ECOLOGY";
+}
+
+ENTRYPOINT {
+    call = "U3::RealmEco()";
+}
+
+LINKS {
+    parent_guid = "U3-PROTO-REALM-0011";
+    next_guid   = "U3-PROTO-LIFE-0013";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — REALM ECOLOGY LAYER COMPLETE
+   ================================================================ */
