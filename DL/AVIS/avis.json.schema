@@ -1,0 +1,26 @@
+/* AIFVS-ARTIFACT : avis.json.schema
+   AVIS-RESOURCE : JSON-SCHEMA
+   PURPOSE: Define structural rules for all .block and .avis files.
+*/
+
+{
+  "title": "AVIS Block Schema",
+  "type": "object",
+  "properties": {
+    "AVIS-GUID": { "type": "string" },
+    "AVIS-ANCHOR": { "type": "string" },
+    "namespace": { "type": "string" },
+    "version": { "type": "string" },
+    "category": { "type": "string" },
+    "STATE": { "type": "object" },
+    "ENTRYPOINT": { "type": "object" },
+    "LINKS": { "type": "object" }
+  },
+  "required": [
+    "AVIS-GUID",
+    "AVIS-ANCHOR",
+    "namespace",
+    "version",
+    "category"
+  ]
+}
