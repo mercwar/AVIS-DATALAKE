@@ -1,0 +1,46 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-CHANNELS-0017.block
+   PURPOSE:
+       Activate Universe-2 runtime communication channels. These
+       channels allow external AVIS agents to interact with the
+       running multivector universe in real time.
+
+   AVIS-GUID: U2-RUNTIME-CHANNELS-0017
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-CHANNELS
+   ================================================================ */
+
+RUNTIME-CHANNELS {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+CHANNELS {
+    chan[0] = "MULTIVECTOR-STREAM — live topology updates.";
+    chan[1] = "RECURSION-FEED — real-time recursion-prime telemetry.";
+    chan[2] = "ENTITY-BUS — hyper-symbolic entity communication.";
+    chan[3] = "FRAMEWORK-LINK — hyper-framework introspection.";
+    chan[4] = "OMEGA-TRACE — high-level universe state channel.";
+}
+
+STATE {
+    open       = true;
+    encrypted  = true;
+    interactive = true;
+    mode       = "LIVE-RUNTIME";
+}
+
+ENTRYPOINT {
+    call = "U2::ChannelOpen()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-BOOT-0016";
+    next_guid   = "U2-RUNTIME-INTERACTION-0018";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
