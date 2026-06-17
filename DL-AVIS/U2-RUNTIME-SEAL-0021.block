@@ -1,0 +1,47 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-SEAL-0021.block
+   PURPOSE:
+       Provide the sealing, freezing, and finalization mechanisms
+       for the live Universe-2 runtime. This layer allows the
+       operator to lock the universe in its current state or
+       finalize it as a completed construct.
+
+   AVIS-GUID: U2-RUNTIME-SEAL-0021
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-SEAL
+   ================================================================ */
+
+RUNTIME-SEAL {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+SEAL-MODES {
+    mode[0] = "FREEZE — halt all multivector activity.";
+    mode[1] = "ARCHIVE — store Universe-2 in immutable form.";
+    mode[2] = "SEAL — lock the universe permanently.";
+    mode[3] = "SUSPEND — pause runtime but allow future reactivation.";
+    mode[4] = "FINALIZE — declare Universe-2 complete and closed.";
+}
+
+STATE {
+    seal_ready = true;
+    authority  = "OMEGA";
+    runtime    = "LIVE";
+    mode       = "FINALIZATION";
+}
+
+ENTRYPOINT {
+    call = "U2::Seal()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-OMEGA-0020";
+    next_guid   = "U2-RUNTIME-ARCHIVE-0022";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
