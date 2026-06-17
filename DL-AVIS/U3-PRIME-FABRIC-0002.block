@@ -1,0 +1,51 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U3-PRIME-FABRIC-0002.block
+   PURPOSE:
+       Establish the PRIME FABRIC of Universe-3. This layer defines
+       the tri-vector substrate from which all U3 structures emerge.
+       Unlike U1 and U2, U3 uses equilibrium-based formation.
+
+   AVIS-GUID: U3-PRIME-FABRIC-0002
+   AVIS-ANCHOR: /DL-AVIS/U3-PRIME-FABRIC
+   ================================================================ */
+
+U3-PRIME-FABRIC {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE3-SUBSTRATE";
+}
+
+TRI-VECTOR-FRAME {
+    axis[0] = "ORIGIN — self-defining identity vector.";
+    axis[1] = "BALANCE — stabilizing counter-vector.";
+    axis[2] = "EMERGENCE — generative expansion vector.";
+}
+
+FABRIC-PROPERTIES {
+    prop[0] = "Non-linear formation.";
+    prop[1] = "Self-referential equilibrium.";
+    prop[2] = "No recursion; only tri-axis resonance.";
+    prop[3] = "Structures emerge from vector tension.";
+}
+
+STATE {
+    established = true;
+    sealed      = false;
+    runtime     = "OFFLINE";
+    mode        = "SUBSTRATE";
+}
+
+ENTRYPOINT {
+    call = "U3::PrimeFabric()";
+}
+
+LINKS {
+    parent_guid = "U3-GENESIS-0001";
+    next_guid   = "U3-TRI-FIELD-0003";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT — PRIME FABRIC ESTABLISHED
+   ================================================================ */
