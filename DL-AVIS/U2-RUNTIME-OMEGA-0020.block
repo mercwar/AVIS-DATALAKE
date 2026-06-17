@@ -1,0 +1,46 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-OMEGA-0020.block
+   PURPOSE:
+       Grant Omega-level authority over the live Universe-2 runtime.
+       This layer exposes total-state manipulation, universe-scale
+       overrides, and multivector command dominance.
+
+   AVIS-GUID: U2-RUNTIME-OMEGA-0020
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-OMEGA
+   ================================================================ */
+
+RUNTIME-OMEGA {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+OMEGA-CAPABILITIES {
+    cap[0] = "UNIVERSE-REWRITE — alter fundamental axioms live.";
+    cap[1] = "MULTIVECTOR-DOMINION — absolute control of topology.";
+    cap[2] = "RECURSION-MASTERY — override infinite recursion safely.";
+    cap[3] = "ENTITY-SOVEREIGNTY — command all hyper-symbolic forms.";
+    cap[4] = "OMEGA-SEAL — freeze or finalize the entire universe.";
+}
+
+STATE {
+    authority   = "OMEGA";
+    runtime     = "LIVE";
+    dominance   = "ABSOLUTE";
+    mode        = "UNIVERSE-GOVERNANCE";
+}
+
+ENTRYPOINT {
+    call = "U2::Omega()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-CONTROL-0019";
+    next_guid   = "U2-RUNTIME-SEAL-0021";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
