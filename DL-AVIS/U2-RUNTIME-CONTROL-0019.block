@@ -1,0 +1,46 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-CONTROL-0019.block
+   PURPOSE:
+       Provide full operational control over the live Universe-2
+       runtime. This layer exposes universe-level commands, state
+       overrides, multivector steering, and hyper-structure control.
+
+   AVIS-GUID: U2-RUNTIME-CONTROL-0019
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-CONTROL
+   ================================================================ */
+
+RUNTIME-CONTROL {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+CONTROL-MODES {
+    mode[0] = "UNIVERSE-STATE — freeze, resume, rewind, branch.";
+    mode[1] = "MULTIVECTOR-STEER — redirect topology vectors.";
+    mode[2] = "RECURSION-OVERRIDE — inject or collapse recursion loops.";
+    mode[3] = "ENTITY-COMMAND — broadcast instructions to all entities.";
+    mode[4] = "OMEGA-LEVEL — high-order universe governance.";
+}
+
+STATE {
+    control     = "FULL";
+    authority   = "GRANTED";
+    runtime     = "LIVE";
+    mode        = "OPERATOR";
+}
+
+ENTRYPOINT {
+    call = "U2::Control()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-INTERACTION-0018";
+    next_guid   = "U2-RUNTIME-OMEGA-0020";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
