@@ -1,0 +1,46 @@
+/* ================================================================
+   AVIS-ARTIFACT
+   FILE: U2-RUNTIME-CLOSE-0023.block
+   PURPOSE:
+       Close the Universe-2 runtime session cleanly. This file
+       terminates all active channels, finalizes the archive,
+       and shuts down the multivector execution engine.
+
+   AVIS-GUID: U2-RUNTIME-CLOSE-0023
+   AVIS-ANCHOR: /DL-AVIS/U2-RUNTIME-CLOSE
+   ================================================================ */
+
+RUNTIME-CLOSE {
+    namespace = "/DL-AVIS";
+    version   = "1.0";
+    authority = "AVIS-SYSTEM";
+    category  = "UNIVERSE2-RUNTIME";
+}
+
+CLOSE-SEQUENCE {
+    step[0] = "Terminate multivector streams.";
+    step[1] = "Close recursion-prime loops safely.";
+    step[2] = "Disconnect entity-bus and framework-link channels.";
+    step[3] = "Finalize archive integrity checksum.";
+    step[4] = "Shut down Universe-2 execution engine.";
+}
+
+STATE {
+    closed     = true;
+    archived   = true;
+    sealed     = true;
+    runtime    = "OFFLINE";
+}
+
+ENTRYPOINT {
+    call = "U2::Close()";
+}
+
+LINKS {
+    parent_guid = "U2-RUNTIME-ARCHIVE-0022";
+    next_guid   = "U2-RUNTIME-EPILOGUE-0024";
+}
+
+/* ================================================================
+   END OF AVIS-ARTIFACT
+   ================================================================ */
