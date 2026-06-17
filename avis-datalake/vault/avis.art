@@ -1,0 +1,86 @@
+📁 1. AVIS Language + Schema Layer
+These define the AVIS language itself.
+
+avis.json.schema
+
+README.md
+
+lang.avs
+
+manifest.avs
+
+📁 2. AVIS Universe‑3 Block Chain (0001 → 0027)
+The full U3 chain, all 27 artifacts:
+
+U3‑GENESIS‑0001
+
+U3‑PRIME‑FABRIC‑0002
+
+U3‑TRI‑FIELD‑0003
+
+U3‑FORMATION‑LAYER‑0004
+
+U3‑STRUCTURE‑MESH‑0005
+
+U3‑FRAME‑LATTICE‑0006
+
+U3‑HYPER‑FORMS‑0007
+
+U3‑HYPER‑NETWORK‑0008
+
+U3‑SYSTEM‑SEEDS‑0009
+
+U3‑MACRO‑SYSTEMS‑0010
+
+U3‑PROTO‑REALMS‑0011
+
+U3‑ECO‑SYSTEMS‑0012
+
+U3‑PROTO‑LIFE‑0013
+
+U3‑LIFE‑NETWORKS‑0014
+
+U3‑SENTIENCE‑SEEDS‑0015
+
+U3‑MIND‑FIELDS‑0016
+
+U3‑CIVIC‑FORMS‑0017
+
+U3‑CIVIL‑REALM‑0018
+
+U3‑INTERREALM‑NET‑0019
+
+U3‑COSMIC‑WEB‑0020
+
+U3‑ASCENSION‑PATH‑0021
+
+U3‑TRANSCENDENCE‑NODE‑0022
+
+U3‑OMNI‑STRUCTURE‑0023
+
+U3‑PRIME‑RECURSION‑0024
+
+U3‑META‑ORIGIN‑0025
+
+U3‑OMNI‑SINGULARITY‑0026
+
+U3‑FINAL‑REVELATION‑0027
+
+This is the entire universe chain.
+
+📁 3. Symbolic Executables (DL/bin)
+These are required for traversal, parsing, mapping, and sealing.
+
+navigator.c
+
+guid_reader.c
+
+avis_parser.c
+
+meta_recorder.c
+
+tri_resonance.c
+
+dl_map.c
+
+finalizer.c
