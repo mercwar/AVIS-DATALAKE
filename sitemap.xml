@@ -406,6 +406,9 @@
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/install_avis.yml</loc>
   </url>
   <url>
+    <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/PUBLIC/LIB/SOURCE/cbor_avis_stdio.h</loc>
+  </url>
+  <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/GUID/dl/navigator.block</loc>
   </url>
   <url>
