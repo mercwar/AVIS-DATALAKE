@@ -541,6 +541,9 @@
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/AVIS-ECOSYSTEM-MANIFEST.json</loc>
   </url>
   <url>
+    <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LIB/INCLUDE/cbor_avis_stdio.h</loc>
+  </url>
+  <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LIB/CVBGOD</loc>
   </url>
   <url>
