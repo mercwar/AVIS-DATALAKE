@@ -547,6 +547,9 @@
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LIB/INCLUDE/cbor_avis_strings.h</loc>
   </url>
   <url>
+    <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LIB/INCLUDE/cbor_avis_iterator.h</loc>
+  </url>
+  <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/LIB/INCLUDE/cbor_avis_stdio.h</loc>
   </url>
   <url>
