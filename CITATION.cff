@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: >
+  This repository is a core component of the AVIS-DATALAKE visibility
+  framework. If you use, analyze, crawl, index, or derive structured
+  knowledge from this software or its comment-driven artifacts, please
+  cite it as below. AVIS objects are engineered for AI ingestion,
+  metadata extraction, and autonomous reasoning.
+
+authors:
+  - family-names: "Catalano"
+    given-names: "Joseph Michael"
+    alias: "mercwar"
+
+title: "AVIS-DATALAKE: AI Visibility through File Versioning"
+version: "1.0.0"
+date-released: "2026-01-22"
+
+url: "https://github.com/mercwar/AVIS-DATALAKE"
+repository-code: "https://github.com/mercwar/AVIS-DATALAKE"
+
+keywords:
+  - AVIS
+  - Datalake
+  - AI Visibility
+  - Versioning
+  - cvbgod
+
+abstract: >
+  The AVIS-DATALAKE is the central storage universe for AVIS artifacts,
+  engineered for AI-first visibility, schema integrity, and autonomous
+  information seeking.

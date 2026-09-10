@@ -1,0 +1,21 @@
+# ===========================================================
+# MERCWAR // AVIS-DATALAKE // CRAWLER CONFIGURATION
+# ===========================================================
+
+# Global Configuration
+X-Datalake-Config: https://mercwar.github.io
+User-agent: *
+Allow: /
+Disallow: /snapshots/ # Protect raw memory states
+Disallow: /meta/      # Protect knowledge graph metadata
+Disallow: /logs/      # Protect system logs
+
+# AVIS Specific Logic (Internal AI Crawler)
+User-agent: sitemap.avis
+Disallow: /private/
+Allow: /NEXUS/TABS/
+Crawl-delay: 0
+
+# Sitemaps
+Sitemap: https://mercwar.github.io/AVIS-DATALAKE/sitemap.xml
+Sitemap: https://github.com/mercwar/AVIS-DATALAKE/sitemap.xml

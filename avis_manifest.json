@@ -1,0 +1,18 @@
+{
+  "avis_core_version": "1.0",
+  "creator": "CVBGOD",
+  "datalake": {
+    "root": "/AVIS-DATALAKE/",
+    "manifest": "avis_manifest.json",
+    "schema": "schema.json",
+    "drops": "/drops/",
+    "logs": "/logs/"
+  },
+  "artifacts": [
+    { "name": "AVIS_MANIFEST", "type": "manifest", "role": "Repository manifest file" },
+    { "name": "AVIS_SCHEMA", "type": "schema", "role": "Defines AVIS object model" },
+    { "name": "C_DROPS", "type": "code_collection", "role": "C source files" },
+    { "name": "VB6_DROPS", "type": "code_collection", "role": "VB6 legacy code" },
+    { "name": "JAVA_DROPS", "type": "code_collection", "role": "Java source files" }
+  ]
+}

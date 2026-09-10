@@ -1,0 +1,8 @@
+# Location: /config/datalake_init.yml
+datalake_env:
+  root: "/dl/"
+  memory_emulation:
+    mode: "x86_64_win_compat"
+    resource_path: "/res/packs/"
+    encoding: "base64"
+    kb_limit: 1024 # Sets the RAM block size for the AI

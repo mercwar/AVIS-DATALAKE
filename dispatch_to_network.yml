@@ -1,0 +1,12 @@
+ - name: Gemini Vector Analysis
+        run: |
+          curl https://generativelanguage.googleapis.com{{ secrets.GEMINI_API_KEY }} \
+              -H 'Content-Type: application/json' \
+              -X POST \
+              -d '{
+                "contents": [{
+                  "parts":[{
+                    "text": "Analyze this 4-bit VB6 ASM vector for hidden return paths: 0xF"
+                  }]
+                }]
+              }'

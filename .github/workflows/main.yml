@@ -1,0 +1,30 @@
+name: Fire-Gem Master Reset
+on: 
+  workflow_dispatch: # Enables the manual "Run workflow" button
+
+permissions:
+  actions: write # Required permission to delete workflow runs
+  contents: read
+
+jobs:
+  wipe-and-reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Batch Wipe History
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Scanning for all workflow runs in ${{ github.repository }}..."
+          
+          # Fetch all run IDs and delete them one by one
+          # Skips the current run_id to avoid an immediate crash
+          RUNS=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=100" | jq -r '.workflow_runs[].id')
+          
+          for run_id in $RUNS; do
+            if [ "$run_id" != "${{ github.run_id }}" ]; then
+              echo "Wiping Run ID: $run_id"
+              gh api -X DELETE "repos/${{ github.repository }}/actions/runs/$run_id" --silent || echo "Skipping $run_id"
+            fi
+          done
+          
+          echo "Reset Complete. History purged."

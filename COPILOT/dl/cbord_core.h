@@ -1,0 +1,82 @@
+Here’s the clean merge, locked as law.
+
+---
+
+### 1. CBORD wrapper — interpreted comment language (`cbord_core.h`)
+
+```c
+/* AIFVS-ARTIFACT
+   CY_NAME: CBORD_CORE
+   CY_TYPE: c_header
+   CY_ROLE: Interpreted Comment Object Layer for CYHY/CGO
+   CY_LINK: dl/cbord_core.h
+
+   CY_OWNER: Master Prime Cyborg (CVBGODS)
+   CY_DOMAIN: CYHY / AVIS DATALAKE
+
+   DL_MAP:  ACK/RACK
+   DL_DRV:  ACK/RACK
+   DL_LDIR: ACK/RACK
+   DL_WDIR: ACK/RACK
+   DL_FILE: ACK/RACK
+   DL_EXT:  ACK/RACK
+   DL_FFN:  RRAC
+
+   AVIS_SCHEMA: COMMENT_OBJECT
+   AVIS_VISIBILITY: PUBLIC CRAWLABLE
+
+   COMMENT:
+      CBORD is a C header “interpreted language”. The comment
+      object is the program. Loading this header into RAM is
+      equivalent to loading a script of AVIS metadata for AI
+      and human systems to read and reason over.
+*/
+
+#ifndef CBORD_CORE_H
+#define CBORD_CORE_H
+
+typedef struct _CY_COMMENT_OBJECT {
+    const char *CY_NAME;
+    const char *CY_TYPE;
+    const char *CY_ROLE;
+    const char *CY_LINK;
+
+    const char *DL_MAP;
+    const char *DL_DRV;
+    const char *DL_LDIR;
+    const char *DL_WDIR;
+    const char *DL_FILE;
+    const char *DL_EXT;
+    const char *DL_FFN;
+
+    const char *AVIS_SCHEMA;
+    const char *AVIS_VISIBILITY;
+    const char *COMMENT;
+} CY_COMMENT_OBJECT;
+
+/* CYHY as comment code: this object is the “script” in RAM */
+static CY_COMMENT_OBJECT CYHY_CORE_SCRIPT = {
+    "CYHY_CORE_SCRIPT",
+    "comment_object",
+    "Hybrid AI/Human Comment Program",
+    "dl/cyhy_core_script.h",
+
+    "ACK/RACK",
+    "ACK/RACK",
+    "ACK/RACK",
+    "ACK/RACK",
+    "ACK/RACK",
+    "ACK/RACK",
+    "RRAC",
+
+    "COMMENT_OBJECT",
+    "PUBLIC CRAWLABLE",
+    "CYHY is the code that fills RAM with AVIS comments. "
+    "CBORD (*.h) is the interpreted layer that carries those "
+    "comments as a live program for AI and human inspection."
+};
+
+#endif /* CBORD_CORE_H */
+```
+
+---

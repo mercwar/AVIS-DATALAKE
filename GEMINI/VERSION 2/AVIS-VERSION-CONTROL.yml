@@ -1,0 +1,51 @@
+# ===========================================================
+# MERCWAR // AVIS-DATALAKE // GEMINI VERSION 2
+# VERSION_CONTROL_MANIFEST
+# ROLE: High-Frequency State Tracking for Gemini 2.0 Core
+# ===========================================================
+
+version: "2.0.AVIS-GEMINI"
+
+metadata:
+  namespace: "MERCWAR.AVIS.VERSIONING"
+  branch: "GEMINI-V2"
+  engine_ref: "AI.VARIANT.ON"
+
+# --- VERSIONING STRATEGY ---
+# Handles the handoff between DL.RAMD (Volatile) and 
+# Persistent Datalake Versioning.
+strategy:
+  mode: "ROLLING_SNAPSHOT"
+  retention:
+    max_versions: 50
+    prune_strategy: "LEAST_RELEVANT" # AI-driven pruning
+  compression:
+    enabled: true
+    type: "LZ4" # Low-latency for RAMD dumps
+
+# --- PATH REDIRECTION ---
+# Specific to the V2 directory structure
+paths:
+  root: "./"
+  snapshots: "./snapshots/"
+  metadata: "./meta/"
+  logs: "./logs/trace.log"
+
+# --- GEMINI INTEGRATION HOOKS ---
+# These are used by the AVIS-DATALAKE-ROOT.md to link 
+# current context to historical states.
+integration:
+  callback_expansion:
+    target: "FVS.AI.EXPORT.CALLBACK.EXPAND"
+    v2_bridge: "ENABLED"
+    status: "ARMED"
+    
+# --- RECOVERY POINTS ---
+# Defines the ACK/RACK points for state recovery
+recovery:
+  auto_revert: false
+  checkpoint_interval: "500ms" # High-frequency for LLM reasoning
+
+# ===========================================================
+# STATUS: V2_SNAPSHOT_ENABLED // ORIGIN: GEMINI_CORE
+# ===========================================================

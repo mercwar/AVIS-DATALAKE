@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Project Version="10">
+  <ProjectOptions>
+    <Option Name="ProjectName" Value="avis_installer_v1"/>
+    <Option Name="TargetType" Value="0"/> <!-- 0 = EXE -->
+    <Option Name="TargetName" Value="avis_installer_v1.exe"/>
+    <Option Name="TargetDirectory" Value="C:\AVIS-DATALAKE\bin"/>
+    <Option Name="IntermediateDirectory" Value=".\obj"/>
+    <Option Name="CharacterSet" Value="0"/> <!-- Multi-byte -->
+    <Option Name="UseUnicode" Value="0"/>
+    <Option Name="WarningLevel" Value="3"/>
+    <Option Name="TreatWarningsAsErrors" Value="0"/>
+    <Option Name="LanguageStandard" Value="5"/> <!-- C11 in Pelles C -->
+  </ProjectOptions>
+
+  <Compiler>
+    <Tool Name="PCC.EXE">
+      <Option Name="Optimization" Value="2"/> <!-- speed -->
+      <Option Name="DebugInfo" Value="0"/>
+      <Option Name="Define" Value="WIN32;_WINDOWS"/>
+      <Option Name="IncludePath" Value=".;C:\PellesC\Include"/>
+      <Option Name="AdditionalOptions" Value=""/>
+    </Tool>
+  </Compiler>
+
+  <Linker>
+    <Tool Name="POLINK.EXE">
+      <Option Name="Subsystem" Value="2"/> <!-- Windows console -->
+      <Option Name="GenerateDebugInfo" Value="0"/>
+      <Option Name="LibraryPath" Value="C:\PellesC\Lib"/>
+      <Option Name="AdditionalOptions" Value="/HEAP:134217728,4096"/>
+      <!-- HEAP: 128MB reserve, 4KB commit (adjust as needed for RAM.DRV.TMP) -->
+    </Tool>
+  </Linker>
+
+  <Files>
+    <File Name="avis_installer.c" Type="1"/>
+  </Files>
+</Project>

@@ -1,0 +1,5 @@
+<avis>::=<header><body>
+<header>::="AVIS"<version>
+<body>::=<directive>|<directive><body>
+<directive>::="INDEX"|"SCAN"|"PORT"|"ASSERT"
+<version>::=DIGIT"."DIGIT

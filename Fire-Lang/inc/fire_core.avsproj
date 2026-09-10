@@ -1,0 +1,7 @@
+<!-- AVIS_PROJECT_FILE: fire_core.avsproj PATCH_02 -->
+<ItemGroup>
+  <!-- EV1 STANDARD INCLUDES -->
+  <Include Include="inc/ev1_core.h.avis" Address="0x0110" />
+  <Include Include="inc/cyborg_types.h.avis" Address="0x0111" />
+  <Include Include="inc/thermal_vectors.h.avis" Address="0x0302" />
+</ItemGroup>

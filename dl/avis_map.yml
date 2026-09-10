@@ -1,0 +1,11 @@
+# AVIS Memory Map for AI RAM Emulation
+avis_registry:
+  version: 1.0
+  architecture: "x86_64"
+  memory_segments:
+    - address: "0x4000"
+      resource: "core_logic.b64"
+      description: "Primary LLM Instruction Set"
+    - address: "0x8000"
+      resource: "datalake_index.b64"
+      description: "AVIS Metadata Index"

@@ -1,0 +1,22 @@
+# CYHY Installation & Linker Logic
+# Target: MERCG / sitemap.avis
+installation:
+  environment: Pelles_C_13
+  architecture: x86_64
+  
+  link_sequence:
+    - step: 1
+      action: "Assemble fvs_esign.asm"
+      output: "fvs_esign.obj"
+    - step: 2
+      action: "Link with fvs_bridge.def"
+      flags: "/DLL /ENTRY:_start /SUBSYSTEM:WINDOWS"
+      
+  esign_verification:
+    protocol: "FVS_PULSE"
+    signature_gate: "cvbgod"
+    active_tab: "tab_25"
+    
+  automated_ingest:
+    target: "https://mercwar.github.io"
+    trigger: "SYNC_COMPLETE"

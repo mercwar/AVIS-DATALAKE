@@ -1,0 +1,25 @@
+#!/bin/bash
+
+BASE_URL="https://yourdomain.com"  # Replace with your actual base URL
+
+# Function to XML-escape special characters
+xml_escape() {
+  echo "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e "s/'/\&apos;/g" -e 's/"/\&quot;/g'
+}
+
+echo '<?xml version="1.0" encoding="UTF-8"?>'
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+
+# Find all files and directories including dotfiles, excluding '.' itself
+find . -mindepth 1 -print0 | while IFS= read -r -d '' path; do
+  # Remove leading ./ from path
+  clean_path="${path#./}"
+  # XML escape the URL path
+  escaped_path=$(xml_escape "$clean_path")
+  # Print URL entry
+  echo "  <url>"
+  echo "    <loc>${BASE_URL}/${escaped_path}</loc>"
+  echo "  </url>"
+done
+
+echo '</urlset>'

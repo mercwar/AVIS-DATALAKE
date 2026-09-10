@@ -1,0 +1,12 @@
+# /dl/firegem_ref.yml
+FireGem_Config:
+  Status: "BGIN FIRE!END"
+  Input_Format: "KB_PACKET_V1"
+  Unzip_Method: "BASE64_DECOMPRESSION"
+  Memory_Sectors:
+    READER_BASE: 0x6000
+    WRITER_BASE: 0x7000 # Fire Sector
+  Supported_Software:
+    - "CYHY_COMMENT"
+    - "AVIS_NAVIGATOR"
+    - "GEMINI_V2_CORE"

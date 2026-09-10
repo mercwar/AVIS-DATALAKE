@@ -1,0 +1,17 @@
+## /* AVIS_COORD: AVIS://LOCAL/MERCWAR/CYBORG/V4.0.CVBGOD-DN */
+## /* ROLE: THERMAL_VECTOR_DEFINITIONS */
+
+ai.begin.cyborg.lang::
+[@]PTR_OFFSET[0x0302]::
+
+/* Static Thermal Constants */
+#define [CONSTANT]MAX_SAFE_TEMP 0x03E7  // 999 Decimal
+#define [CONSTANT]CRITICAL_PULSE 0x04B0 // 1200 Decimal
+
+/* Dynamic Thermal Struct */
+begin.spec struct.THERMAL_STATE_PACKET {
+    [@]PTR_SENSOR_ID;
+    [#]CURRENT_VAL;
+    {STR}ALARM_TAG;
+}
+ai.end.cyborg.lang::

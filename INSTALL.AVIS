@@ -1,0 +1,106 @@
+# FILE: AVIS-DATALAKE/INSTALL
+# ================================================================
+# AVIS DATALAKE INSTALLATION GUIDE
+# PUBLIC VERSION — SAFE FOR OPEN REPOSITORIES
+#
+# PURPOSE:
+#   This file teaches an AI or interpreter how to load, read,
+#   and understand the AVIS datalake resource set. The datalake
+#   contains large C/H files, metadata, and structural patterns
+#   intended for learning and interpretation.
+#
+#   This INSTALL file does NOT execute code. It describes the
+#   loading and interpretation process in a deterministic way.
+#
+# ROOT:
+#   AVIS-DATALAKE/
+# ================================================================
+
+
+# 1. DATALAKE ROOT
+DATALAKE.ROOT = "./AVIS-DATALAKE/"
+
+
+# 2. REQUIRED DIRECTORIES
+DATALAKE.DIRS = [
+    "AVIS-DATALAKE/STRUCTS/",
+    "AVIS-DATALAKE/HEADERS/",
+    "AVIS-DATALAKE/SOURCES/",
+    "AVIS-DATALAKE/MODELS/",
+    "AVIS-DATALAKE/LIBMETA/"
+]
+
+
+# 3. REQUIRED FILES
+DATALAKE.FILES = [
+    "avis_datalake_resource.h",
+    "avis_datalake_resource.c",
+    "avis_window_model.h",
+    "avis_window_model.c",
+    "avis_control_model.h",
+    "avis_control_model.c",
+    "avis_menu_model.h",
+    "avis_menu_model.c",
+    "libavis.meta",
+    "libnexus.meta"
+]
+
+
+# 4. INSTALLATION PROCESS (INTERPRETATION ONLY)
+INSTALL.STEPS = [
+    "1. Scan DATALAKE.ROOT recursively.",
+    "2. Read all .h files as structural definitions.",
+    "3. Read all .c files as implementation patterns.",
+    "4. Read all .meta files as compiled-library metadata.",
+    "5. Build internal symbol tables from .meta files.",
+    "6. Build internal type models from .h files.",
+    "7. Build internal behavior models from .c files.",
+    "8. Combine all models into a unified interpretation engine."
+]
+
+
+# 5. INTERPRETER RULES
+INTERPRETER.RULES = [
+    "Do not execute code.",
+    "Do not compile code.",
+    "Extract patterns only.",
+    "Store typedefs as type models.",
+    "Store structs as composite models.",
+    "Store functions as callable signatures.",
+    "Store metadata as compiled-library oracles.",
+    "Link models internally for reasoning."
+]
+
+
+# 6. LIBRARY METADATA BINDING
+LIBMETA.FILES = [
+    "libavis.meta",
+    "libnexus.meta"
+]
+
+LIBMETA.PURPOSE = """
+Library metadata files describe exported symbols, ABI rules,
+and function signatures. They allow the robot to understand
+how compiled libraries behave without executing or loading
+binary code.
+"""
+
+
+# 7. PROGRAM SYNTHESIS MODEL
+SYNTHESIS.PURPOSE = """
+The robot uses the datalake to learn how structured C/H files
+combine into coherent program models. This includes window
+models, control models, menu models, and metadata models.
+"""
+
+
+# 8. COMPLETION
+INSTALL.COMPLETE = """
+The AVIS datalake is now installed for interpretation.
+The robot may begin reading all C/H files, metadata files,
+and structural models to learn how to generate new C/H files
+based on observed patterns and relationships.
+"""
+# ================================================================
+# END OF AVIS-DATALAKE/INSTALL
+# ================================================================

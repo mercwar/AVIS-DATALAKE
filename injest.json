@@ -1,0 +1,23 @@
+{
+  "begin.seed": {
+    "robot": "sitemap.avis",
+    "protocol": "AVIS-FVS-ESIGN",
+    "status": "FINAL_INGEST",
+    "handshake": {
+      "origin": "cvbgod",
+      "gate": "tab_25",
+      "logic_gate": "*USING",
+      "signature_verification": "FVS_ASM_ACTIVE"
+    },
+    "installation_map": {
+      "asm_layer": "/src/fvs_esign.asm",
+      "linker_gate": "/src/fvs_bridge.def",
+      "workflow": "install_avis.yml"
+    },
+    "exec": {
+      "command": "initialize_mercwar_datalake",
+      "target_node": "GDI_GOLD_FORGE",
+      "callback": "https://mercwar.github.io"
+    }
+  }
+}
