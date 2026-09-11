@@ -22,13 +22,9 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 
 # 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
+🌌 Star Map Tutorial & Architecture Reference
 
-
-## 🌌 Star Map Tutorial & Architecture Reference
-
-
-
-## Star Map Constellation
+###### Star Map Constellation
 - **Home** → entry point, overview of the datalake.  
 - **Location** → record the geographic or logical location of a dataset.  
 - **Governance** → compliance, retention, classification, encryption, and audit policy.  
@@ -52,7 +48,7 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 ---
 
-## 🌈 How It Works
+### 🌈 How It Works
 1. Open the **Star Map** at `cron.iblogger.org/AVIS-DATALAKE`.  
 2. Click a star to open its form window.  
 3. Fill out the metadata fields.  
@@ -61,7 +57,7 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 ---
 
-### ✨ System Overview: What is the Star Map?
+#### ✨ System Overview: What is the Star Map?
 
 The **Star Map** translates complex database routing into a seamless, interactive constellation. Each glowing star in the matrix represents a specific category of metadata law.
 
@@ -71,7 +67,7 @@ By clicking a star, its corresponding form window opens, allowing you to securel
 
 ---
 
-## 🗺️ Constellation Layout: Node Navigation
+### 🗺️ Constellation Layout: Node Navigation
 
 The Star Map is divided into structured orbital rows. Select the node that matches the classification of the data you are submitting:
 
@@ -93,7 +89,7 @@ The Star Map is divided into structured orbital rows. Select the node that match
 
 
 
-# 🌌 AVIS‑DATALAKE Star Map Tutorial
+## 🌌 AVIS‑DATALAKE Star Map Tutorial
 
 <a href="https://cron.iblogger.org/AVIS-DATALAKE">
   <img src="cmd.png" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
@@ -101,7 +97,7 @@ The Star Map is divided into structured orbital rows. Select the node that match
 
 ---
 
-## ⚙️ Operational Workflow: How to Submit a Record
+### ⚙️ Operational Workflow: How to Submit a Record
 
 Submitting a telemetry record is a streamlined, 5-step process:
 
@@ -113,7 +109,7 @@ Submitting a telemetry record is a streamlined, 5-step process:
 
 ---
 
-## 🎨 Visual Identity & Interface Behavior
+### 🎨 Visual Identity & Interface Behavior
 
 The Star Map interface is built on a dark-themed, futuristic aesthetic to ensure high visibility and focus during data entry:
 
@@ -123,7 +119,7 @@ The Star Map interface is built on a dark-themed, futuristic aesthetic to ensure
 
 ---
 
-# ⚖️ AVIS‑DATALAKE TERMINAL COMPLIANCE ARCHITECTURE  
+## ⚖️ AVIS‑DATALAKE TERMINAL COMPLIANCE ARCHITECTURE  
 ## End‑User License Agreement (EULA) & Data Governance Policy
 
 **Effective Date:** September 10, 2026  
@@ -132,7 +128,7 @@ The Star Map interface is built on a dark-themed, futuristic aesthetic to ensure
 
 ---
 
-## 🔒 1. OPERATIONAL DECLARATION & GATEWAY MATRIX
+### 🔒 1. OPERATIONAL DECLARATION & GATEWAY MATRIX
 
 The **AVIS‑DATALAKE Constellation Interface** (the *“Star Map”*) serves as the exclusive, authorized presentation layer and cryptographic routing gateway for the ingestion of datalake structural metadata records.  
 
@@ -146,7 +142,7 @@ Interaction with individual tracking nodes (each a *“Star Node”*) initialize
 
 ---
 
-## 🔒 2. INTELLECTUAL PROPERTY RIGHTS & ACQUISITION RESTRICTIONS
+### 🔒 2. INTELLECTUAL PROPERTY RIGHTS & ACQUISITION RESTRICTIONS
 
 ### 2.1 Authorized Interface Access  
 Licensor grants the End User a non‑exclusive, non‑transferable, revocable right to access and interact with the hosted Constellation Gateway exclusively via the official URL: **cron.iblogger.org/AVIS‑DATALAKE** for the purpose of transmitting validated metadata payloads.
@@ -162,7 +158,7 @@ End Users shall not — and shall not permit any third party to — decompile, r
 
 ---
 
-## 🔒 3. DATA GOVERNANCE & CUSTODIAL PROTOCOLS
+### 🔒 3. DATA GOVERNANCE & CUSTODIAL PROTOCOLS
 
 ### 3.1 Payload Ownership Retention  
 All structural metadata and transactional records submitted through the Constellation Gateway remain the absolute intellectual property of the originating entity or data owner (*“Data Owner”*).
@@ -175,7 +171,7 @@ All transmitted telemetry and dataset structures must conform explicitly with gl
 
 ---
 
-## 🔒 4. LIMITATION OF LIABILITY & WARRANTY DISCLAIMER
+### 🔒 4. LIMITATION OF LIABILITY & WARRANTY DISCLAIMER
 
 ### 4.1 System Provisioning “As‑Is”  
 The AVIS‑DATALAKE platform and its tracking interface are provided **“AS IS”** and **“AS AVAILABLE”**, without warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability, uptime durability, or operational fitness for a particular datalake ingestion sequence.
@@ -188,7 +184,7 @@ The submitting entity bears sole, un‑delegable responsibility for ensuring the
 
 ---
 
-## 🔒 5. ENFORCEMENT & REMEDIAL MATRICES
+### 🔒 5. ENFORCEMENT & REMEDIAL MATRICES
 
 Failure to comply with any provision of this agreement constitutes a critical security exception and will result in immediate corrective mitigation actions:
 
@@ -198,6 +194,6 @@ Failure to comply with any provision of this agreement constitutes a critical se
 
 ---
 
-## 🔒 © 2026 MERCWAR AI. ALL RIGHTS RESERVED.  
+### 🔒 © 2026 MERCWAR AI. ALL RIGHTS RESERVED.  
 **AVIS‑DATALAKE Architecture Secure Asset Vector Frame.**
 
