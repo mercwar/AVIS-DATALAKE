@@ -1,0 +1,16 @@
+{
+    "method": "home_init",
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "123",
+        "stream_class": "adl-development",
+        "alpha": "html",
+        "payload_content": "[Externalized to companion HTML wrapper]"
+    },
+    "modified": "2026-09-11T17:28:21+00:00",
+    "_avisCard": {
+        "fileType": "html",
+        "wrapperName": "47.html",
+        "sourcePayload": "test213"
+    }
+}
