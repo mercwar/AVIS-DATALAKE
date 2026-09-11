@@ -1,0 +1,18 @@
+<Project Sdk="CVBGOD-DN.Sdk/4.0">
+  <PropertyGroup>
+    <ProjectName>FIRE_LANG_CORE</ProjectName>
+    <ExecutionPriority>ULTRA_HIGH</ExecutionPriority>
+    <LogicGateMode>STRICT_COMPILER_GATE</LogicGateMode>
+    <BaseAddress>0x0300</BaseAddress>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src/main.fire.avis" Address="0x0310" />
+    <Include Include="inc/ev1_core.h.avis" Address="0x0110" />
+    <Include Include="inc/cyborg_types.h.avis" Address="0x0111" />
+  </ItemGroup>
+
+  <Target Name="CVBGOD_Audit" BeforeTargets="Build">
+    <Message Text="Validating MERCWAR_SENTINEL_ARCHITECTURE pulse..." />
+  </Target>
+</Project>

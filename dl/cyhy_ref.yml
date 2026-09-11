@@ -1,0 +1,8 @@
+# /dl/cyhy_ref.yml
+CYHY_NETWORK_CONFIG:
+  Protocol: "Gemini_V2_Verified"
+  Report_Channel: "HTTPS_REST_API"
+  Memory_Sector: "0x5000"
+  Reference_Library:
+    SUCCESS_CODE: 0x01
+    FAILURE_CODE: 0x00

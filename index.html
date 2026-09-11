@@ -1,95 +1,37 @@
-Skip to content
-mercwar
-CVBGODLY-CONSOLE
-Repository navigation
-Code
-Issues
-Pull requests
-Agents
-Discussions
-Actions
-Wiki
-Security and quality
-Insights
-Settings
-CVBGODLY-CONSOLE
-/index.html
-Go to file
-t
-T
-mercwar
-mercwar
-Add files via upload
-6e67481
- · 
-3 months ago
-
-Code
-
-Blame
-65 lines (55 loc) · 1.68 KB
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Loading…</title>
-  <style>
-    body {
-      background: #000;
-      color: #0ff;
-      font-family: monospace;
-      text-align: center;
-      padding-top: 20vh;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVIS-DATALAKE | Mercwar</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .job-specs { background: #e9ecef; padding: 15px; border-left: 5px solid #007bff; margin: 20px 0; }
+        code { background: #eee; padding: 2px 5px; border-radius: 4px; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>AVIS-DATALAKE</h1>
+        <p>Canonical environment for sketches, metadata, and data transforms.</p>
+        
+        <div class="job-specs">
+            <h3>Active Job Configuration</h3>
+            <ul>
+                <li><strong>Job Name:</strong> <code>avis-datalake-load</code></li>
+                <li><strong>Config:</strong> <code>configs/avis_params.ini</code></li>
+                <li><strong>Executor:</strong> <code>scripts/load_job.sh</code></li>
+            </ul>
+        </div>
 
-<h2>Loading Repository…</h2>
-
-<script>
-// -----------------------------------------
-// 1. DETECT THIS FILE'S REPO NAME
-// -----------------------------------------
-const path = window.location.pathname.split("/").filter(Boolean);
-
-// Example paths:
-//   /Mercwar/index.html          → repo = Mercwar
-//   /Constellation/index.html    → repo = Constellation
-//   ../../Mercwar/index.html     → repo = Mercwar
-
-// Repo name is ALWAYS the folder BEFORE this file
-const repo_name = path[path.length - 2] || "mercwar";
-
-// -----------------------------------------
-// 2. LOCAL MODE SWITCH
-// -----------------------------------------
-const LOCAL_MODE = false;
-
-let git_url = LOCAL_MODE
-  ? "../../"
-  : "https://mercwar.github.io/";
-
-// -----------------------------------------
-// 3. CLEAN URL JOINER (NO DOUBLE SLASHES)
-// -----------------------------------------
-function joinURL(base, path) {
-  return base.replace(/\/+$/, "") + "/" + path.replace(/^\/+/, "");
-}
-
-// -----------------------------------------
-// 4. BUILD FINAL REDIRECT URL
-// LIVE is ALWAYS inside Constellation
-// -----------------------------------------
-const clean_url =
-  joinURL(git_url, "Constellation/LIVE/index.html") +
-  `?index=${repo_name}`;
-
-// -----------------------------------------
-// 5. REDIRECT
-// -----------------------------------------
-window.location.href = clean_url;
-</script>
-
+        <h2>Datalake Environment</h2>
+        <ul>
+            <li><a href="./sketches/">Visual Sketches & Workflows</a></li>
+            <li><a href="./metadata/">CBORD Root Metadata</a></li>
+            <li><a href="./transforms/">Data Transforms</a></li>
+        </ul>
+    </div>
 </body>
 </html>

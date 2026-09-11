@@ -1,0 +1,60 @@
+{
+    "owner": {
+        "system_id": "mercwar",
+        "team": "",
+        "contact_email": ""
+    },
+    "id": "",
+    "method": "add",
+    "noticed": "",
+    "storage_tier": "raw_landing",
+    "location": {
+        "protocol": "s3a",
+        "provider": "aws",
+        "root_bucket": "",
+        "path": "",
+        "file_name": "",
+        "partitions": [
+            ""
+        ]
+    },
+    "format_spec": {
+        "data_type": "html",
+        "encoding": "utf-8",
+        "schema_version": "",
+        "checksum": {
+            "algorithm": "md5",
+            "value": ""
+        }
+    },
+    "html_loader_config": {
+        "stripping_strategy": "keep_all",
+        "allowed_tags": [
+            ""
+        ],
+        "dom_extraction_targets": {
+            "title_selector": "title",
+            "body_selector": "body",
+            "custom_data_nodes": [
+                ""
+            ]
+        }
+    },
+    "lineage": {
+        "upstream_dependencies": [
+            ""
+        ],
+        "pipeline_id": ""
+    },
+    "usage": "",
+    "instructions": [
+        ""
+    ],
+    "governance_and_terms": {
+        "retention_days": "",
+        "classification": "public",
+        "encryption": "sse_s3",
+        "access_control_role": ""
+    },
+    "modified": "2026-09-10T20:09:23+00:00"
+}

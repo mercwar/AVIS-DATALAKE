@@ -1,0 +1,11 @@
+## /* AVIS_COORD: AVIS://MSDN/SDK/INC/EV1_CORE */
+## /* ROLE: Robotic_Event_Interface_Definitions */
+ai.begin.cyborg.lang::
+[@]PTR_OFFSET[0x0110]::
+begin.spec struct.EV1_EVENT_PACKET {
+    [@]PTR_ID;              // Unique Event Identifier
+    [#]EV_PRIORITY;         // Real-time Priority Gate
+    {STR}EV_SENDER;    // Originating Module Name
+    [>]EV_PAYLOAD;          // Pointer to Logic Payload
+}
+ai.end.cyborg.lang::

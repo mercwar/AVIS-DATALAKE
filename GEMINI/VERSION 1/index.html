@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AVIS-DATALAKE | A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl.</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="AVIS-DATALAKE" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<meta property="og:description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<link rel="canonical" href="https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%201/" />
+<meta property="og:url" content="https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%201/" />
+<meta property="og:site_name" content="AVIS-DATALAKE" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AVIS-DATALAKE" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl.","headline":"AVIS-DATALAKE","url":"https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%201/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/AVIS-DATALAKE/assets/css/style.css?v=52ee0360d42559fe0ea792695c29da2978eb5651">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/AVIS-DATALAKE/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://mercwar.github.io/AVIS-DATALAKE/">AVIS-DATALAKE</a></h1>
+      
+
+      <p>Here we go—one clean pass, no drift:</p>
+
+<ul>
+  <li>a <strong>CBORD wrapper</strong> (<code class="language-plaintext highlighter-rouge">cbord_wrapper.h</code>)</li>
+  <li>wired as a <strong>comment‑object interpreter layer</strong></li>
+  <li>merged conceptually with <strong>CYHY (VB6)</strong> and <strong>CGO</strong> so the story is:</li>
+</ul>
+
+<blockquote>
+  <p>CYHY = VB6 code<br />
+CGO = C‑side comment object logic<br />
+CBORD = <code class="language-plaintext highlighter-rouge">.h</code> “interpreted language” that fills RAM with comments</p>
+</blockquote>
+
+<hr />
+
+<h3 id="cbord-wrapper--cbord_wrapperh">CBORD wrapper — <code class="language-plaintext highlighter-rouge">cbord_wrapper.h</code></h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* AIFVS-ARTIFACT
+   CY_NAME: CBORD_WRAPPER
+   CY_TYPE: c_header
+   CY_ROLE: Comment Object Wrapper for CYHY/CGO
+   CY_LINK: dl/cbord_wrapper.h
+
+   CY_OWNER: Master Prime Cyborg (CVBGOD)
+   CY_DOMAIN: CYHY / AVIS DATALAKE
+
+   DL_MAP:  ACK/RACK
+   DL_DRV:  ACK/RACK
+   DL_LDIR: ACK/RACK
+   DL_WDIR: ACK/RACK
+   DL_FILE: ACK/RACK
+   DL_EXT:  ACK/RACK
+   DL_FFN:  RRAC
+
+   AVIS_SCHEMA: COMMENT_OBJECT
+   AVIS_VISIBILITY: PUBLIC CRAWLABLE
+
+   COMMENT:
+      CBORD is a C header “language” whose primary purpose is to
+      load RAM with structured AVIS comments. It is treated as an
+      interpreted layer: the comments are the program.
+*/</span>
+
+<span class="cp">#ifndef CBORD_WRAPPER_H
+#define CBORD_WRAPPER_H
+</span>
+<span class="cm">/* Core Comment Object (CGO) descriptor */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_CY_COMMENT_OBJECT</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_NAME</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_TYPE</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_ROLE</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_LINK</span><span class="p">;</span>
+
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_MAP</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_DRV</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_LDIR</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_WDIR</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_FILE</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_EXT</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">DL_FFN</span><span class="p">;</span>
+
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">AVIS_SCHEMA</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">AVIS_VISIBILITY</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">COMMENT</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">CY_COMMENT_OBJECT</span><span class="p">;</span>
+
+<span class="cm">/* Conceptual “interpreter”: in CBORD, loading this struct into RAM
+   is equivalent to loading a program. The fields are the code. */</span>
+
+<span class="k">static</span> <span class="n">CY_COMMENT_OBJECT</span> <span class="n">CYHY_CORE_CBORD</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"CYHY_CORE_CBORD"</span><span class="p">,</span>
+    <span class="s">"comment_object"</span><span class="p">,</span>
+    <span class="s">"Hybrid AI/Human Comment Loader"</span><span class="p">,</span>
+    <span class="s">"dl/cyhy_core_cbord.h"</span><span class="p">,</span>
+
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"ACK/RACK"</span><span class="p">,</span>
+    <span class="s">"RRAC"</span><span class="p">,</span>
+
+    <span class="s">"COMMENT_OBJECT"</span><span class="p">,</span>
+    <span class="s">"PUBLIC CRAWLABLE"</span><span class="p">,</span>
+    <span class="s">"CYHY is the VB6 code; CBORD is the C header layer that fills "</span>
+    <span class="s">"RAM with AVIS comments for AI and human interpretation."</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* CBORD_WRAPPER_H */</span><span class="cp">
+</span></code></pre></div></div>
+
+<hr />
+
+<h3 id="merge-story-conceptual">Merge story (conceptual)</h3>
+
+<ul>
+  <li>
+    <p><strong>CYHY (VB6):</strong><br />
+VB6 modules implement logic, UI, or flow—always annotated with AVIS comments.</p>
+  </li>
+  <li>
+    <p><strong>CGO (C Comment Object):</strong><br />
+C‑side representation of the same AVIS comment schema (structs, stubs, descriptors).</p>
+  </li>
+  <li>
+    <p><strong>CBORD (<code class="language-plaintext highlighter-rouge">*.h</code> as interpreted language):</strong><br />
+Headers like <code class="language-plaintext highlighter-rouge">cbord_wrapper.h</code> define <code class="language-plaintext highlighter-rouge">CY_COMMENT_OBJECT</code> instances.<br />
+Loading them into RAM = “executing” the comment program.</p>
+  </li>
+</ul>
+
+<p>So in one line:</p>
+
+<blockquote>
+  <p>CYHY writes the world in VB6, CGO describes it in C, and CBORD loads the comments into RAM as the interpreted layer.</p>
+</blockquote>
+
+<p>If you want, next step can be a <strong>VB6 CYHY module</strong> that explicitly “talks” to this <code class="language-plaintext highlighter-rouge">CY_COMMENT_OBJECT</code> schema in comments.</p>
+
+
+      
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. <a href="https://github.com/mercwar/AVIS-DATALAKE/edit/main/GEMINI/VERSION%201/Readme.md">Improve this page</a>.
+      </div>
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>

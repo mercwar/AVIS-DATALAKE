@@ -1,9 +1,7 @@
 {
-    "method": "home_init",
-    "home": {
-        "realm": "AVIS-PRIMARY-CORE",
-        "host_node": "PHOTON-1",
-        "stream_class": "production"
-    },
-    "modified": "2026-09-10T23:53:34-04:00"
+    "id": "",
+    "name": "",
+    "tags": [],
+    "notes": [],
+    "modified": "2026-09-10T20:00:54+00:00"
 }

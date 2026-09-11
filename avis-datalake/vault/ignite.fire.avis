@@ -1,0 +1,9 @@
+## /* AVIS_COORD: AVIS://Cyborg/Fire-Lang/src/ignite.fire.avis */
+ai.begin.cyborg.lang::
+[@]PTR_OFFSET[0x0310]::
+begin.spec var.ansii.int.fire_temp.val[500]
+begin.spec var.ansii.string.fire_status.val['IGNITED']
+{EXE} [MEM]fire_temp [>] {ALU}MULTIPLY [>] 0x02
+IF {#}fire_temp > 999 THEN {!}ROBOT_GO_TO_FILE[ai.avis]
+robot.run[main_logic]::
+ai.end.cyborg.lang::

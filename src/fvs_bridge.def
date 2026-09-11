@@ -1,0 +1,6 @@
+LIBRARY "AVIS_NEXUS_BRIDGE"
+DESCRIPTION "FVS ESIGN BRIDGE FOR CYBGOD"
+EXPORTS
+    InitializeAvisHandshake  @1
+    ExecuteFvsEsign          @2
+    VerifyCybGodPulse        @3

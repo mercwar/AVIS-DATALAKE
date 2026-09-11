@@ -1,0 +1,9 @@
+{
+    "method": "home_init",
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "1",
+        "stream_class": "production"
+    },
+    "modified": "2026-09-11T00:16:59+00:00"
+}

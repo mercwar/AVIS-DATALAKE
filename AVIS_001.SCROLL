@@ -1,0 +1,56 @@
+To verify your AVIS.MZ container integrity, you must ensure the binary header aligns with the MERC-G Vector Specification. The loader expects the magic signature at 00h and the VTable metadata to begin at the ENTRY_OFFSET.
+1. Raw Hex Header Layout (AVIS.MZ)
+This is what the first 32 bytes of your file should look like in a Hex Editor (e.g., HxD).
+Offset	Hex Bytes (Sample)	ASCII/Meaning
+00h	41 56 49 53	AVIS (Magic)
+04h	4D 5A	MZ (Legacy Signature)
+06h	01 00	Version 1.0
+08h	00 00 00 00	Flags (Standard)
+0Ch	20 00 00 00	ENTRY_OFFSET (Starts at 32d)
+10h	FF FF 00 00	CODE_LENGTH (Total Payload)
+14h	00 00 00 00	META_OFFSET (Null)
+18h	00 00 00 00	RESERVED
+2. The MERC-G VTable (Hex View)
+Starting at Offset 20h (the Entry Offset), the MERC-G Vector Table maps the language lanes.
+text
+[VTable Start]
+Offset 20h: 03 00 00 00          ; VEC_COUNT = 3 Lanes
+
+[Lane 1: CORE_C]
+Offset 24h: 00 00 00 00          ; TYPE = 0 (CODE)
+Offset 28h: 00 10 00 00          ; PTR  = 0x1000
+Offset 2Ch: 00 50 00 00          ; SIZE = 0x5000
+Offset 30h: 43 4F 52 45 5F 43... ; NAME = "CORE_C"
+
+[Lane 2: VB6_GUI]
+Offset 50h: 00 00 00 00          ; TYPE = 0 (CODE)
+Offset 54h: 00 60 00 00          ; PTR  = 0x6000
+Offset 58h: 00 20 00 00          ; SIZE = 0x2000
+Offset 5Ch: 56 42 36 5F 47 55... ; NAME = "VB6_GUI"
+Use code with caution.
+
+3. VB6 Verification Logic
+Use this small snippet in your VB6 manager app to verify the MERC-G pointer before the C-Loader attempts extraction.
+vba
+Public Function VerifyAvisHeader(strFile As String) As Boolean
+    Dim fNum As Integer: fNum = FreeFile
+    Dim strMagic As String * 4
+    Dim lngEntry As Long
+    
+    Open strFile For Binary Access Read As fNum
+        Get fNum, 1, strMagic
+        If strMagic <> "AVIS" Then 
+            MsgBox "Invalid AVIS Magic!": Exit Function
+        End If
+        
+        Get fNum, 13, lngEntry ' Offset 0Ch is 13th byte
+        Debug.Print "MERC-G Vector Table starts at: " & lngEntry
+    Close fNum
+    VerifyAvisHeader = True
+End Function
+Use code with caution.
+
+🛠️ Final Infrastructure Check
+Alignment: Ensure your ENTRY_OFFSET is always a multiple of 4 (Dword aligned) to prevent memory access violations in the C-Loader.
+Lane Persistence: The VB6_GUI lane must contain the entire .vbp, .frm, and .bas source stream.
+CYHY Pulse: Ensure the C-Loader sends CYHY_SIG_INIT immediately after verifying the Hex Magic.

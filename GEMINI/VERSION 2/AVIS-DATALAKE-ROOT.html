@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AVIS-DATALAKE: ROOT CONFIGURATION | AVIS-DATALAKE</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="AVIS-DATALAKE: ROOT CONFIGURATION" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<meta property="og:description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<link rel="canonical" href="https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%202/AVIS-DATALAKE-ROOT.html" />
+<meta property="og:url" content="https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%202/AVIS-DATALAKE-ROOT.html" />
+<meta property="og:site_name" content="AVIS-DATALAKE" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AVIS-DATALAKE: ROOT CONFIGURATION" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl.","headline":"AVIS-DATALAKE: ROOT CONFIGURATION","url":"https://mercwar.github.io/AVIS-DATALAKE/GEMINI/VERSION%202/AVIS-DATALAKE-ROOT.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/AVIS-DATALAKE/assets/css/style.css?v=52ee0360d42559fe0ea792695c29da2978eb5651">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/AVIS-DATALAKE/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://mercwar.github.io/AVIS-DATALAKE/">AVIS-DATALAKE</a></h1>
+      
+
+      <h1 id="avis-datalake-root-configuration">AVIS-DATALAKE: ROOT CONFIGURATION</h1>
+
+<p>/* AVIS_SCHEMA_LINK:
+   This file mirrors the CGO (C-side) schema into the CBORD 
+   interpreted layer for AI reasoning. 
+*/</p>
+
+<h2 id="1-memory-mapping-transient-layer">1. MEMORY MAPPING (TRANSIENT LAYER)</h2>
+<p>The following blocks are synchronized via the <code class="language-plaintext highlighter-rouge">AIFVS-HEADER.h</code> definitions:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">OBJECT_ID</th>
+      <th style="text-align: left">ROLE</th>
+      <th style="text-align: left">ACCESS</th>
+      <th style="text-align: left">SYNC_STATE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>DL.RAMD.AVIS</strong></td>
+      <td style="text-align: left">Volatile AI Memory</td>
+      <td style="text-align: left">RW_STREAM</td>
+      <td style="text-align: left">ACTIVE</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>FVS.AI</strong></td>
+      <td style="text-align: left">Federated Storage</td>
+      <td style="text-align: left">SNAPSHOT</td>
+      <td style="text-align: left">ARMED</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="2-cyhy-cbord-interpreted-logic">2. CYHY (CBORD) INTERPRETED LOGIC</h2>
+<blockquote>
+  <p>[!IMPORTANT]
+All AI seeking operations must reference the <code class="language-plaintext highlighter-rouge">DL_MAP: ACK/RACK</code> protocol to ensure data integrity during high-frequency versioning.</p>
+</blockquote>
+
+<ul>
+  <li><strong>DL_LDIR:</strong> <code class="language-plaintext highlighter-rouge">/dl</code> (Local Directory)</li>
+  <li><strong>DL_WDIR:</strong> <code class="language-plaintext highlighter-rouge">/dl</code> (Working Directory)</li>
+  <li><strong>DL_FILE:</strong> <code class="language-plaintext highlighter-rouge">index</code></li>
+  <li><strong>DL_EXT:</strong> <code class="language-plaintext highlighter-rouge">md</code></li>
+</ul>
+
+<h2 id="3-callback-expansion-parameters">3. CALLBACK EXPANSION PARAMETERS</h2>
+<p>When <code class="language-plaintext highlighter-rouge">CALLBACK.EXPAND</code> is triggered in the engine:</p>
+<ol>
+  <li>Initialize <code class="language-plaintext highlighter-rouge">FVS.AI.EXPORT</code></li>
+  <li>Perform high-resolution visibility scan of <code class="language-plaintext highlighter-rouge">DL_RAMD</code>.</li>
+  <li>Flush to <code class="language-plaintext highlighter-rouge">AVIS-DATALAKE/versioning/</code> using Cyborg-PHP backend.</li>
+</ol>
+
+<hr />
+<p>/* AVIS-CMT: STATUS.CHECK
+   IF (AVIS_VARIANT_STATE == ENABLED) 
+   THEN (ENABLE_AUTONOMOUS_SEEKING)
+*/</p>
+
+
+      
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. <a href="https://github.com/mercwar/AVIS-DATALAKE/edit/main/GEMINI/VERSION%202/AVIS-DATALAKE-ROOT.md">Improve this page</a>.
+      </div>
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>

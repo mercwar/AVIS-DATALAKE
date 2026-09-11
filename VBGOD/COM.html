@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AVIS Comment Interpreter Library | AVIS-DATALAKE</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="AVIS Comment Interpreter Library" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<meta property="og:description" content="A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl." />
+<link rel="canonical" href="https://mercwar.github.io/AVIS-DATALAKE/VBGOD/COM.html" />
+<meta property="og:url" content="https://mercwar.github.io/AVIS-DATALAKE/VBGOD/COM.html" />
+<meta property="og:site_name" content="AVIS-DATALAKE" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AVIS Comment Interpreter Library" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A schema‑driven, AI‑indexable datalake for AVIS. Stores artifacts, modules, manifests, and learning blocks in a fully crawlable, machine‑readable structure. Robot scan for dl.","headline":"AVIS Comment Interpreter Library","url":"https://mercwar.github.io/AVIS-DATALAKE/VBGOD/COM.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/AVIS-DATALAKE/assets/css/style.css?v=52ee0360d42559fe0ea792695c29da2978eb5651">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/AVIS-DATALAKE/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://mercwar.github.io/AVIS-DATALAKE/">AVIS-DATALAKE</a></h1>
+      
+
+      <h1 id="avis-comment-interpreter-library">AVIS Comment Interpreter Library</h1>
+
+<p>This README documents a multi-language set of canonical comment loaders and metadata handlers designed for the AVIS datalake ecosystem. These components treat source files themselves as executable metadata containers, enabling a transparent, build-free, and runtime-independent metadata flow.</p>
+
+<hr />
+
+<h2 id="1️⃣-cbord--canonical-comment-interpreter-header">1️⃣ CBORD — Canonical Comment Interpreter Header</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* AIFVS-ARTIFACT
+   CY_NAME: CBORD_CORE
+   CY_TYPE: Interpreter
+   CY_ROLE: Comment Loader
+   CY_LINK: AVIS-DATALAKE://CBORD/CORE
+
+   DL_MAP: CY_COMMENT_OBJECT
+   DL_DRV: CBORD
+   DL_LDIR: cbord
+   DL_FILE: cbord_core
+   DL_EXT: .h
+
+   AVIS_SCHEMA: CGO_v1
+   AVIS_VISIBILITY: Public
+
+   COMMENT:
+   Including this header is execution.
+   Comments define the object.
+*/</span>
+
+<span class="cp">#ifndef CBORD_CORE_H
+#define CBORD_CORE_H
+</span>
+<span class="cp">#define AVIS_VERSION "1.0"
+#define MERCG_ALLOW  1
+#define MERCG_DENY   0
+</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_NAME</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_TYPE</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">CY_ROLE</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">COMMENT</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">CY_COMMENT_OBJECT</span><span class="p">;</span>
+
+<span class="cm">/* MERC-G filter gate */</span>
+<span class="cp">#define MERCG_FILTER(state) if((state) == MERCG_ALLOW)
+</span>
+<span class="cp">#endif
+</span>
+
+<span class="mi">2</span><span class="err">️⃣</span> <span class="n">C</span> <span class="p">(</span><span class="n">Pelles</span> <span class="n">C</span> <span class="mi">13</span><span class="p">)</span> <span class="err">—</span> <span class="n">Comment</span> <span class="n">Loader</span> <span class="err">→</span> <span class="n">File</span> <span class="n">Emitter</span>
+
+<span class="n">Purpose</span><span class="o">:</span> <span class="n">load</span> <span class="n">comment</span> <span class="n">metadata</span> <span class="n">and</span> <span class="n">write</span> <span class="n">it</span> <span class="n">to</span> <span class="n">diskCompilation</span> <span class="n">optional</span><span class="p">.</span> <span class="n">Reading</span> <span class="n">the</span> <span class="n">file</span> <span class="n">is</span> <span class="n">execution</span><span class="p">.</span>
+
+<span class="cm">/* AIFVS-ARTIFACT
+   CY_NAME: C_COMMENT_EMITTER
+   CY_TYPE: Logic
+   CY_ROLE: Metadata Serializer
+   CY_LINK: AVIS-DATALAKE://C/EMITTER
+
+   DL_MAP: CY_COMMENT_OBJECT
+   DL_DRV: PELLESC13
+   DL_LDIR: c
+   DL_FILE: comment_emitter
+   DL_EXT: .c
+
+   AVIS_SCHEMA: CGO_v1
+   AVIS_VISIBILITY: Public
+
+   COMMENT:
+   This library writes comment objects to files.
+*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"cbord_core.h"</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">emit_comment_object</span><span class="p">(</span><span class="k">const</span> <span class="n">CY_COMMENT_OBJECT</span> <span class="o">*</span><span class="n">obj</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">"w"</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_NAME=%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">obj</span><span class="o">-&gt;</span><span class="n">CY_NAME</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_TYPE=%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">obj</span><span class="o">-&gt;</span><span class="n">CY_TYPE</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_ROLE=%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">obj</span><span class="o">-&gt;</span><span class="n">CY_ROLE</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">"COMMENT=%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">obj</span><span class="o">-&gt;</span><span class="n">COMMENT</span><span class="p">);</span>
+
+    <span class="n">fclose</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* Optional test harness */</span>
+<span class="cp">#ifdef EMITTER_TEST
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">CY_COMMENT_OBJECT</span> <span class="n">cy</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">"CYHY_ENV_APP"</span><span class="p">,</span>
+        <span class="s">"Driver"</span><span class="p">,</span>
+        <span class="s">"Comment Program"</span><span class="p">,</span>
+        <span class="s">"Comments are executable logic"</span>
+    <span class="p">};</span>
+
+    <span class="n">MERCG_FILTER</span><span class="p">(</span><span class="n">MERCG_ALLOW</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">emit_comment_object</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cy</span><span class="p">,</span> <span class="s">"cyhy.meta"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">#endif
+</span>
+
+<span class="mi">3</span><span class="err">️⃣</span> <span class="n">VB6</span> <span class="p">(</span><span class="n">CYHY</span><span class="p">)</span> <span class="err">—</span> <span class="n">Human</span><span class="o">-</span><span class="n">Readable</span> <span class="n">Comment</span> <span class="n">Program</span>
+
+<span class="n">Purpose</span><span class="o">:</span> <span class="n">hydrate</span> <span class="n">from</span> <span class="n">ENV</span> <span class="o">+</span> <span class="n">write</span> <span class="n">metadata</span> <span class="n">file</span>
+
+<span class="err">'</span> <span class="n">AIFVS</span><span class="o">-</span><span class="n">ARTIFACT</span>
+<span class="err">'</span> <span class="n">CY_NAME</span><span class="o">:</span> <span class="n">CYHY_COMMENT_DRIVER</span>
+<span class="err">'</span> <span class="n">CY_TYPE</span><span class="o">:</span> <span class="n">Driver</span>
+<span class="err">'</span> <span class="n">CY_ROLE</span><span class="o">:</span> <span class="n">Human</span> <span class="n">Comment</span> <span class="n">Program</span>
+<span class="err">'</span> <span class="n">CY_LINK</span><span class="o">:</span> <span class="n">AVIS</span><span class="o">-</span><span class="n">DATALAKE</span><span class="o">:</span><span class="c1">//CYHY/VB6</span>
+<span class="err">'</span>
+<span class="err">'</span> <span class="n">DL_MAP</span><span class="o">:</span> <span class="n">CY_COMMENT_OBJECT</span>
+<span class="err">'</span> <span class="n">DL_DRV</span><span class="o">:</span> <span class="n">VB6</span>
+<span class="err">'</span> <span class="n">DL_LDIR</span><span class="o">:</span> <span class="n">cyhy</span>
+<span class="err">'</span> <span class="n">DL_FILE</span><span class="o">:</span> <span class="n">CYHY_driver</span>
+<span class="err">'</span> <span class="n">DL_EXT</span><span class="o">:</span> <span class="p">.</span><span class="n">bas</span>
+<span class="err">'</span>
+<span class="err">'</span> <span class="n">AVIS_SCHEMA</span><span class="o">:</span> <span class="n">CGO_v1</span>
+<span class="err">'</span> <span class="n">AVIS_VISIBILITY</span><span class="o">:</span> <span class="n">Public</span>
+<span class="err">'</span>
+<span class="err">'</span> <span class="n">COMMENT</span><span class="o">:</span>
+<span class="err">'</span> <span class="n">VB6</span> <span class="n">mirrors</span> <span class="n">comment</span> <span class="n">execution</span> <span class="k">for</span> <span class="n">humans</span><span class="p">.</span>
+
+<span class="n">Public</span> <span class="n">Sub</span> <span class="n">EmitCYHYMeta</span><span class="p">(</span><span class="n">ByVal</span> <span class="n">path</span> <span class="n">As</span> <span class="n">String</span><span class="p">)</span>
+    <span class="n">Dim</span> <span class="n">f</span> <span class="n">As</span> <span class="n">Integer</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FreeFile</span>
+
+    <span class="n">Open</span> <span class="n">path</span> <span class="n">For</span> <span class="n">Output</span> <span class="n">As</span> <span class="err">#</span><span class="n">f</span>
+        <span class="n">Print</span> <span class="err">#</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_NAME=CYHY_COMMENT_DRIVER"</span>
+        <span class="n">Print</span> <span class="err">#</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_TYPE=Driver"</span>
+        <span class="n">Print</span> <span class="err">#</span><span class="n">f</span><span class="p">,</span> <span class="s">"CY_ROLE=Human Interface"</span>
+        <span class="n">Print</span> <span class="err">#</span><span class="n">f</span><span class="p">,</span> <span class="s">"COMMENT=CYHY is the program"</span>
+    <span class="n">Close</span> <span class="err">#</span><span class="n">f</span>
+<span class="n">End</span> <span class="n">Sub</span>
+
+<span class="n">Public</span> <span class="n">Sub</span> <span class="n">LoadCYHY</span><span class="p">()</span>
+    <span class="n">Dim</span> <span class="n">mode</span> <span class="n">As</span> <span class="n">String</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">Environ</span><span class="err">$</span><span class="p">(</span><span class="s">"CYHY_MODE"</span><span class="p">)</span>
+
+    <span class="n">If</span> <span class="n">mode</span> <span class="o">=</span> <span class="s">"MERCG_ALLOW"</span> <span class="n">Then</span>
+        <span class="n">Call</span> <span class="n">EmitCYHYMeta</span><span class="p">(</span><span class="s">"cyhy.meta"</span><span class="p">)</span>
+    <span class="n">End</span> <span class="n">If</span>
+<span class="n">End</span> <span class="n">Sub</span>
+
+
+<span class="mi">4</span><span class="err">️⃣</span> <span class="n">JavaScript</span> <span class="err">—</span> <span class="n">Metadata</span> <span class="n">Reader</span> <span class="o">/</span> <span class="n">Writer</span>
+
+<span class="n">Purpose</span><span class="o">:</span> <span class="n">treat</span> <span class="n">files</span> <span class="n">as</span> <span class="n">authoritative</span> <span class="n">logic</span>
+
+<span class="cm">/* AIFVS-ARTIFACT
+   CY_NAME: JS_META_IO
+   CY_TYPE: Logic
+   CY_ROLE: Metadata Transport
+   CY_LINK: AVIS-DATALAKE://JS/META
+
+   DL_MAP: CY_COMMENT_OBJECT
+   DL_DRV: JAVASCRIPT
+   DL_LDIR: js
+   DL_FILE: meta_io
+   DL_EXT: .js
+
+   AVIS_SCHEMA: CGO_v1
+   AVIS_VISIBILITY: Public
+
+   COMMENT:
+   JS does not execute logic.
+   It moves comment objects.
+*/</span>
+
+<span class="n">import</span> <span class="n">fs</span> <span class="n">from</span> <span class="s">"fs"</span><span class="p">;</span>
+
+<span class="n">export</span> <span class="n">function</span> <span class="nf">writeMeta</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="n">out</span> <span class="o">=</span>
+<span class="err">`</span><span class="n">CY_NAME</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">CY_NAME</span><span class="p">}</span>
+<span class="n">CY_TYPE</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">CY_TYPE</span><span class="p">}</span>
+<span class="n">CY_ROLE</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">CY_ROLE</span><span class="p">}</span>
+<span class="n">COMMENT</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">COMMENT</span><span class="p">}</span>
+<span class="err">`</span><span class="p">;</span>
+    <span class="n">fs</span><span class="p">.</span><span class="n">writeFileSync</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">export</span> <span class="n">function</span> <span class="nf">readMeta</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">fs</span><span class="p">.</span><span class="n">readFileSync</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">"utf8"</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="mi">5</span><span class="err">️⃣</span> <span class="n">Perl</span> <span class="o">/</span> <span class="n">CGI</span> <span class="err">—</span> <span class="n">Metadata</span> <span class="n">Sink</span>
+
+<span class="n">Purpose</span><span class="o">:</span> <span class="n">server</span><span class="o">-</span><span class="n">side</span> <span class="n">intake</span><span class="p">,</span> <span class="n">zero</span> <span class="n">logic</span>
+
+<span class="cp"># AIFVS-ARTIFACT
+# CY_NAME: PERL_META_SINK
+# CY_TYPE: Logic
+# CY_ROLE: Metadata Receiver
+# CY_LINK: AVIS-DATALAKE://PERL/SINK
+#
+# DL_MAP: CY_COMMENT_OBJECT
+# DL_DRV: PERL
+# DL_LDIR: perl
+# DL_FILE: meta_sink
+# DL_EXT: .pl
+#
+# AVIS_SCHEMA: CGO_v1
+# AVIS_VISIBILITY: Public
+#
+# COMMENT:
+# Perl receives comment objects and stores them.
+</span>
+<span class="n">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="n">use</span> <span class="n">warnings</span><span class="p">;</span>
+
+<span class="n">my</span> <span class="err">$</span><span class="n">output</span> <span class="o">=</span> <span class="s">"received.meta"</span><span class="p">;</span>
+
+<span class="n">open</span><span class="p">(</span><span class="n">my</span> <span class="err">$</span><span class="n">fh</span><span class="p">,</span> <span class="s">"&gt;"</span><span class="p">,</span> <span class="err">$</span><span class="n">output</span><span class="p">)</span> <span class="n">or</span> <span class="n">exit</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">STDIN</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">print</span> <span class="err">$</span><span class="n">fh</span> <span class="err">$</span><span class="n">_</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">close</span><span class="p">(</span><span class="err">$</span><span class="n">fh</span><span class="p">);</span>
+
+<span class="n">print</span> <span class="s">"OK</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+
+
+<span class="err">🧠</span> <span class="n">What</span> <span class="n">You</span> <span class="n">Now</span> <span class="n">Have</span>
+
+<span class="n">A</span> <span class="n">comment</span><span class="o">-</span><span class="n">loadable</span> <span class="n">library</span>  
+<span class="n">Publishable</span> <span class="n">source</span>  
+<span class="n">No</span> <span class="n">build</span> <span class="n">system</span> <span class="n">required</span>  
+<span class="n">No</span> <span class="n">runtime</span> <span class="n">coupling</span>  
+<span class="n">Files</span> <span class="n">themselves</span> <span class="n">are</span> <span class="n">the</span> <span class="n">executable</span> <span class="n">truth</span>  
+<span class="n">Server</span> <span class="n">side</span> <span class="n">just</span> <span class="n">reads</span> <span class="n">metadata</span>
+
+<span class="n">This</span> <span class="n">completes</span> <span class="n">AIFVS</span> <span class="o">+</span> <span class="n">MERCG</span> <span class="n">COM</span> <span class="n">object</span> <span class="n">flow</span><span class="p">.</span>
+</code></pre></div></div>
+
+
+      
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. <a href="https://github.com/mercwar/AVIS-DATALAKE/edit/main/VBGOD/COM.md">Improve this page</a>.
+      </div>
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
