@@ -42,13 +42,16 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 
 
-Right — the README shouldn’t be about repo cloning or fake directory trees. It needs to **explain the Star Map**: the constellation interface that users see when they open `cron.iblogger.org/AVIS-DATALAKE`. That’s the whole point — the map is the navigation layer for submitting records.
 
 ---
 
 # 🌌 AVIS‑DATALAKE Star Map Tutorial
 
-`[Looks like the result wasn't safe to show. Let's switch things up and try something else!]`
+<a href="https://cron.iblogger.org/AVIS-DATALAKE">
+  <img src="cmd.png" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
+</a>
+
+
 
 ## Overview
 The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each glowing star represents a metadata form. When you click a star, the corresponding form opens in a window, allowing you to **submit a datalake record**. Once submitted, the record is automatically pushed into GitHub.
