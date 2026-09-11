@@ -137,13 +137,85 @@ The Star Map interface is built on a dark-themed, futuristic aesthetic to ensure
 
 ---
 
-## 📜 Closing Declaration
+# ⚖️ AVIS‑DATALAKE TERMINAL COMPLIANCE ARCHITECTURE  
+## End‑User License Agreement (EULA) & Data Governance Policy
 
-The **Star Map is the gateway**. 
-- It is not about cloning repositories—it is about **navigating stars, opening forms, and submitting records**.
-- Each star is a crucial node in the constellation of AVIS metadata law. 
+**Effective Date:** September 10, 2026  
+**System Class:** Metadata Management Constellation Gateway Matrix  
+**Licensor:** Mercwar Licensing Matrix  
 
-**AVIS is the law.  
-The Star Map is the path.  
-The records are the core.**
+---
 
+## 1. OPERATIONAL DECLARATION & GATEWAY MATRIX
+
+The **AVIS‑DATALAKE Constellation Interface** (the *“Star Map”*) serves as the exclusive, authorized presentation layer and cryptographic routing gateway for the ingestion of datalake structural metadata records.  
+
+Interaction with individual tracking nodes (each a *“Star Node”*) initializes secure telemetry submission frames. These sequences are governed systematically under the compliance definitions detailed herein.
+
+**MERCWAR MANDATE & SYSTEM DEPLOYMENT PRINCIPLES:**
+- **Framework Integrity** → The systemic infrastructure of AVIS‑DATALAKE constitutes the baseline operating authority.  
+- **Navigational Access** → The Star Map topology represents the unique, immutable path for data ingestion.  
+- **Data Superiority** → Structural metadata records form the foundational payload core of the repository.  
+- **Intellectual Property Shield** → This license stands as the definitive legal boundary protecting core system assets.  
+
+---
+
+## 2. INTELLECTUAL PROPERTY RIGHTS & ACQUISITION RESTRICTIONS
+
+### 2.1 Authorized Interface Access  
+Licensor grants the End User a non‑exclusive, non‑transferable, revocable right to access and interact with the hosted Constellation Gateway exclusively via the official URL: **cron.iblogger.org/AVIS‑DATALAKE** for the purpose of transmitting validated metadata payloads.
+
+### 2.2 Strict Prohibition of Core Source Code Replication  
+Cloning, copying, mirroring, downloading, or redistributing the primary repository, source scripts (`.php`, `.css`, `.js`), style engines, or layout configurations of the Star Map interface is strictly prohibited.
+
+### 2.3 Express Mirroring Allowance (*The `/dl/` Fragment Exception*)  
+As an explicit exception to Section 2.2, End Users and downstream orchestration processes are granted a perpetual license to pull, mirror, clone, or fork the output records container directory located exclusively within the `/dl/` folder path. This structure contains public, non‑proprietary submission data blocks intended for open‑source datalake synchronization.
+
+### 2.4 Reverse Engineering Interdiction  
+End Users shall not — and shall not permit any third party to — decompile, reverse engineer, disassemble, decrypt, extract, or attempt to derive the source blocks or underlying telemetry layout systems of the Star Map gateway application layers.
+
+---
+
+## 3. DATA GOVERNANCE & CUSTODIAL PROTOCOLS
+
+### 3.1 Payload Ownership Retention  
+All structural metadata and transactional records submitted through the Constellation Gateway remain the absolute intellectual property of the originating entity or data owner (*“Data Owner”*).
+
+### 3.2 Custodial Routing Framework  
+The AVIS‑DATALAKE system functions strictly in a custodial capacity. Upon successful validation, the gateway translates form streams into secure objects and automatically dispatches the payload to the designated target repository architecture.
+
+### 3.3 Regulatory Compliance Matrix  
+All transmitted telemetry and dataset structures must conform explicitly with global data protection criteria, localized corporate retention schedules, and regional cybersecurity enforcement frameworks.
+
+---
+
+## 4. LIMITATION OF LIABILITY & WARRANTY DISCLAIMER
+
+### 4.1 System Provisioning “As‑Is”  
+The AVIS‑DATALAKE platform and its tracking interface are provided **“AS IS”** and **“AS AVAILABLE”**, without warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability, uptime durability, or operational fitness for a particular datalake ingestion sequence.
+
+### 4.2 Exclusion of Consequential Damages  
+In no event shall Mercwar, its architectural contributors, or system maintainers be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, pipeline downtime, metadata corruption, or loss of transactional integrity) however caused and on any theory of liability, whether in contract or strict liability, arising in any way out of the use of this interface software.
+
+### 4.3 End‑User Payload Accountability  
+The submitting entity bears sole, un‑delegable responsibility for ensuring the semantic accuracy, validation formatting, and strict legal permissions of all structural records committed to the stream.
+
+---
+
+## 5. ENFORCEMENT & REMEDIAL MATRICES
+
+Failure to comply with any provision of this agreement constitutes a critical security exception and will result in immediate corrective mitigation actions:
+
+1. **Revocation of Gate Access** → Instantaneous firewall blocking of the offending IP or terminal session from accessing the Constellation Interface.  
+2. **Payload Purging** → Total excision of any corrupted, unauthorized, or non‑compliant records from the public tracking indexes.  
+3. **Legal Redress** → The immediate initiation of statutory or equitable remedies under international copyright, trademark, trade secret, and data governance statutes.  
+
+---
+
+## © 2026 MERCWAR AI. ALL RIGHTS RESERVED.  
+**AVIS‑DATALAKE Architecture Secure Asset Vector Frame.**
+
+---
+
+
+---
