@@ -83,7 +83,6 @@ The Star Map is divided into structured orbital rows. Select the node that match
 |  | **URL Submission** | Ingest external resource links, APIs, and remote payload streams. |
 | **Row 3: Operation & Telemetry** | **Usage** | Detail the dataset's functional purpose, execution context, and query frequency. |
 |  | **Instructions** | Attach procedural notes, orchestration logs, and operational guidance. |
-| **Row 4: Expansion** | **Extra** | A reserved node for system expansion, balance, or experimental data modules. |
 
 ---
 
