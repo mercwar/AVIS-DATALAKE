@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVIS Telemetry Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            min-height: 100%;
+            overflow-y: auto;
+            background: rgba(10, 12, 44, 1);
+            background-image: radial-gradient(circle at 50% -20%, rgba(12,18,44,1), rgba(2,2,5,1));
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        .status-container {
+            margin: 4em auto;
+            padding: 2em;
+            width: 90%;
+            max-width: 600px;
+            background: linear-gradient(135deg, rgba(10,11,22,0.9) 0%, rgba(20,25,40,0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0,255,255,0.35);
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0,255,255,0.25), inset 0 0 20px rgba(0,255,255,0.15);
+            text-align: center;
+            animation: pulseContainer 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseContainer {
+            0% { box-shadow: 0 0 25px rgba(0,255,255,0.15), inset 0 0 20px rgba(0,255,255,0.05); }
+            100% { box-shadow: 0 0 35px rgba(0,255,255,0.35), inset 0 0 30px rgba(0,255,255,0.25); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+            text-shadow: 0 0 8px rgba(0,255,255,0.6);
+            border-bottom: 1px solid rgba(0,255,255,0.2);
+            padding-bottom: 0.5em;
+        }
+
+        .status {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 1.2em;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5em;
+            text-transform: uppercase;
+        }
+
+        /* Success Theme */
+        .status.success {
+            background: rgba(0, 255, 102, 0.05);
+            border: 1px solid rgba(0, 255, 102, 0.4);
+            color: #00ff66;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2), inset 0 0 10px rgba(0, 255, 102, 0.1);
+            text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+        }
+
+        /* Error/Failure Theme */
+        .status.error, 
+        .status.failed, 
+        .status.fail {
+            background: rgba(255, 0, 85, 0.05);
+            border: 1px solid rgba(255, 0, 85, 0.4);
+            color: #ff0055;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2), inset 0 0 10px rgba(255, 0, 85, 0.1);
+            text-shadow: 0 0 5px rgba(255, 0, 85, 0.5);
+        }
+
+        /* Default/Pending Theme */
+        .status:not(.success):not(.error):not(.failed):not(.fail) {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.1);
+        }
+
+        .btn-return {
+            display: inline-block;
+            background: linear-gradient(90deg, rgba(0,255,255,0.8), rgba(56,189,248,0.8));
+            color: #020205;
+            padding: 0.8em 2em;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .btn-return:hover {
+            background: linear-gradient(90deg, rgba(56,189,248,1), rgba(0,255,255,1));
+            box-shadow: 0 0 20px #00ffff, 0 0 30px rgba(56,189,248,0.6);
+            transform: translateY(-2px);
+            color: #000;
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            padding: 1.5em 1em;
+            background: linear-gradient(180deg, rgba(10,11,22,0.9) 0%, rgba(5,6,12,0.98) 100%);
+            border-top: 1px solid rgba(0, 255, 255, 0.25);
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        
+    </div>
+
+    <footer>
+        AVIS DATALAKE SYSTEM
+    </footer>
+</body>
+</html>
