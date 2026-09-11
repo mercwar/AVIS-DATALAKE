@@ -132,7 +132,7 @@ The Star Map interface is built on a dark-themed, futuristic aesthetic to ensure
 
 ---
 
-## 1. OPERATIONAL DECLARATION & GATEWAY MATRIX
+## 🔒 1. OPERATIONAL DECLARATION & GATEWAY MATRIX
 
 The **AVIS‑DATALAKE Constellation Interface** (the *“Star Map”*) serves as the exclusive, authorized presentation layer and cryptographic routing gateway for the ingestion of datalake structural metadata records.  
 
@@ -146,7 +146,7 @@ Interaction with individual tracking nodes (each a *“Star Node”*) initialize
 
 ---
 
-## 2. INTELLECTUAL PROPERTY RIGHTS & ACQUISITION RESTRICTIONS
+## 🔒 2. INTELLECTUAL PROPERTY RIGHTS & ACQUISITION RESTRICTIONS
 
 ### 2.1 Authorized Interface Access  
 Licensor grants the End User a non‑exclusive, non‑transferable, revocable right to access and interact with the hosted Constellation Gateway exclusively via the official URL: **cron.iblogger.org/AVIS‑DATALAKE** for the purpose of transmitting validated metadata payloads.
@@ -162,7 +162,7 @@ End Users shall not — and shall not permit any third party to — decompile, r
 
 ---
 
-## 3. DATA GOVERNANCE & CUSTODIAL PROTOCOLS
+## 🔒 3. DATA GOVERNANCE & CUSTODIAL PROTOCOLS
 
 ### 3.1 Payload Ownership Retention  
 All structural metadata and transactional records submitted through the Constellation Gateway remain the absolute intellectual property of the originating entity or data owner (*“Data Owner”*).
@@ -175,7 +175,7 @@ All transmitted telemetry and dataset structures must conform explicitly with gl
 
 ---
 
-## 4. LIMITATION OF LIABILITY & WARRANTY DISCLAIMER
+## 🔒 4. LIMITATION OF LIABILITY & WARRANTY DISCLAIMER
 
 ### 4.1 System Provisioning “As‑Is”  
 The AVIS‑DATALAKE platform and its tracking interface are provided **“AS IS”** and **“AS AVAILABLE”**, without warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability, uptime durability, or operational fitness for a particular datalake ingestion sequence.
@@ -188,7 +188,7 @@ The submitting entity bears sole, un‑delegable responsibility for ensuring the
 
 ---
 
-## 5. ENFORCEMENT & REMEDIAL MATRICES
+## 🔒 5. ENFORCEMENT & REMEDIAL MATRICES
 
 Failure to comply with any provision of this agreement constitutes a critical security exception and will result in immediate corrective mitigation actions:
 
@@ -198,6 +198,6 @@ Failure to comply with any provision of this agreement constitutes a critical se
 
 ---
 
-## © 2026 MERCWAR AI. ALL RIGHTS RESERVED.  
+## 🔒 © 2026 MERCWAR AI. ALL RIGHTS RESERVED.  
 **AVIS‑DATALAKE Architecture Secure Asset Vector Frame.**
 
