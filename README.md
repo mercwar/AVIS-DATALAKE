@@ -55,7 +55,8 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 4. Submit the record.  
 5. The system pushes your record into GitHub automatically.  
 
-Note: The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
+####  Note: 
+##### 🚧 The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
 ---
 
 #### ✨ System Overview: What is the Star Map?
