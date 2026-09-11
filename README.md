@@ -60,7 +60,9 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 ####  Note: 
 ##### 🚧 The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
 ---
-
+<a href="https://cron.iblogger.org/AVIS-DATALAKE">
+  <img src="adl.jpg" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
+</a>
 #### ✨ System Overview: What is the Star Map?
 
 The **Star Map** translates complex database routing into a seamless, interactive constellation. Each glowing star in the matrix represents a specific category of metadata law.
