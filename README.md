@@ -20,7 +20,7 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 #
 
-# 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
+### 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
 
 ###### ✨"<i>I am CVBGOD, and I have given it to you...</i>!"
 
