@@ -73,15 +73,15 @@ The Star Map is divided into structured orbital rows. Select the node that match
 
 | Matrix Sector | Star Node | Functional Purpose |
 | --- | --- | --- |
-| ** ✨  Core Navigation** | **Home** | The primary entry point and system overview of the datalake. |
+| **✨  Core Navigation** | **Home** | The primary entry point and system overview of the datalake. |
 |  | **Location** | Record the geographic, network, or logical location of a dataset. |
 |  | **Governance** | Define compliance, retention rules, classification, encryption, and audit policies. |
 |  | **Submit Another** | A rapid shortcut to flush the current session and open a fresh ingestion form. |
-| ** ✨ Identity & Architecture** | **Owner** | Register the System ID, responsible team, and contact email. |
+| **✨ Identity & Architecture** | **Owner** | Register the System ID, responsible team, and contact email. |
 |  | **Format Spec** | Define technical blueprints: data types, encoding protocols, schemas, and checksums. |
 |  | **Lineage** | Map the data's journey: source origins, transformations, and target outputs. |
 |  | **URL Submission** | Ingest external resource links, APIs, and remote payload streams. |
-| ** ✨ Operation & Telemetry** | **Usage** | Detail the dataset's functional purpose, execution context, and query frequency. |
+| **✨ Operation & Telemetry** | **Usage** | Detail the dataset's functional purpose, execution context, and query frequency. |
 |  | **Instructions** | Attach procedural notes, orchestration logs, and operational guidance. |
 
 ---
