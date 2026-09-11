@@ -1,0 +1,8 @@
+{
+    "method": "pipeline_recycle",
+    "submit_another": {
+        "pipeline_alias": "test",
+        "post_action": "freeze_state"
+    },
+    "modified": "2026-09-11T00:20:03+00:00"
+}
