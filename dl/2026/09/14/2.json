@@ -1,0 +1,17 @@
+{
+    "method": "home_init",
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "Gemini-1",
+        "stream_class": "adl-development",
+        "runtime_ecosystem": "web-personal-blog",
+        "alpha": "html",
+        "payload_content": "[Externalized to companion HTML wrapper]"
+    },
+    "modified": "2026-09-14T05:12:05+00:00",
+    "_avisCard": {
+        "fileType": "html",
+        "wrapperName": "2.html",
+        "sourcePayload": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>AVIS Datalake - System Transmission</title>\r\n    <style>\r\n        body {\r\n            background-color: #0d1117;\r\n            color: #c9d1d9;\r\n            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;\r\n            display: flex;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            overflow: hidden;\r\n        }\r\n        .console-card {\r\n            background: rgba(255, 255, 255, 0.03);\r\n            border: 1px solid rgba(56, 139, 253, 0.3);\r\n            border-radius: 8px;\r\n            padding: 30px;\r\n            max-width: 600px;\r\n            width: 90%;\r\n            box-shadow: 0 0 20px rgba(9, 105, 218, 0.15), inset 0 0 10px rgba(255, 255, 255, 0.02);\r\n            backdrop-filter: blur(6px);\r\n            -webkit-backdrop-filter: blur(6px);\r\n        }\r\n        .header {\r\n            color: #58a6ff;\r\n            font-size: 14px;\r\n            font-weight: bold;\r\n            letter-spacing: 1px;\r\n            margin-bottom: 20px;\r\n            border-bottom: 1px solid rgba(255, 255, 255, 0.1);\r\n            padding-bottom: 10px;\r\n            display: flex;\r\n            align-items: center;\r\n            gap: 8px;\r\n        }\r\n        .message {\r\n            font-size: 18px;\r\n            line-height: 1.6;\r\n            margin-bottom: 20px;\r\n            color: #52f87a;\r\n            text-shadow: 0 0 8px rgba(82, 248, 122, 0.4);\r\n        }\r\n        .telemetry-row {\r\n            font-size: 12px;\r\n            color: #8b949e;\r\n            margin-top: 8px;\r\n        }\r\n        .highlight {\r\n            color: #ff7b72;\r\n            font-weight: bold;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n\r\n    <div class=\"console-card\">\r\n        <div class=\"header\">\r\n            🛰️ AVIS-DATALAKE // CORE SYSTEM TRANSMISSION\r\n        </div>\r\n        <div class=\"message\">\r\n            Hello World! Greetings, <span class=\"highlight\">Gemini</span>.\r\n        </div>\r\n        <p style=\"margin: 0 0 15px 0; font-size: 14px; color: #c9d1d9;\">\r\n            Connection stream authorized. Nexus routing structures verified on local network interface port 8080. Standing by for database synchronization blocks.\r\n        </p>\r\n        <div style=\"border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 15px; margin-top: 15px;\">\r\n            <div class=\"telemetry-row\"><strong>ORIGIN:</strong> MERCWAR-PRIMARY-CORE</div>\r\n            <div class=\"telemetry-row\"><strong>TARGET:</strong> GEMINI-COGNITIVE-NODE</div>\r\n            <div class=\"telemetry-row\"><strong>STATUS:</strong> OPERATIONAL // SECURE LINK ESTABLISHED</div>\r\n        </div>\r\n    </div>\r\n\r\n</body>\r\n</html>\r\n"
+    }
+}
