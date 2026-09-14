@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVIS DHTML Engine - AJAX Architecture Tutorial</title>
+    <style>
+        :root {
+            --bg-main: #0d1117;
+            --bg-panel: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-muted: #8b949e;
+            --text-link: #58a6ff;
+            --accent-success: #238636;
+            --accent-glow: rgba(56, 139, 253, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--text-link);
+            font-weight: 600;
+        }
+
+        .meta-stamp {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .intro-box {
+            background: var(--accent-glow);
+            border-left: 4px solid var(--text-link);
+            padding: 16px;
+            border-radius: 0 6px 6px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .mechanics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .step-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateX(4px);
+            border-color: var(--text-link);
+        }
+
+        .step-phase {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-link);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-action {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .code-container {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background-color: #1f242c;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-family: monospace;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        pre {
+            margin: 0;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 13px;
+            color: #e6edf3;
+            line-height: 1.6;
+        }
+
+        #loadingState {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-link);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        #errorState {
+            background-color: rgba(248, 81, 73, 0.1);
+            border: 1px solid #f85149;
+            color: #ff7b72;
+            padding: 16px;
+            border-radius: 6px;
+            display: none;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Asynchronous Error Display Container -->
+    <div id="errorState"></div>
+
+    <!-- Active DHTML Viewport Mount -->
+    <div id="loadingState">Initializing pipeline handshake and reading manifest...</div>
+    
+    <div class="panel" id="tutorialPanel" style="display: none;">
+        <header>
+            <div>
+                <h1 id="tutSubject">Loading...</h1>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+                    Architecture Specification: <span id="tutArch" style="color: #ffffff;"></span>
+                </div>
+            </div>
+            <div class="meta-stamp">
+                Artifact ID: 7-tutorial<br>
+                Sync: <span id="tutModified"></span>
+            </div>
+        </header>
+
+        <div class="intro-box" id="tutIntro"></div>
+
+        <h2>Architectural Execution Phases</h2>
+        <div class="mechanics-grid" id="mechanicsGrid"></div>
+
+        <h2>Syntax Implementation Blueprint</h2>
+        <div class="code-container">
+            <div class="code-header" id="codeMethod">JavaScript Source Blueprint</div>
+            <pre><code id="codeBlock"></code></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        initializeDhtmlTutorial();
+    });
+
+    async function initializeDhtmlTutorial() {
+        const loadingEl = document.getElementById('loadingState');
+        const panelEl   = document.getElementById('tutorialPanel');
+        const errorEl   = document.getElementById('errorState');
+
+        try {
+            // Asynchronously query the static sibling data layer file via AJAX
+            const response = await fetch('7-tutorial.json', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`AJAX Transaction Failure [HTTP ${response.status}]: ${response.statusText}`);
+            }
+
+            const manifest = JSON.parse(await response.text());
+            
+            // Execute DHTML Dynamic Interface Assembly
+            renderUIComponents(manifest);
+
+            // Interface state transition via DOM modifications
+            loadingEl.style.display = 'none';
+            panelEl.style.display = 'block';
+
+        } catch (fault) {
+            loadingEl.style.display = 'none';
+            errorEl.style.display = 'block';
+            errorEl.textContent = `[CRITICAL MOUNT FAULT]\n${fault.message}\nEnsure 7-tutorial.json resides securely in the tracking path directory root.`;
+        }
+    }
+
+    function renderUIComponents(data) {
+        // Mount primary string metadata blocks safely
+        document.getElementById('tutSubject').textContent  = data.home.tutorial_metadata.subject || 'Asynchronous Data Exchange';
+        document.getElementById('tutArch').textContent     = data.home.tutorial_metadata.architecture || 'AIFVS-CORE';
+        document.getElementById('tutModified').textContent = data.modified ? data.modified.substring(0, 10) : 'ACTIVE';
+        document.getElementById('tutIntro').textContent    = data.tutorial_payload.introduction;
+
+        // Map pipeline sequence nodes into structured list item containers dynamically
+        const gridContainer = document.getElementById('mechanicsGrid');
+        gridContainer.innerHTML = ''; // Evacuate placeholders
+
+        if (Array.isArray(data.tutorial_payload.core_mechanics)) {
+            data.tutorial_payload.core_mechanics.forEach(node => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+
+                const phase = document.createElement('div');
+                phase.className = 'step-phase';
+                phase.textContent = node.phase;
+
+                const action = document.createElement('div');
+                action.className = 'step-action';
+                action.textContent = node.action;
+
+                card.appendChild(phase);
+                card.appendChild(action);
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Mount raw execution script source strings safely to prevent structural tag break down
+        document.getElementById('codeMethod').textContent = data.tutorial_payload.syntax_blueprint.method || 'Native Method';
+        document.getElementById('codeBlock').textContent  = data.tutorial_payload.syntax_blueprint.code_block;
+    }
+</script>
+
+</body>
+</html>
