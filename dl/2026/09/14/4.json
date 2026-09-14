@@ -1,0 +1,31 @@
+{
+    "file": {
+        "title": "test"
+    },
+    "owner": {
+        "system_id": "mercwar",
+        "team": "",
+        "contact_email": ""
+    },
+    "id": "12345",
+    "lifecycle": {
+        "version": "v1.0.0"
+    },
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "Alpha-1",
+        "stream_class": "adl_development_avis",
+        "runtime_ecosystem": "web-personal-profile",
+        "alpha": "html",
+        "payload_content": ""
+    },
+    "usage": {
+        "notes": ""
+    },
+    "modified": "2026-09-14T10:49:29+00:00",
+    "_avisCard": {
+        "fileType": "html",
+        "wrapperName": "4.html",
+        "sourcePayload": ""
+    }
+}
