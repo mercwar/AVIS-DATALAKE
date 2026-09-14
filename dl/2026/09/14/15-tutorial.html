@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVIS Matrix Engine - 14-Tutorial Hub</title>
+    <style>
+        :root {
+            --bg-main: #0d1117;
+            --bg-panel: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-muted: #8b949e;
+            --text-link: #58a6ff;
+            --accent-glow: rgba(56, 139, 253, 0.15);
+            --accent-alert: #d29922;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 950px;
+        }
+
+        .panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 26px;
+            color: var(--text-link);
+            font-weight: 600;
+        }
+
+        .meta-stamp {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+            font-family: monospace;
+            line-height: 1.5;
+        }
+
+        .disclaimer-box {
+            background: rgba(210, 153, 34, 0.08);
+            border-left: 4px solid var(--accent-alert);
+            padding: 16px;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            color: #e3b341;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #1f242c;
+            color: #ffffff;
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            color: var(--text-link);
+            background-color: rgba(56, 139, 253, 0.02);
+        }
+
+        #loadingState {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-link);
+            font-weight: 500;
+            font-size: 16px;
+            font-family: monospace;
+        }
+
+        #errorState {
+            background-color: rgba(248, 81, 73, 0.1);
+            border: 1px solid #f85149;
+            color: #ff7b72;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div id="errorState"></div>
+    <div id="loadingState">OPENING SYSTEM DATA MATRIX // INGESTING NODE 14...</div>
+    
+    <div class="panel" id="tutorialPanel" style="display: none;">
+        <header>
+            <div>
+                <h1 id="tutSubject">System Matrix Tutorial</h1>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                    Realm Context: <span id="tutRealm" style="color: #ffffff;"></span>
+                </div>
+            </div>
+            <div class="meta-stamp">
+                Artifact Node: 14-tutorial<br>
+                Sync Stamp: <span id="tutModified"></span>
+            </div>
+        </header>
+
+        <div class="disclaimer-box">
+            <strong>SECURITY NOTICE:</strong> This environment runs completely open-access with no login required. Consequently, there are no modification options or delete features. Every uploaded asset has a <u>permanent face</u> bound to its file name sequence and can never be altered once processed. Errors require creating and pushing an entirely new asset file.
+        </div>
+
+        <h2>Parsed Tutorial Resource Records (Single Payload Source Execution)</h2>
+        <table id="dataTable">
+            <!-- DHTML Grid Injection Point -->
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        loadDataLakeResource();
+    });
+
+    async function loadDataLakeResource() {
+        const loadingEl = document.getElementById('loadingState');
+        const panelEl   = document.getElementById('tutorialPanel');
+        const errorEl   = document.getElementById('errorState');
+
+        try {
+            // Asynchronously query the master JSON record entry
+            const response = await fetch('14-tutorial.json');
+
+            if (!response.ok) {
+                throw new Error(`AJAX Handshake Failed [HTTP ${response.status}]: ${response.statusText}`);
+            }
+
+            const manifest = JSON.parse(await response.text());
+            
+            // Populate tracking data labels from your exact form keys
+            document.getElementById('tutSubject').textContent  = `System Matrix: ${manifest.file?.title || 'Datalake Node'}`;
+            document.getElementById('tutRealm').textContent    = manifest.home?.realm || 'AVIS-CORE';
+            document.getElementById('tutModified').textContent = manifest.modified ? manifest.modified.substring(0, 19).replace('T', ' ') : 'ACTIVE';
+
+            // TARGET SPEC: Open the single payload content block cleanly
+            const rawCsvContent = manifest.home?.payload_content || '';
+            
+            if (!rawCsvContent) {
+                throw new Error("Target field 'home.payload_content' is empty or unavailable.");
+            }
+
+            buildDhtmlGrid(rawCsvContent);
+
+            loadingEl.style.display = 'none';
+            panelEl.style.display = 'block';
+
+        } catch (fault) {
+            loadingEl.style.display = 'none';
+            errorEl.style.display = 'block';
+            errorEl.textContent = `[AVIS CONNECTOR REJECTION]\n\n${fault.message}\n\nEnsure '14-tutorial.json' resides in the same root folder destination.`;
+        }
+    }
+
+    function buildDhtmlGrid(csvDataString) {
+        const table = document.getElementById('dataTable');
+        table.innerHTML = ''; 
+
+        // Split the plain text rows down cleanly by line breaks
+        const lines = csvDataString.split(/\r?\n/).map(row => row.trim()).filter(row => row.length > 0);
+        if (lines.length === 0) return;
+
+        // Construct headers
+        const headerTr = document.createElement('tr');
+        const headers = lines[0].split(',');
+        headers.forEach(headerText => {
+            const th = document.createElement('th');
+            th.textContent = headerText.replace(/_/g, ' ');
+            headerTr.appendChild(th);
+        });
+        table.appendChild(headerTr);
+
+        // Populate table lines row-by-row
+        for (let i = 1; i < lines.length; i++) {
+            // Safe parser tracking internal commas inside quotes
+            const cells = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+            const tr = document.createElement('tr');
+            
+            cells.forEach(cellText => {
+                const td = document.createElement('td');
+                // Clean off wrapping quotes from raw textual columns
+                td.textContent = cellText.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+                tr.appendChild(td);
+            });
+            
+            table.appendChild(tr);
+        }
+    }
+</script>
+
+</body>
+</html>
