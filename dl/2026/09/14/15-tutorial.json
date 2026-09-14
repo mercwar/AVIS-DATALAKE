@@ -1,0 +1,26 @@
+{
+    "file": {
+        "title": "tutorial"
+    },
+    "owner": {
+        "system_id": "tutorial",
+        "team": "",
+        "contact_email": ""
+    },
+    "id": "tutorial",
+    "lifecycle": {
+        "version": "v1.0.0"
+    },
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "tutorial",
+        "stream_class": "adl_development_avis",
+        "runtime_ecosystem": "web-personal-profile",
+        "alpha": "html",
+        "payload_content": "[Externalized to companion HTML file asset]"
+    },
+    "usage": {
+        "notes": "tutorial"
+    },
+    "modified": "2026-09-14T11:52:37+00:00"
+}
