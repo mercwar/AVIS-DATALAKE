@@ -1,0 +1,31 @@
+{
+    "file": {
+        "title": "tutorial"
+    },
+    "owner": {
+        "system_id": "tutorial",
+        "team": "",
+        "contact_email": ""
+    },
+    "id": "tutorial",
+    "lifecycle": {
+        "version": "v1.0.0"
+    },
+    "home": {
+        "realm": "AVIS-PRIMARY-CORE",
+        "host_node": "tutorial",
+        "stream_class": "adl_development_avis",
+        "runtime_ecosystem": "web-personal-profile",
+        "alpha": "json",
+        "payload_content": "{\r\n    \"home\": {\r\n        \"file_title\": \"ajax_tutorial_manifest\",\r\n        \"alpha\": \"json\",\r\n        \"page_type\": \"json\",\r\n        \"stream_class\": \"matrix\",\r\n        \"payload_content\": \"[Externalized to companion HTML tutorial engine]\",\r\n        \"tutorial_metadata\": {\r\n            \"subject\": \"Asynchronous JavaScript and XML (AJAX)\",\r\n            \"framework\": \"Vanilla JS (Modern Fetch & Legacy XMLHttpRequest)\",\r\n            \"architecture\": \"AIFVS-ARTIFACT-SPEC\",\r\n            \"environment_requirements\": [\r\n                \"PHP Local Server (v8.5+)\",\r\n                \"Active Datalake Gateway Gateway Routing Layer\"\r\n            ]\r\n        }\r\n    },\r\n    \"modified\": \"2026-09-14T07:20:00-04:00\",\r\n    \"_avisCard\": {\r\n        \"fileType\": \"json\",\r\n        \"wrapperName\": \"01-ajax_tutorial_manifest.html\",\r\n        \"sourcePayload\": \"https://github.com\"\r\n    },\r\n    \"modules\": [\r\n        {\r\n            \"step\": \"01\",\r\n            \"title\": \"The Network Handshake Concept\",\r\n            \"description\": \"AJAX allows web browsers to transmit and retrieve raw data structural files securely to and from an active background engine server without forcing a full client viewport refresh window break.\",\r\n            \"execution_method\": \"Asynchronous Network Thread Operations\"\r\n        },\r\n        {\r\n            \"step\": \"02\",\r\n            \"title\": \"The Native API Evolution\",\r\n            \"methods\": {\r\n                \"modern_standard\": \"Fetch API (Promise-driven architecture pattern tracking pipeline arrays cleanly)\",\r\n                \"legacy_standard\": \"XMLHttpRequest (Event-driven handler state machine layer tracking status integer shifts)\"\r\n            }\r\n        },\r\n        {\r\n            \"step\": \"03\",\r\n            \"title\": \"Handling Stream Fault Realignment\",\r\n            \"description\": \"Always check for network transactional status bounds (HTTP 200-299) before feeding data streams directly into active client parsing logic trees to avoid full app rendering crashes.\"\r\n        }\r\n    ]\r\n}\r\n"
+    },
+    "usage": {
+        "notes": "tutorial"
+    },
+    "modified": "2026-09-14T11:21:23+00:00",
+    "_avisCard": {
+        "fileType": "json",
+        "wrapperName": "",
+        "sourcePayload": "{\r\n    \"home\": {\r\n        \"file_title\": \"ajax_tutorial_manifest\",\r\n        \"alpha\": \"json\",\r\n        \"page_type\": \"json\",\r\n        \"stream_class\": \"matrix\",\r\n        \"payload_content\": \"[Externalized to companion HTML tutorial engine]\",\r\n        \"tutorial_metadata\": {\r\n            \"subject\": \"Asynchronous JavaScript and XML (AJAX)\",\r\n            \"framework\": \"Vanilla JS (Modern Fetch & Legacy XMLHttpRequest)\",\r\n            \"architecture\": \"AIFVS-ARTIFACT-SPEC\",\r\n            \"environment_requirements\": [\r\n                \"PHP Local Server (v8.5+)\",\r\n                \"Active Datalake Gateway Gateway Routing Layer\"\r\n            ]\r\n        }\r\n    },\r\n    \"modified\": \"2026-09-14T07:20:00-04:00\",\r\n    \"_avisCard\": {\r\n        \"fileType\": \"json\",\r\n        \"wrapperName\": \"01-ajax_tutorial_manifest.html\",\r\n        \"sourcePayload\": \"https://github.com\"\r\n    },\r\n    \"modules\": [\r\n        {\r\n            \"step\": \"01\",\r\n            \"title\": \"The Network Handshake Concept\",\r\n            \"description\": \"AJAX allows web browsers to transmit and retrieve raw data structural files securely to and from an active background engine server without forcing a full client viewport refresh window break.\",\r\n            \"execution_method\": \"Asynchronous Network Thread Operations\"\r\n        },\r\n        {\r\n            \"step\": \"02\",\r\n            \"title\": \"The Native API Evolution\",\r\n            \"methods\": {\r\n                \"modern_standard\": \"Fetch API (Promise-driven architecture pattern tracking pipeline arrays cleanly)\",\r\n                \"legacy_standard\": \"XMLHttpRequest (Event-driven handler state machine layer tracking status integer shifts)\"\r\n            }\r\n        },\r\n        {\r\n            \"step\": \"03\",\r\n            \"title\": \"Handling Stream Fault Realignment\",\r\n            \"description\": \"Always check for network transactional status bounds (HTTP 200-299) before feeding data streams directly into active client parsing logic trees to avoid full app rendering crashes.\"\r\n        }\r\n    ]\r\n}\r\n"
+    }
+}
