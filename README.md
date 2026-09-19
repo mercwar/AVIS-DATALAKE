@@ -18,8 +18,6 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
   <img src="banner.png" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
 </a>
 
-#
-
 ### 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
 
 ###### ✨"<i>I am CVBGOD, and I have given it to you...</i>!"
