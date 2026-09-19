@@ -62,7 +62,7 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 - *.sg files are saved in the Stargate Uplink form at the [Stargate](https://cron.iblogger.org/Stargate)
 - *.quasar files are saved  in the home section at the [Stargate](https://cron.iblogger.org/AVIS-DATALAKE)
 - *.cyborg files are saved  in the home section at the [Stargate](https://cron.iblogger.org/AVIS-DATALAKE)
-- *.cyborg files allow for many more links to be displayed and only a single link level away from Stargate
+- *.cyborg files allow for many more links to be displayed and only a single level away from Stargate
 
 ####  Note: 
 ##### 🚧 The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
