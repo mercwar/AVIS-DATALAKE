@@ -24,6 +24,8 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 ###### ✨"<i>I am CVBGOD, and I have given it to you...</i>!"
 
+#
+
 🌌 Star Map Tutorial & Architecture Reference
 
 ###### Star Map Constellation
@@ -45,12 +47,10 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 **Row 4**
 - **Extra** → reserved for expansion, balance, or experimental modules.  
 
-
-
-
----
+#
 
 ### 🌈 How It Works
+
 1. Open the **Star Map** at `cron.iblogger.org/AVIS-DATALAKE`.  
 2. Click a star to open its form window.  
 3. Fill out the metadata fields.  
@@ -66,7 +66,8 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 
 ####  Note: 
 ##### 🚧 The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
----
+
+
 <a href="https://cron.iblogger.org/AVIS-DATALAKE">
   <img src="adl.jpg" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
 </a>
