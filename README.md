@@ -57,6 +57,13 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 4. Submit the record.  
 5. The system pushes your record into GitHub automatically.  
 
+### 💥 Saving .sg, .quasar, and  .cyborg files to the datalake
+
+- *.sg files are saved at the [Stargate](https://cron.iblogger.org/Stargate)
+- *.quasar files are saved at the [Stargate](https://cron.iblogger.org/AVIS-DATALAKE) in the home section
+- *.cyborg files are saved at the [Stargate](https://cron.iblogger.org/AVIS-DATALAKE) in the home section
+- *.cyborg files allow for many more links to be displayed and only a single link level away from Stargate
+
 ####  Note: 
 ##### 🚧 The construction of the AVIS-DATALAKE Star Map Browser will enable UUID batching and save to dlb/*json
 ---
