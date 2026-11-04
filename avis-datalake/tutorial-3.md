@@ -1,77 +1,136 @@
-Here is the complete, untruncated breakdown of the strictly unique fields belonging to each form module across your entire workspace, completely separated out from the common global keys (id, title, version, protocol, notes).
+# Tutorial: Pushing Starmap Home Records to the AVIS Datalake via `avis.php`
 
-🏢 Identity & Ownership Forms
+This tutorial walks through the modular components required to construct, serialize, and transmit a strict schema home record containing an HTML "Hello" payload directly to your `/avis.php` endpoint for data lake storage and GitHub synchronization.
 
+---
 
-📂 1. FILE FORM
+## Step 1: The Form Markup
 
-• No unique fields outside of global common keys. (This form relies entirely on file[title] to sequence files).
+Construct your input form to incorporate the mandatory root-level identifiers, strict schema baseline parameters (`realm` and `stream_class`), and the nested `home` namespace elements (`host_node` and `payload_content`).
 
-📂 2. OWNER FORM
+```html
+<form id="avisForm" onsubmit="submitHomeRecord(event)">
+    <!-- Root Level Identifiers -->
+    <input type="hidden" name="id" id="txId" value="">
+    <input type="hidden" name="method" value="add">
 
+    <!-- Mandatory Baseline Parameters for Strict Schema Validation -->
+    <input type="hidden" name="home[realm]" value="AVIS-PRIMARY-CORE">
+    <input type="hidden" name="home[stream_class]" value="adl_development_avis">
 
-Unique Parameter	ASP Data Type	Required	Available UI Matrix Elements / Behavior
-owner[system_id]	String	Yes	Operator workspace target verification tag or user nickname.
-owner[team]	String	No	Deployment crew or internal administrative group label.
-owner[contact_email]	String (Email)	No	Notification callback target email address.
-owner[network_domain]	String (Enum)	No	loopback_local, virtual_bridge, lan_intranet, github_net, gitlab_net, npm_registry
-owner[node_address]	String	No	Network interface destination address or host computer string.
+    <!-- Node Signature & Ecosystem -->
+    <label>Host Node Signature:</label>
+    <input type="text" name="home[host_node]" value="JOE-TRON-DT" required>
 
+    <label>Runtime Ecosystem:</label>
+    <input type="text" name="home[runtime_ecosystem]" value="web-personal-profile">
 
-📡 Infrastructure Environment Forms
+    <!-- HTML Hello Payload Content -->
+    <label>Payload Content:</label>
+    <textarea name="home[payload_content]" rows="4" required>&lt;h1&gt;Hello from AVIS Datalake Starmap&lt;/h1&gt;</textarea>
 
+    <button type="submit">Push Record to avis.php</button>
+</form>
 
-📂 3. HOME FORM
+```
 
+---
 
-Unique Parameter	ASP Data Type	Required	Available UI Matrix Elements / Behavior
-home[realm]	String	No	Target isolation workspace cluster layer. Baseline: AVIS-PRIMARY-CORE.
-home[host_node]	String	Yes	Physical or virtual machine tracking code transmitting the block.
-home[stream_class]	String (Enum)	No	adl_development_avis, adl_development_other, adl_development_personal, adl_core_onprem, adl_core_colocation
-home[runtime_ecosystem]	String (Enum)	No	web-personal-profile, web-personal-blog, web-custom-style-override, web-personal-landing
-home[alpha]	String (Enum)	No	Syntax processing engine configuration: html, md, js, css, txt
-home[payload_content]	String (Long)	No	Raw configuration text block stream buffer mapping to the lake.
+## Step 2: Client-Side JavaScript Transmission Logic
 
+Use JavaScript to automatically generate a unique transaction ID on load, bind the form data into URL-encoded parameters, and post the payload asynchronously to `/avis.php`.
 
-📂 4. USAGE FORM
+```javascript
+// Automatically generate a unique UUID transaction ID on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const txIdField = document.getElementById('txId');
+    if (txIdField && window.crypto && crypto.randomUUID) {
+        txIdField.value = crypto.randomUUID();
+    } else {
+        txIdField.value = 'avis-' + Date.now();
+    }
+});
 
-Includes unique configuration fields for context (usage[context]), intended purpose (usage[purpose]), and execution frequency (usage[frequency]).
+async function submitHomeRecord(event) {
+    event.preventDefault();
+    const form = document.getElementById('avisForm');
+    const formData = new FormData(form);
 
-📂 Physical Infrastructure & Format Forms
+    try {
+        // Transmit as application/x-www-form-urlencoded via URLSearchParams
+        const response = await fetch('/avis.php', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        });
 
+        const result = await response.json();
+        console.log("[AVIS-DATALAKE] Transmission Success:", result);
+        alert("Record successfully pushed to datalake! ID: " + result.id);
+    } catch (error) {
+        console.error("[AVIS-DATALAKE] Transmission Error:", error);
+        alert("Failed to push record: " + error.message);
+    }
+}
 
-📂 5. LOCATION FORM
+```
 
-Defines absolute paths, file names, storage hardware types, bus interfaces, and file system parameters (such as location[dir_path], location[file_name], and location[storage_type]).
+---
 
-📂 6. FORMAT_SPEC FORM
+## Step 3: Server-Side PHP Ingress Receiver (`avis.php`)
 
-Governs data types, character encodings, compression methods, MIME types, and cryptographic hashes (format_spec[data_type], format_spec[encoding], etc.).
+On the backend, parse the incoming multi-dimensional `$_POST['home']` array, validate mandatory strict schema parameters, persist the HTML content into the local datalake directory structure, and return a JSON status acknowledgment.
 
-⚙️ Pipeline Control & Flow Governance Forms
+```php
+<?php
+header('Content-Type: application/json');
 
+// Capture root identifiers
+$id = $_POST['id'] ?? uniqid('avis-');
+$method = $_POST['method'] ?? 'add';
 
-📂 7. GOVERNANCE FORM
+// Capture and sanitize nested home namespace parameters
+$home = $_POST['home'] ?? [];
+$realm = $home['realm'] ?? 'AVIS-PRIMARY-CORE';
+$streamClass = $home['stream_class'] ?? 'adl_development_avis';
+$hostNode = $home['host_node'] ?? 'UNKNOWN';
+$payloadContent = $home['payload_content'] ?? '';
 
-Contains repository types, compilation matrices, and audit policies (governance[repo_type], governance[compilation_matrix], governance[audit_policy]).
+// Strict schema validation check
+if (empty($id) || empty($hostNode) || empty($payloadContent)) {
+    http_response_code(400);
+    echo json_encode([
+        "status" => "error",
+        "message" => "Validation failed: Missing mandatory root id, host_node, or payload_content."
+    ]);
+    exit;
+}
 
-📂 8. LINEAGE FORM
+// Define target local AVIS datalake storage path
+$targetDir = __DIR__ . '/AVIS-DATALAKE/starmap/';
+if (!is_dir($targetDir)) {
+    mkdir($targetDir, 0777, true);
+}
 
-Tracks upstream sources, processing tiers, pipeline identifiers, and downstream targets (lineage[upstream_sources], lineage[processing_tier], etc.).
+// Persist the home record file
+$filename = $targetDir . $id . '_home.html';
+file_put_contents($filename, $payloadContent);
 
-📂 9. INSTRUCTIONS FORM
+// Optional automated Git synchronization hook
+// exec('git add . && git commit -m "AVIS Datalake sync [ID: ' . $id . ']" && git push');
 
-Manages programmatic steps, sequence ordering, priorities, and assigned operators (instructions[steps], instructions[priority], etc.).
+// Return successful ingestion response
+echo json_encode([
+    "status" => "success",
+    "id" => $id,
+    "method" => $method,
+    "validated_schema" => [
+        "realm" => $realm,
+        "stream_class" => $streamClass,
+        "host_node" => $hostNode
+    ],
+    "storage_target" => $filename,
+    "message" => "Home record validated, stored, and synchronized successfully."
+]);
+?>
 
-📂 10. ROUTING_TIER FORM (Derived from 'Other' Panel)
-
-Specifies target distribution platforms and automation actions (routing_tier[target_platform], routing_tier[automation_action]).
-
-📂 11. LIFECYCLE FORM
-
-• No unique fields outside of global common keys.
-
-📥 Consolidated Master Payload Spec
-
-For backend system models or payload tracking generation, all unique fields align into a nested object architecture. You can find the complete JSON payload structure and schema mapping in the reference documentation.
-Would it help to convert this consolidated map into a C# Data Transfer Object (DTO) class model with JSON attributes for serialization testing?
+```
