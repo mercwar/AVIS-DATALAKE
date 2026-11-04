@@ -1,59 +1,90 @@
-The complete, untruncated system mapping for your page layout is detailed below. The structural output from your DOM extraction execution has been completed by mapping out the remaining namespaces—format_spec, governance, lineage, instructions, and routing_tier—derived directly from your repository's control panels.
-
-📂 FORMAT_SPEC NAMESPACE
+[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
 
-Parameter Field	Data Control Type	Required	Default / Available Elements Matrix
-format_spec[data_type]	Enumerated String	No	Active UI value: javascript Options Matrix: [javascript, typescript, python, c_cpp, rust_enclave, php, html, css, json, markdown...]
-format_spec[encoding]	Enumerated String	No	Active UI value: utf_8 Options Matrix: [utf_8, utf_16_le, utf_16_be, ascii, windows_1252, shift_jis...]
-format_spec[compression]	Enumerated String	No	Active UI value: none Options Matrix: [none, zip, tar_gz, 7zip, zstd, lz4, brotli, gzip...]
-format_spec[mime_type]	text	No	Dynamic entry. (e.g., application/json, text/plain).
-format_spec[crypto_hash]	text	No	Dynamic entry tracking payload integrity verification signatures.
+## 🧭 Tutorial Navigation Index
 
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
+* [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
+* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 
-📂 GOVERNANCE NAMESPACE
+* ## 📂 FORMAT_SPEC NAMESPACE
 
+| Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
+| --- | --- | --- | --- |
+| `format_spec[data_type]` | Enumerated String | No | Active UI value: `javascript` <br>
 
-Parameter Field	Data Control Type	Required	Default / Available Elements Matrix
-governance[repo_type]	Enumerated String	No	Active UI value: personal_projects Options Matrix: [personal_projects, open_web_content, devops_iac, local_ai_models...]
-governance[compilation_matrix]	Enumerated String	No	Active UI value: web_scripts Options Matrix: [plain_text_md, source_code, web_scripts, project_build_specs...]
-governance[audit_policy]	text	No	Dynamic telemetry field mapping access control authorization states.
+<br>Options Matrix: `[javascript, typescript, python, c_cpp, rust_enclave, php, html, css, json, markdown...]` |
+| `format_spec[encoding]` | Enumerated String | No | Active UI value: `utf_8` <br>
 
+<br>Options Matrix: `[utf_8, utf_16_le, utf_16_be, ascii, windows_1252, shift_jis...]` |
+| `format_spec[compression]` | Enumerated String | No | Active UI value: `none` <br>
 
-📂 LINEAGE NAMESPACE
+<br>Options Matrix: `[none, zip, tar_gz, 7zip, zstd, lz4, brotli, gzip...]` |
+| `format_spec[mime_type]` | text | No | Dynamic entry. (e.g., `application/json`, `text/plain`). |
+| `format_spec[crypto_hash]` | text | No | Dynamic entry tracking payload integrity verification signatures. |
 
+---
 
-Parameter Field	Data Control Type	Required	Default / Available Elements Matrix
-lineage[upstream_sources]	text	No	Dynamic tracking parameter for input dependencies (comma-separated strings).
-lineage[processing_tier]	Enumerated String	No	Active UI value: raw_downlink Options Matrix: [temporary_dropzone, raw_downlink, validated_clean, production_analytics...]
-lineage[pipeline_id]	text	No	Unique workflow pipeline processing process tracker string.
-lineage[cleaning_steps]	text	No	Sequential descriptions of structural operations performed on inputs.
-lineage[downstream_targets]	text	No	Tracking targets dependent on this ingested chunk (comma-separated strings).
-lineage[format_tag_version]	text	No	Minor metadata classification string identifiers.
+## 📂 GOVERNANCE NAMESPACE
 
+| Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
+| --- | --- | --- | --- |
+| `governance[repo_type]` | Enumerated String | No | Active UI value: `personal_projects` <br>
 
-📂 INSTRUCTIONS NAMESPACE
+<br>Options Matrix: `[personal_projects, open_web_content, devops_iac, local_ai_models...]` |
+| `governance[compilation_matrix]` | Enumerated String | No | Active UI value: `web_scripts` <br>
 
+<br>Options Matrix: `[plain_text_md, source_code, web_scripts, project_build_specs...]` |
+| `governance[audit_policy]` | text | No | Dynamic telemetry field mapping access control authorization states. |
 
-Parameter Field	Data Control Type	Required	Default / Available Elements Matrix
-instructions[steps]	Text Block (String)	No	Text matrix capturing execution rules or command sequences.
-instructions[sequence_order]	text	No	Sequence priority position indices tracking queue task arrangement.
-instructions[priority]	Enumerated String	No	Active UI value: medium Options Matrix: [background, low, medium, high, expedited, critical, emergency_abort...]
-instructions[assigned_operator]	text	No	Target processor core role name or handling technician signature.
+---
 
+## 📂 LINEAGE NAMESPACE
 
-📂 ROUTING_TIER NAMESPACE (Parsed from the 'Other' Context View)
+| Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
+| --- | --- | --- | --- |
+| `lineage[upstream_sources]` | text | No | Dynamic tracking parameter for input dependencies (comma-separated strings). |
+| `lineage[processing_tier]` | Enumerated String | No | Active UI value: `raw_downlink` <br>
 
+<br>Options Matrix: `[temporary_dropzone, raw_downlink, validated_clean, production_analytics...]` |
+| `lineage[pipeline_id]` | text | No | Unique workflow pipeline processing process tracker string. |
+| `lineage[cleaning_steps]` | text | No | Sequential descriptions of structural operations performed on inputs. |
+| `lineage[downstream_targets]` | text | No | Tracking targets dependent on this ingested chunk (comma-separated strings). |
+| `lineage[format_tag_version]` | text | No | Minor metadata classification string identifiers. |
 
-Parameter Field	Data Control Type	Required	Default / Available Elements Matrix
-routing_tier[target_platform]	Enumerated String	No	Active UI value: github_repositories Options Matrix: [github_repositories, hugging_face_hub, gitlab_registry, amazon_s3...]
-routing_tier[automation_action]	Enumerated String	No	Active UI value: save_and_execute Options Matrix: [save_and_execute, dry_run_validate, keep_existing, quarantine_payload...]
+---
 
+## 📂 INSTRUCTIONS NAMESPACE
 
-🤖 COMPLETE REPLICATION MASTER COMPOSITE (JSON Blueprint)
+| Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
+| --- | --- | --- | --- |
+| `instructions[steps]` | Text Block (String) | No | Text matrix capturing execution rules or command sequences. |
+| `instructions[sequence_order]` | text | No | Sequence priority position indices tracking queue task arrangement. |
+| `instructions[priority]` | Enumerated String | No | Active UI value: `medium` <br>
 
-This unified data dictionary format encompasses all evaluated ingestion controls observed across your system starmap control panels:
-json
+<br>Options Matrix: `[background, low, medium, high, expedited, critical, emergency_abort...]` |
+| `instructions[assigned_operator]` | text | No | Target processor core role name or handling technician signature. |
+
+---
+
+## 📂 ROUTING_TIER NAMESPACE *(Parsed from the 'Other' Context View)*
+
+| Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
+| --- | --- | --- | --- |
+| `routing_tier[target_platform]` | Enumerated String | No | Active UI value: `github_repositories` <br>
+
+<br>Options Matrix: `[github_repositories, hugging_face_hub, gitlab_registry, amazon_s3...]` |
+| `routing_tier[automation_action]` | Enumerated String | No | Active UI value: `save_and_execute` <br>
+
+<br>Options Matrix: `[save_and_execute, dry_run_validate, keep_existing, quarantine_payload...]` |
+
+---
+
+## 🤖 COMPLETE REPLICATION MASTER COMPOSITE (JSON Blueprint)
+
+```json
 {
   "id": "discovered_root_value",
   "method": "add",
@@ -129,5 +160,18 @@ json
     "automation_action": "save_and_execute"
   }
 }
-Use code with caution.
-Now that you have the complete map of all fields on the page, would you like help building a script to programmatically loop through and auto-fill all these panels with structured mock inputs directly from your console tool?
+
+```
+
+---
+
+[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
+
+
+## 🧭 Tutorial Navigation Index
+
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
+* [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
+* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
