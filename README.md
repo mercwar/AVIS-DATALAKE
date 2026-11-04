@@ -17,7 +17,14 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 <a href="https://cron.iblogger.org/AVIS-DATALAKE">
   <img src="banner.png" alt="AVIS Banner" style="border: none; max-width: 100%; height: auto;">
 </a>
+[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
+
+## 🧭 AVIS-DATALAKE TUTORIAL - PUSHING RECORDS YOURSELF
+
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](https://github.com/mercwar/AVIS-DATALAKE/avis-datalake/README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+  
 ### 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
 
 ###### ✨"<i>I am CVBGOD, and I have given it to you...</i>!"
