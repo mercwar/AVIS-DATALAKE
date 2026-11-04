@@ -1,5 +1,14 @@
 # tutorial-2.md — Backend Integration & Multi-Tier Endpoint Routing
+[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
+
+## 🧭 Tutorial Navigation Index
+
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
+* [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
+* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 This tutorial covers setting up server-side receivers across your multi-tier application stack to capture, parse, and persist incoming AVIS telemetry and Starmap coordinate payloads from `/api/avis`, `/avis.ashx`, `/uplink.aspx`, and `/avis.asp`.
 
 ---
@@ -121,3 +130,13 @@ Response.Write("{ ""status"": ""success"", ""id"": """ & txId & """, ""method"":
 %>
 
 ```
+[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
+
+
+## 🧭 Tutorial Navigation Index
+
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
+* [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
+* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
