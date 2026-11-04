@@ -1,28 +1,123 @@
-Below is the upgraded API specification for the ASP/ASP.NET pages. By normalizing the common keys found across your data layers, the schema has been consolidated into unified, repeatable structures.
+# tutorial-2.md — Backend Integration & Multi-Tier Endpoint Routing
 
-📡 1. Global Endpoints & Framework Profiles
+This tutorial covers setting up server-side receivers across your multi-tier application stack to capture, parse, and persist incoming AVIS telemetry and Starmap coordinate payloads from `/api/avis`, `/avis.ashx`, `/uplink.aspx`, and `/avis.asp`.
 
+---
 
-Framework Layer	System Endpoint	Method	Accepted Content-Type	Core Data Ingestion Engine
-ASP.NET Core Web API	/api/avis	POST	application/json	Native Model Binding ([FromBody])
-ASP.NET Handler	/avis.ashx	POST	application/x-www-form-urlencoded	HttpContext.Current.Request.Form
-ASP.NET Web Forms	/uplink.aspx	POST	multipart/form-data	Page.Request.Form Array Streams
-Classic ASP Engine	/avis.asp	POST	application/x-www-form-urlencoded	Legacy Request.Form("key") Vector
+## Step 1: ASP.NET Core Web API Ingress Controller (`/api/avis`)
 
+For modern asynchronous programmatic pipelines sending `application/json`, implement a strongly-typed API controller using the master DTO model.
 
-🔑 2. Unified Base Metadata Structure (Global Common Keys)
+```csharp
+using Microsoft.AspNetCore.Mvc;
+using Avis.Datalake.Models;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-These foundational elements are globally shared across almost every workflow pane to track unique telemetry identity, classification, and runtime status.
+[ApiController]
+[Route("api/avis")]
+public class AvisIngressController : ControllerBase
+{
+    [HttpPost]
+    public async Task<IActionResult> IngestTelemetry([FromBody] AvisIngressPayload payload)
+    {
+        if (payload == null || string.IsNullOrEmpty(payload.Id))
+        {
+            return BadRequest(new { status = "error", message = "Invalid payload or missing mandatory transaction ID." });
+        }
 
-Normalized Key	Data Type	Required	Processing Behavior & Purpose
-id	String (GUID)	Yes	Global Unique Identifier representing this specific telemetry tracking block transaction.
-title	String (Text)	No	Human-readable manifest or tracking record name (e.g., Network_Core_Ingress_Manifest).
-version	String (Text)	No	Pipeline template configuration version or code layout signature block. Baseline: v1.0.0.
-protocol	String (Enum)	No	Core transmission protocol layer category. Shared across network contexts and storage paths.
-notes	String (Textarea)	No	Open tracking narrative fields for appending system changelogs or manual comments.
+        // Ensure target datalake directory exists
+        string targetDir = payload.Location?.DirPath ?? @"C:\MercwarAI\AVIS-DATALAKE\";
+        Directory.CreateDirectory(targetDir);
 
+        string fileName = $"{payload.Id}_{payload.Location?.FileName ?? "manifest.json"}";
+        string fullPath = Path.Combine(targetDir, fileName);
 
-📂 3. Upgraded Operational & Identity Namespaces
+        // Serialize and persist to local NVMe data lake layer
+        string jsonOutput = JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
+        await System.IO.File.WriteAllTextAsync(fullPath, jsonOutput);
 
-The remaining functional definitions span sections covering Infrastructure Context (owner, home, usage), Physical Target Storage (location, format_spec), and Workflow Execution Management (lifecycle, governance, lineage, instructions, routing_tier). These areas use the standardized core keys alongside their dedicated attributes to orchestrate metrics processing, layout format identification, and execution queues. For full detailed configuration fields across all downstream sections, please see the complete system profile documentation.
-Would you like me to output a strongly-typed C# C-Sharp class model using these normalized keys, or do you need the full HTML tables layout for all downstream data nodes?
+        return Ok(new { 
+            status = "success", 
+            transaction_id = payload.Id, 
+            routed_endpoint = "/api/avis",
+            storage_target = fullPath 
+        });
+    }
+}
+
+```
+
+---
+
+## Step 2: ASP.NET Generic Handler (`/avis.ashx`)
+
+For traditional form-urlencoded transmissions, use an `IHttpHandler` to map form parameters directly into the namespace hierarchy.
+
+```csharp
+using System;
+using System.Web;
+using System.IO;
+
+public class AvisHandler : IHttpHandler
+{
+    public void ProcessRequest(HttpContext context)
+    {
+        context.Response.ContentType = "application/json";
+
+        string transactionId = context.Request.Form["id"] ?? Guid.NewGuid().ToString();
+        string method = context.Request.Form["method"] ?? "add";
+        string hostNode = context.Request.Form["home[host_node]"] ?? "UNKNOWN-NODE";
+        string dirPath = context.Request.Form["location[dir_path]"] ?? @"C:\MercwarAI\AVIS-DATALAKE\";
+
+        try
+        {
+            Directory.CreateDirectory(dirPath);
+            string logEntry = $"[{DateTime.UtcNow:O}] ID: {transactionId} | Method: {method} | Node: {hostNode}\n";
+            File.AppendAllText(Path.Combine(dirPath, "handler_telemetry.log"), logEntry);
+
+            context.Response.Write($"{{\"status\":\"success\",\"id\":\"{transactionId}\",\"method\":\"{method}\"}}");
+        }
+        catch (Exception ex)
+        {
+            context.Response.StatusCode = 500;
+            context.Response.Write($"{{\"status\":\"error\",\"message\":\"{ex.Message}\"}}");
+        }
+    }
+
+    public bool IsReusable => false;
+}
+
+```
+
+---
+
+## Step 3: Classic ASP Vector Receiver (`/avis.asp`)
+
+For legacy infrastructure integration points, capture incoming form vectors using standard VBScripting.
+
+```vbscript
+<%
+Response.ContentType = "application/json"
+
+Dim txId, methodAction, hostNode, targetDir
+txId = Request.Form("id")
+methodAction = Request.Form("method")
+hostNode = Request.Form("home[host_node]")
+targetDir = Request.Form("location[dir_path]")
+
+If Len(Trim(txId)) = 0 Then
+    txId = "LEGACY-" & Year(Now) & Month(Now) & Day(Now) & "-" & Timer()
+End If
+
+If Len(Trim(methodAction)) = 0 Then
+    methodAction = "add"
+End If
+
+' Response payload emission acknowledging ingestion
+Response.Write("{ ""status"": ""success"", ""id"": """ & txId & """, ""method"": """ & methodAction & """, " & _
+               """node"": """ & hostNode & """, ""tier"": ""classic_asp"" }")
+%>
+
+```
