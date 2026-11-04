@@ -23,7 +23,7 @@ The **Star Map** is the **visual navigation console** of AVIS‑DATALAKE. Each g
 ## 🧭 AVIS-DATALAKE TUTORIAL - PUSHING RECORDS YOURSELF
 
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
-* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE]([https://github.com/mercwar/AVIS-DATALAKE/avis-datalake/README.md](https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis-datalake/README.md)) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](https://github.com/mercwar/AVIS-DATALAKE/blob/main/avis-datalake/README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 
 ### 💫 </i>... AND now</i>, The Official AVIS-DATALAKE Star Map Readme!
 
