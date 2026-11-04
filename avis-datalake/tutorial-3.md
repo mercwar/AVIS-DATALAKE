@@ -90,6 +90,7 @@ async function submitHomeRecord(event) {
 On the backend, parse the incoming multi-dimensional `$_POST['home']` array, validate mandatory strict schema parameters, persist the HTML content into the local datalake directory structure, and return a JSON status acknowledgment.
 
 ```php
+
 <?php
 header('Content-Type: application/json');
 
@@ -143,6 +144,122 @@ echo json_encode([
 ?>
 
 ```
+
+# 📊 AVIS-DATALAKE Form Ingestion Schemas & Telemetry
+
+The data structures extracted from the `AVIS-DATALAKE` forms reveal that the `avis.php` endpoint (`https://cron.iblogger.org/AVIS-DATALAKE/avis.php`) acts as an ingestion mechanism for system telemetry, asset details, and content storage. The fields are structured hierarchically using array-style bracket notation (e.g., `owner[system_id]`, `home[payload_content]`).
+
+---
+
+## 📋 Schema Specifications by Form Object
+
+### Form Index [7] — Telemetry & Execution Pipeline
+| Parameter Field | Value / Default | Control Type | Placeholder / Options Matrix |
+| :--- | :--- | :--- | :--- |
+| `method` | `'add'` | `hidden` | `None` |
+| `file[title]` | `[Empty / User Input Required]` | `text` | The file name will be: `##-<this_text>.json/html` |
+| `owner[system_id]` | `[Empty / User Input Required]` | `text` | e.g., `SYS-DATALAKE-ALPHA` |
+| `owner[team]` | `[Empty / User Input Required]` | `text` | e.g., `Developer / Admin / Operations` |
+| `owner[contact_email]` | `[Empty / User Input Required]` | `email` | e.g., `yourname@yourserver.com` |
+| `id` | `[Empty / User Input Required]` | `text` | e.g., GUID `{e4a2c7b9-d13f-4e86-a512-9c42a8684b55}` |
+| `lifecycle[version]` | `'v1.0.0'` | `text` | e.g., `v1.0.0` |
+| `usage[context]` | `'win32_x64'` | `select` | `None` |
+| `usage[purpose]` | `'local_tooling'` | `select` | `None` |
+| `usage[frequency]` | `'random'` | `select` | `None` |
+| `usage[notes]` | `[Empty / User Input Required]` | `textarea` | e.g., orchestration, logs, access, notes, telemetry... |
+| `home[payload_content]` | `[Empty / User Input Required]` | `textarea` | [Paste raw data here] e.g., html, md, script, source, db... |
+
+---
+
+### Form Index [8] — Instructions & Workflow Routing
+| Parameter Field | Value / Default | Control Type | Placeholder / Options Matrix |
+| :--- | :--- | :--- | :--- |
+| `method` | `'add'` | `hidden` | `None` |
+| `file[title]` | `[Empty / User Input Required]` | `text` | The file name will be: `##-<this_text>.json/html` |
+| `owner[system_id]` | `[Empty / User Input Required]` | `text` | e.g., `SYS-DATALAKE-ALPHA` |
+| `owner[team]` | `[Empty / User Input Required]` | `text` | e.g., `Developer / Admin / Operations` |
+| `owner[contact_email]` | `[Empty / User Input Required]` | `email` | e.g., `yourname@yourserver.com` |
+| `id` | `[Empty / User Input Required]` | `text` | e.g., GUID `{e4a2c7b9-d13f-4e86-a512-9c42a8684b55}` |
+| `lifecycle[version]` | `'v1.0.0'` | `text` | e.g., `v1.0.0` |
+| `instructions[steps]` | `[Empty / User Input Required]` | `text` | e.g., `validate_input, run_transform, send_notification` |
+| `instructions[order]` | `[Empty / User Input Required]` | `number` | e.g., `1` |
+| `instructions[priority]` | `'medium'` | `select` | `None` |
+| `instructions[role]` | `[Empty / User Input Required]` | `text` | e.g., Data Engineer, System Administrator, Automated Job Service |
+| `usage[notes]` | `[Empty / User Input Required]` | `textarea` | e.g., orchestration, logs, access, notes, telemetry... |
+| `home[payload_content]` | `[Empty / User Input Required]` | `textarea` | [Paste raw data here] e.g., html, md, script, source, db... |
+
+---
+
+### Form Index [9] — Network & Remote Binding Sources
+| Parameter Field | Value / Default | Control Type | Placeholder / Options Matrix |
+| :--- | :--- | :--- | :--- |
+| `method` | `'add'` | `hidden` | `None` |
+| `file[title]` | `[Empty / User Input Required]` | `text` | The file name will be: `##-<this_text>.json/html` |
+| `owner[system_id]` | `[Empty / User Input Required]` | `text` | e.g., `SYS-DATALAKE-ALPHA` |
+| `owner[team]` | `[Empty / User Input Required]` | `text` | e.g., `Developer / Admin / Operations` |
+| `owner[contact_email]` | `[Empty / User Input Required]` | `email` | e.g., `yourname@yourserver.com` |
+| `id` | `[Empty / User Input Required]` | `text` | e.g., GUID `{e4a2c7b9-d13f-4e86-a512-9c42a8684b55}` |
+| `lifecycle[version]` | `'v1.0.0'` | `text` | e.g., `v1.0.0` |
+| `location[protocol]` | `'https'` | `select` | `None` |
+| `url[full]` | `[Empty / User Input Required]` | `url` | `https://domain.com` |
+| `url[description]` | `[Empty / User Input Required]` | `text` | Describe remote data source / connection / application... |
+| `url[adl]` | `[Empty / User Input Required]` | `url` | `https://domain.com / URI` |
+| `usage[notes]` | `[Empty / User Input Required]` | `textarea` | e.g., orchestration, logs, access, notes, telemetry... |
+| `home[payload_content]` | `[Empty / User Input Required]` | `textarea` | [Paste raw data here] e.g., html, md, script, source, db... |
+
+---
+
+### Form Index [10] — Pipeline Metadata & Aliasing
+| Parameter Field | Value / Default | Control Type | Placeholder / Options Matrix |
+| :--- | :--- | :--- | :--- |
+| `file[title]` | `[Empty / User Input Required]` | `text` | The file name will be: `##-<this_text>.json/html` |
+| `owner[system_id]` | `[Empty / User Input Required]` | `text` | e.g., `SYS-DATALAKE-ALPHA` |
+| `owner[team]` | `[Empty / User Input Required]` | `text` | e.g., `Developer / Admin / Operations` |
+| `owner[contact_email]` | `[Empty / User Input Required]` | `email` | e.g., `yourname@yourserver.com` |
+| `id` | `[Empty / User Input Required]` | `text` | e.g., GUID `{e4a2c7b9-d13f-4e86-a512-9c42a8684b55}` |
+| `lifecycle[version]` | `'v1.0.0'` | `text` | e.g., `v1.0.0` |
+| `submit_another[pipeline_alias]` | `'section_owner'` | `select` | `None` |
+| `submit_another[post_action]` | `'clear_flush'` | `select` | `None` |
+| `usage[notes]` | `[Empty / User Input Required]` | `textarea` | e.g., orchestration, logs, access, notes, telemetry... |
+| `home[payload_content]` | `[Empty / User Input Required]` | `textarea` | [Paste raw data here] e.g., html, md, script, source, db... |
+
+---
+
+## 🛠️ DevTools Interception Snippet
+
+Because standard network listeners can miss submissions due to full-page navigation reloads, inject this script into the browser console to capture payloads immediately before viewport navigation:
+
+```javascript
+(() => {
+    console.log("⚡ Form submission listener attached. Watching for navigation triggers...");
+
+    document.querySelectorAll('form').forEach((form, index) => {
+        form.addEventListener('submit', (event) => {
+            const action = form.getAttribute('action') || form.action;
+            
+            console.group(`%c[FORM SUBMISSION PREVENTED] -> Index: ${index} | Target: ${action}`, "color: #ffaa00; font-weight: bold;");
+            
+            const formData = new FormData(form);
+            const dataObject = {};
+            
+            for (let [key, value] of formData.entries()) {
+                dataObject[key] = value;
+            }
+            
+            console.log("Submitted Parameters:");
+            console.table(dataObject);
+            console.groupEnd();
+            
+            // Uncomment the next line if you wish to block transmission for debugging:
+            // event.preventDefault();
+        });
+    });
+})();
+
+```
+
+---
+
 [To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
 
