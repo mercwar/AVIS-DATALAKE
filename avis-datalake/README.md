@@ -165,10 +165,11 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 }
 
 ```
+#### 🗝️ Records are posted by calling the PHP page from an Entry record or with [dc2url](https://github.com/mercwar/dc2url).
 
----
+###### To publish dl records goto : [tutorial-1.md](tutorial-1.md)
 
-[To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
+###### To publish entry sg records goto : [Stargate](https://github.com/mercwar/Stargate)
 
 
 ## 🧭 Tutorial Navigation Index
