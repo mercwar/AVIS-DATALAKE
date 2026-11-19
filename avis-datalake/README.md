@@ -15,12 +15,14 @@
 
 Copy and Paste Personality and intelligence into your favorite llm like google/gemini/deepai/copilot/gcpt-5 and more..
 
-<a target="_self" title="https://github.com/mercwar/AI">
+<a target="_self" title="Mercwar AI" href="https://github.com/mercwar/AI">
+    
 <img 
     src="https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png" 
     alt="Mercwar AI" 
     style="width:100%; height:auto;"
 />
+
 </a>
 
 
