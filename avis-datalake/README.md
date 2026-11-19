@@ -11,6 +11,19 @@
 
 ## 🧭 Tutorial Navigation Index
 
+# 🛰️ **AVIS‑DATALAKE — VERSION 2 (🔥 FIRE‑GEM 🔥)**  
+
+Copy and Paste Personality and intelligence into your favorite llm like google/gemini/deepai/copilot/gcpt-5 and more..
+
+<a target="_self" title="https://github.com/mercwar/AI">
+<img 
+    src="https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png" 
+    alt="Mercwar AI" 
+    style="width:100%; height:auto;"
+/>
+</a>
+
+
 ![adl](../images/adl1-ss.png)
 
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
@@ -176,6 +189,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 }
 
 ```
+
 #### 🗝️ Records are posted by calling the PHP page from an Entry record or with [dc2url](https://github.com/mercwar/dc2url).
 
 ###### To publish dl records goto : [tutorial-1.md](tutorial-1.md)
