@@ -324,3 +324,13 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
+
+### 📜 All files and repositories
+
+```
+© 2026 CVBGOD Systems / MERCWAR Integration Team
+All Rights Reserved.
+Unauthorized use, duplication, or distribution is strictly prohibited.
+Contact: legal@mercwar01.byethost3.com
+```
+
