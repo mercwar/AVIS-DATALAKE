@@ -776,7 +776,5 @@ This notice applies to **all revisions, updates, forks, snapshots, and derivativ
 © 2026 CVBGOD Systems / MERCWAR Integration Team
 All Rights Reserved.
 Unauthorized use, duplication, or distribution is strictly prohibited.
-Contact: legal@mercwar01.byethost3.com
 ```
-
 
