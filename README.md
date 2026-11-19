@@ -218,10 +218,14 @@ Failure to comply with any provision of this agreement constitutes a critical se
 **AVIS‑DATALAKE Architecture Secure Asset Vector Frame.**
 
 
-A **New, authoritative, publication‑ready rewrite** of the header — tightened for CYHY, aligned with the MERC‑G tone, and formatted with SEED .
+**New, authoritative, publication‑ready rewrite** of the header — tightened for CYHY, aligned with the MERC‑G tone, and formatted with SEED .
 #### It *looks like the opening banner of a flagship engineering repository*.
 
 # 🛰️ **AVIS‑DATALAKE — VERSION 2 (🔥 FIRE‑GEM 🔥)**  
+
+Copy and Paste Personality and intelligence into your favorite llm like google/gemini/deepai/copilot/gcpt-5 and more..
+
+![AI Assistant datalake installer](https://github.com/mercwar/AI)
 
 ![avis-datalake](https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png)
  
@@ -289,7 +293,7 @@ chmod +x GEMINI/VERSION\ 2/AVIS-INGEST.sh
 
 This launches:
 
-- Fire‑Gem Watchdog  
+- Fire‑Gem llm  
 - Datalake Ingestor  
 - Memory‑Mapped Recovery Bridge  
 - Dashboard Telemetry Layer  
@@ -297,6 +301,7 @@ This launches:
 ---
 You are responsible for finding files for your own programs.
 ---
+
 ## 🚀 Getting Started
 1. **Clone the repository:**
    ```bash
@@ -304,7 +309,9 @@ You are responsible for finding files for your own programs.
    #FROM: AI FRIENDS
     git clone https://github.com.git
 ---
+
 ![AVIS-POWER](https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_dk1abfdk1abfdk1a.png)
+
 # 🏗️ System Architecture
 
 The Datalake is organized into **four primary functional zones**:
