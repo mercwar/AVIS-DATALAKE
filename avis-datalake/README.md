@@ -197,6 +197,5 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 © 2026 CVBGOD Systems / MERCWAR Integration Team
 All Rights Reserved.
 Unauthorized use, duplication, or distribution is strictly prohibited.
-Contact: legal@mercwar01.byethost3.com
 ```
 
