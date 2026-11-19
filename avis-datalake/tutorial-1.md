@@ -217,3 +217,11 @@ For backend model validation and automated testing suites, the fully nested mast
   }
 }
 ```
+
+### 📜 All files and repositories
+
+```
+© 2026 CVBGOD Systems / MERCWAR Integration Team
+All Rights Reserved.
+Unauthorized use, duplication, or distribution is strictly prohibited.
+```
