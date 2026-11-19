@@ -1,7 +1,8 @@
 [To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
-
 ## 🧭 Tutorial Navigation Index
+
+![adl](../images/adl1-ss.png)
 
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
@@ -9,7 +10,9 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 
-* ## 📂 FORMAT_SPEC NAMESPACE
+#### Below are the record types and their specifications
+
+* #### 📂 FORMAT_SPEC
 
 | Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
 | --- | --- | --- | --- |
@@ -27,7 +30,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 
 ---
 
-## 📂 GOVERNANCE NAMESPACE
+#### 📂 GOVERNANCE NAMESPACE
 
 | Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
 | --- | --- | --- | --- |
@@ -41,7 +44,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 
 ---
 
-## 📂 LINEAGE NAMESPACE
+#### 📂 LINEAGE NAMESPACE
 
 | Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
 | --- | --- | --- | --- |
@@ -56,7 +59,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 
 ---
 
-## 📂 INSTRUCTIONS NAMESPACE
+#### 📂 INSTRUCTIONS NAMESPACE
 
 | Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
 | --- | --- | --- | --- |
@@ -69,7 +72,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 
 ---
 
-## 📂 ROUTING_TIER NAMESPACE *(Parsed from the 'Other' Context View)*
+#### 📂 ROUTING_TIER NAMESPACE *(Parsed from the 'Other' Context View)*
 
 | Parameter Field | Data Control Type | Required | Default / Available Elements Matrix |
 | --- | --- | --- | --- |
@@ -82,7 +85,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 
 ---
 
-## 🤖 COMPLETE REPLICATION MASTER COMPOSITE (JSON Blueprint)
+### 🤖 Master Template ALL `AVIS-DL/dl` RECORD TYPES as SEEN in the SCREEN SHOT
 
 ```json
 {
