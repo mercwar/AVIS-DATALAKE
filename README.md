@@ -770,7 +770,7 @@ This notice applies to **all revisions, updates, forks, snapshots, and derivativ
 
 ---
 
-### 📜 Footer (for all files and repositories)
+### 📜 All files and repositories
 
 ```
 © 2026 CVBGOD Systems / MERCWAR Integration Team
