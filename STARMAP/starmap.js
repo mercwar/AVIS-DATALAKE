@@ -631,19 +631,24 @@
       progress: 0
     };
 
-    function initThreeScene() {
-      const container = document.getElementById('canvas-container');
-      scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x03050a, 0.0042);
+const container = document.getElementById('canvas-container');
+  scene = new THREE.Scene();
 
-      camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 48, 92);
+  // Remove opaque FogExp2 so the CSS background shows through cleanly
+  // (Optional: if you want subtle distance fade without hiding the background, leave scene.fog = null)
+  scene.fog = null;
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x03050a, 1);
-      container.appendChild(renderer.domElement);
+  camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 48, 92);
+
+  // 1. Set alpha: true so the WebGL canvas is transparent
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // 2. Set clear alpha to 0 so the background image renders behind the 3D scene
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
