@@ -52,9 +52,10 @@ jobs:
           fi
 
           git add -A
-          if git diff --staged --quiet; then
-            echo "No private submodules found to remove."
-          else
-            git commit -m "Remove private repository submodules"
-            git push
-          fi
+                    if git diff --staged --quiet; then
+                      echo "No private submodules found to remove."
+                    else
+                      git commit -m "Remove private repository submodules"
+                      git pull --rebase origin main
+                      git push
+                    fi
