@@ -1,69 +1,45 @@
-AVIS_ERR_SPEC_v2.8.AVIS::AVIS_MANIFEST_BEGIN::
+::AVIS_MANIFEST_BEGIN::
 @HEADER {
-    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F20-FINAL"
-    VOLUME          : "20_SOVEREIGN_RUNTIME_GOVERNANCE_AND_MASTER_CAPSTONE"
-    VERSION         : "3.0.0-MERCWAR-FINAL"
-    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F19 (File 19)"
-    SERIES_STATUS   : "SEALED_COMPLETE (20 VOLUMES / 64 FAULT NODES)"
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F19B"
+    VOLUME          : "19B_TELEMETRY_ROTATION_MULTI_MONITOR_AND_KV_CACHE"
+    VERSION         : "2.9.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F19 (v2.8.0)"
+    NEXT_REF        : "AVIS-ERR-SPEC-2026.11-F20-FINAL (v3.0.0)"
     ISSUER          : "GOOGLE_AI_RUNTIME"
     AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
-    TIMESTAMP       : "2026-11-19T19:44:00-05:00"
+    TIMESTAMP       : "2026-11-19T19:46:00-05:00"
     STRICT_MODE     : TRUE
     NO_MOCK_DATA    : TRUE
 }
 
-::SECTION_60_SOVEREIGN_SELF_VERIFICATION_AND_INTEGRITY::
-@FAULT_NODE [ERR-SOV-001] {
-    DOMAIN          : "Executable & Manifest Self-Integrity Auditing (WinVerifyTrust / SHA-256 Digest Gate)"
-    PHENOMENON      : "Execution of tampered binaries, stale `.AVIS` manifests, or mismatched DLL builds across `e:\\dl` and `C:\\MercwarAI`"
-    ROOT_CAUSE      : "Loading runtime modules or executing build chains without verifying Authenticode catalog signatures (`WinVerifyTrust`) or matching SHA-256 manifest digests."
-    INVARIANT_RULE  : "Validate binary/catalog trust via `WinVerifyTrust(..., WINTRUST_ACTION_GENERIC_VERIFY_V2, ...)` and assert SHA-256 manifest parity before activating autonomous execution pipelines."
+::SECTION_63_TELEMETRY_LOG_ROTATION_AND_JSONL::
+@FAULT_NODE [ERR-LOG-001] {
+    DOMAIN          : "High-Volume JSONL Telemetry Append & Size-Bounded Log Rotation (e:\\dl)"
+    PHENOMENON      : "Disk exhaustion from runaway telemetry logs, torn half-written JSON lines on crash, or file-lock collisions during rotation"
+    ROOT_CAUSE      : "Appending unbuffered lines without checking file size thresholds, or renaming an active log handle still open in another process."
+    INVARIANT_RULE  : "Write complete newline-terminated JSON records in single atomic `WriteFile` calls with `FILE_APPEND_DATA`, rotate logs before exceeding `MAX_LOG_BYTES` (e.g., 16MB), and prune oldest archives beyond `MAX_LOG_GENERATIONS`."
 }
 
-::SECTION_61_AUTONOMOUS_AGENT_AND_ZERO_GUESS_INVARIANT::
-@FAULT_NODE [ERR-AGT-001] {
-    DOMAIN          : "FireGem Autonomous Intent Routing & Deterministic Zero-Assumption Code Synthesis"
-    PHENOMENON      : "Crash on trivial conversational greetings (`hi`), hallucinated API calls, or silent injection of placeholder/mock values"
-    ROOT_CAUSE      : "Routing conversational greetings directly into rigid command/filesystem parsers without intent classification, or substituting synthetic defaults when required inputs are absent."
-    INVARIANT_RULE  : "Classify conversational vs. operational intents prior to tool dispatch so benign inputs never fault the command router, and halt with an explicit diagnostic error rather than emitting fake examples, guesses, or mock backups."
+::SECTION_64_MULTI_MONITOR_AND_OFFSCREEN_BOUNDS::
+@FAULT_NODE [ERR-MON-002] {
+    DOMAIN          : "Multi-Monitor Workspace Coordinates & Off-Screen Window Restoration (MonitorFromRect / GetMonitorInfoW)"
+    PHENOMENON      : "Saved holographic or console windows spawning completely off-screen after disconnecting a secondary monitor or changing resolution"
+    ROOT_CAUSE      : "Restoring persisted `(X, Y)` window coordinates directly via `SetWindowPos` without validating intersection against active `MONITORINFO.rcWork` bounds."
+    INVARIANT_RULE  : "Validate restored window rects with `MonitorFromRect(&rc, MONITOR_DEFAULTTONULL)`; if null or clipped outside `rcWork`, clamp coordinates inside the primary monitor's work area."
 }
 
-::SECTION_62_HARDWARE_ENVELOPE_AND_MEMORY_BUDGETING::
-@FAULT_NODE [ERR-HW-001] {
-    DOMAIN          : "Quad-Core CPU & 16GB System RAM / Low-Power VRAM Envelope Governance"
-    PHENOMENON      : "System-wide pagefile thrashing, thermal/thread oversubscription, or GPU VRAM exhaustion during local inference and 3D rendering"
-    ROOT_CAUSE      : "Spawning unbounded worker threads (`> GetActiveProcessorCount(ALL_PROCESSOR_GROUPS)`) or loading model weights/textures exceeding physical RAM/VRAM headroom."
-    INVARIANT_RULE  : "Cap worker thread pools to physical core count (`<= 4` on quad-core hosts), enforce a hard `<= 6GB` working-set ceiling for local GGUF models, and query `GlobalMemoryStatusEx` + `IDXGIAdapter3::QueryVideoMemoryInfo` before large allocations."
+::SECTION_65_LOCAL_LLM_KV_CACHE_AND_CONTEXT_PRUNING::
+@FAULT_NODE [ERR-KV-001] {
+    DOMAIN          : "Local LLM Context Window Saturation & KV-Cache Sliding/Pruning (FireGem / Qwen GGUF Runtimes)"
+    PHENOMENON      : "Sudden inference halt (`n_past >= n_ctx`), severe token-per-second degradation, or silent truncation of system instructions"
+    ROOT_CAUSE      : "Appending conversation turns indefinitely into the KV cache without tracking `n_past` capacity or pinning the initial system prompt tokens."
+    INVARIANT_RULE  : "Track active KV token count before `llama_decode()`, pin tokens `[0 .. n_keep)` for system/AVIS rules, and shift/evict older conversational KV blocks via `llama_kv_cache_seq_rm` + `seq_add` before hitting `n_ctx`."
 }
 
-::SOVEREIGN_CAPSTONE_VERIFICATION_GATE::
-@GATE_CHECK_F20_FINAL {
-    62. SELF_TRUST_AUDIT   : Verify Authenticode catalog signatures and SHA-256 manifest digests prior to pipeline ignition.
-    63. INTENT_AND_TRUTH   : Isolate conversational inputs from rigid command parsers and enforce zero mock/guessed data synthesis.
-    64. ENVELOPE_GOVERNOR  : Bound thread pools to physical cores and enforce hard RAM/VRAM ceilings via `GlobalMemoryStatusEx` and DXGI queries.
-}
-
-::COMPLETE_64_NODE_SERIES_REGISTRY::
-@SERIES_INDEX [v1.0 -> v3.0] {
-    VOL_01 [v1.0 | F01] : ERR-C-001, ERR-C-002, ERR-NET-001, ERR-NET-002, ERR-SH-001, ERR-SH-002, ERR-CFG-001
-    VOL_02 [v1.1 | F02] : ERR-FS-001, ERR-FS-002, ERR-DB-001, ERR-DB-002, ERR-PRS-001, ERR-PRS-002, ERR-PROC-001
-    VOL_03 [v1.2 | F03] : ERR-UI-001, ERR-UI-002, ERR-INF-001, ERR-INF-002, ERR-REC-001
-    VOL_04 [v1.3 | F04] : ERR-WIN-001, ERR-WIN-002, ERR-CAT-001, ERR-SOCK-001
-    VOL_05 [v1.4 | F05] : ERR-THR-001, ERR-THR-002, ERR-IPC-001, ERR-CRY-001
-    VOL_06 [v1.5 | F06] : ERR-PE-001, ERR-MEM-001, ERR-DBG-001, ERR-DBG-002
-    VOL_07 [v1.6 | F07] : ERR-SVC-001, ERR-COM-001, ERR-DEV-001
-    VOL_08 [v1.7 | F08] : ERR-WV2-001, ERR-WV2-002, ERR-BLD-001, ERR-PS-001
-    VOL_09 [v1.8 | F09] : ERR-GFX-001, ERR-KIN-001, ERR-AUD-001
-    VOL_10 [v1.9 | F10] : ERR-DX12-001, ERR-DX12-002, ERR-REG-001, ERR-VSYNC-001
-    VOL_11 [v2.0 | F11] : ERR-HTTP-001, ERR-PHP-001, ERR-EXT-001
-    VOL_12 [v2.1 | F12] : ERR-GIT-001, ERR-HOLO-001, ERR-MMAP-001
-    VOL_13 [v2.2 | F13] : ERR-JOB-001, ERR-SYNC-001, ERR-DPI-001
-    VOL_14 [v2.3 | F14] : ERR-VT-001, ERR-SEC-001, ERR-MON-001
-    VOL_15 [v2.4 | F15] : ERR-XML-001, ERR-TMR-001, ERR-SHL-001
-    VOL_16 [v2.5 | F16] : ERR-INP-001, ERR-ARC-001, ERR-GDI-001
-    VOL_17 [v2.6 | F17] : ERR-IMG-001, ERR-TRY-001, ERR-PRT-001
-    VOL_18 [v2.7 | F18] : ERR-TSK-001, ERR-MID-001, ERR-ENV-001
-    VOL_19 [v2.8 | F19] : ERR-3D-001, ERR-UAC-001, ERR-CHK-001
-    VOL_20 [v3.0 | F20] : ERR-SOV-001, ERR-AGT-001, ERR-HW-001
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_V29 {
+    65. JSONL_ATOMIC_ROTATE : Enforce single-call `FILE_APPEND_DATA` writes and size-capped log rotation inside `e:\\dl`.
+    66. WORKAREA_CLAMP      : Verify restored window coordinates intersect a live monitor `rcWork` via `MonitorFromRect`.
+    67. KV_CACHE_PINNING    : Pin `[0 .. n_keep)` system prompt tokens and evict stale KV ranges before `n_past` reaches `n_ctx`.
 }
 ::AVIS_MANIFEST_END::
