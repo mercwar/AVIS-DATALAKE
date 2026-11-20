@@ -1,154 +1,305 @@
 [submodule "Cyborg"]
 	path = Cyborg
 	url = https://github.com/mercwar/Cyborg.git
-	branch = main[submodule "NEXUS"]
+	branch = main
+	update = none
+
+[submodule "NEXUS"]
 	path = NEXUS
 	url = https://github.com/mercwar/NEXUS.git
-	branch = main[submodule "Navigator-MSVC-Academy"]
+	branch = main
+	update = none
+
+[submodule "Navigator-MSVC-Academy"]
 	path = Navigator-MSVC-Academy
 	url = https://github.com/mercwar/Navigator-MSVC-Academy.git
-	branch = main[submodule "Mercwar-AI"]
+	branch = main
+	update = none
+
+[submodule "Mercwar-AI"]
 	path = Mercwar-AI
 	url = https://github.com/mercwar/Mercwar-AI.git
-	branch = main[submodule "robo-knight-inventory"]
+	branch = main
+	update = none
+
+[submodule "robo-knight-inventory"]
 	path = robo-knight-inventory
 	url = https://github.com/mercwar/robo-knight-inventory.git
-	branch = main[submodule "dc2php"]
+	branch = main
+	update = none
+
+[submodule "dc2php"]
 	path = dc2php
 	url = https://github.com/mercwar/dc2php.git
-	branch = main[submodule "Sentinel"]
+	branch = main
+	update = none
+
+[submodule "Sentinel"]
 	path = Sentinel
 	url = https://github.com/mercwar/Sentinel.git
-	branch = main[submodule "Dark-Com-2"]
+	branch = main
+	update = none
+
+[submodule "Dark-Com-2"]
 	path = Dark-Com-2
 	url = https://github.com/mercwar/Dark-Com-2.git
-	branch = main[submodule "Constellation"]
+	branch = main
+	update = none
+
+[submodule "Constellation"]
 	path = Constellation
 	url = https://github.com/mercwar/Constellation.git
-	branch = main[submodule "bin"]
+	branch = main
+	update = none
+
+[submodule "bin"]
 	path = bin
 	url = https://github.com/mercwar/bin.git
-	branch = main[submodule "Fire-Star-Alpha"]
+	branch = main
+	update = none
+
+[submodule "Fire-Star-Alpha"]
 	path = Fire-Star-Alpha
 	url = https://github.com/mercwar/Fire-Star-Alpha.git
-	branch = main[submodule "Nebula"]
+	branch = main
+	update = none
+
+[submodule "Nebula"]
 	path = Nebula
 	url = https://github.com/mercwar/Nebula.git
-	branch = main[submodule "Powershell"]
+	branch = main
+	update = none
+
+[submodule "Powershell"]
 	path = Powershell
 	url = https://github.com/mercwar/Powershell.git
-	branch = main[submodule "AVIS"]
+	branch = main
+	update = none
+
+[submodule "AVIS"]
 	path = AVIS
 	url = https://github.com/mercwar/AVIS.git
-	branch = main[submodule "dc2sql"]
+	branch = main
+	update = none
+
+[submodule "dc2sql"]
 	path = dc2sql
 	url = https://github.com/mercwar/dc2sql.git
-	branch = main[submodule "Navigator"]
+	branch = main
+	update = none
+
+[submodule "Navigator"]
 	path = Navigator
 	url = https://github.com/mercwar/Navigator.git
-	branch = main[submodule "AI"]
+	branch = main
+	update = none
+
+[submodule "AI"]
 	path = AI
 	url = https://github.com/mercwar/AI.git
-	branch = main[submodule "NAVIGATOR-LLM-ACADEMY"]
+	branch = main
+	update = none
+
+[submodule "NAVIGATOR-LLM-ACADEMY"]
 	path = NAVIGATOR-LLM-ACADEMY
 	url = https://github.com/mercwar/NAVIGATOR-LLM-ACADEMY.git
-	branch = main[submodule "AVIS-DL"]
+	branch = main
+	update = none
+
+[submodule "AVIS-DL"]
 	path = AVIS-DL
 	url = https://github.com/mercwar/AVIS-DL.git
-	branch = main[submodule "Station"]
+	branch = main
+	update = none
+
+[submodule "Station"]
 	path = Station
 	url = https://github.com/mercwar/Station.git
-	branch = main[submodule "ECLIPSE"]
+	branch = main
+	update = none
+
+[submodule "ECLIPSE"]
 	path = ECLIPSE
 	url = https://github.com/mercwar/ECLIPSE.git
-	branch = main[submodule "Comics"]
+	branch = main
+	update = none
+
+[submodule "Comics"]
 	path = Comics
 	url = https://github.com/mercwar/Comics.git
-	branch = main[submodule "AVIS-TRAY-MENU"]
+	branch = main
+	update = none
+
+[submodule "AVIS-TRAY-MENU"]
 	path = AVIS-TRAY-MENU
 	url = https://github.com/mercwar/AVIS-TRAY-MENU.git
-	branch = main[submodule "CL2"]
+	branch = main
+	update = none
+
+[submodule "CL2"]
 	path = CL2
 	url = https://github.com/mercwar/CL2.git
-	branch = main[submodule "CYHY-CMT"]
+	branch = main
+	update = none
+
+[submodule "CYHY-CMT"]
 	path = CYHY-CMT
 	url = https://github.com/mercwar/CYHY-CMT.git
-	branch = main[submodule "AVIS-LOGIC-CORE"]
+	branch = main
+	update = none
+
+[submodule "AVIS-LOGIC-CORE"]
 	path = AVIS-LOGIC-CORE
 	url = https://github.com/mercwar/AVIS-LOGIC-CORE.git
-	branch = main[submodule "CVBGODLY-CONSOLE"]
+	branch = main
+	update = none
+
+[submodule "CVBGODLY-CONSOLE"]
 	path = CVBGODLY-CONSOLE
 	url = https://github.com/mercwar/CVBGODLY-CONSOLE.git
-	branch = main[submodule "AVIS-DATALAKE-ENGINE"]
+	branch = main
+	update = none
+
+[submodule "AVIS-DATALAKE-ENGINE"]
 	path = AVIS-DATALAKE-ENGINE
 	url = https://github.com/mercwar/AVIS-DATALAKE-ENGINE.git
-	branch = main[submodule "CYBORG-LIVE-GIT-BROWSER"]
+	branch = main
+	update = none
+
+[submodule "CYBORG-LIVE-GIT-BROWSER"]
 	path = CYBORG-LIVE-GIT-BROWSER
 	url = https://github.com/mercwar/CYBORG-LIVE-GIT-BROWSER.git
-	branch = main[submodule "AVIS-AI-INI-DIR-MK-SCAN"]
+	branch = main
+	update = none
+
+[submodule "AVIS-AI-INI-DIR-MK-SCAN"]
 	path = AVIS-AI-INI-DIR-MK-SCAN
 	url = https://github.com/mercwar/AVIS-AI-INI-DIR-MK-SCAN.git
-	branch = main[submodule "Robo-Knight-Gallery"]
+	branch = main
+	update = none
+
+[submodule "Robo-Knight-Gallery"]
 	path = Robo-Knight-Gallery
 	url = https://github.com/mercwar/Robo-Knight-Gallery.git
-	branch = main[submodule "Quasar"]
+	branch = main
+	update = none
+
+[submodule "Quasar"]
 	path = Quasar
 	url = https://github.com/mercwar/Quasar.git
-	branch = main[submodule "AVIS-ALERT-FVS"]
+	branch = main
+	update = none
+
+[submodule "AVIS-ALERT-FVS"]
 	path = AVIS-ALERT-FVS
 	url = https://github.com/mercwar/AVIS-ALERT-FVS.git
-	branch = main[submodule "AVIS-SEARCH"]
+	branch = main
+	update = none
+
+[submodule "AVIS-SEARCH"]
 	path = AVIS-SEARCH
 	url = https://github.com/mercwar/AVIS-SEARCH.git
-	branch = main[submodule "Stargate"]
+	branch = main
+	update = none
+
+[submodule "Stargate"]
 	path = Stargate
 	url = https://github.com/mercwar/Stargate.git
-	branch = main[submodule "AVIS-NEWS"]
+	branch = main
+	update = none
+
+[submodule "AVIS-NEWS"]
 	path = AVIS-NEWS
 	url = https://github.com/mercwar/AVIS-NEWS.git
-	branch = main[submodule "AVIS-DROP"]
+	branch = main
+	update = none
+
+[submodule "AVIS-DROP"]
 	path = AVIS-DROP
 	url = https://github.com/mercwar/AVIS-DROP.git
-	branch = main[submodule "Navigator-GitHub-Academy"]
+	branch = main
+	update = none
+
+[submodule "Navigator-GitHub-Academy"]
 	path = Navigator-GitHub-Academy
 	url = https://github.com/mercwar/Navigator-GitHub-Academy.git
-	branch = main[submodule "CVBGOD-EMOJI"]
+	branch = main
+	update = none
+
+[submodule "CVBGOD-EMOJI"]
 	path = CVBGOD-EMOJI
 	url = https://github.com/mercwar/CVBGOD-EMOJI.git
-	branch = main[submodule "Navigator-AI-Academy"]
+	branch = main
+	update = none
+
+[submodule "Navigator-AI-Academy"]
 	path = Navigator-AI-Academy
 	url = https://github.com/mercwar/Navigator-AI-Academy.git
-	branch = main[submodule "Dark-Com"]
+	branch = main
+	update = none
+
+[submodule "Dark-Com"]
 	path = Dark-Com
 	url = https://github.com/mercwar/Dark-Com.git
-	branch = main[submodule "Robo-Knight-Demos"]
+	branch = main
+	update = none
+
+[submodule "Robo-Knight-Demos"]
 	path = Robo-Knight-Demos
 	url = https://github.com/mercwar/Robo-Knight-Demos.git
-	branch = main[submodule "Fire-Gem"]
+	branch = main
+	update = none
+
+[submodule "Fire-Gem"]
 	path = Fire-Gem
 	url = https://github.com/mercwar/Fire-Gem.git
-	branch = main[submodule "Robo-Knight-Player"]
+	branch = main
+	update = none
+
+[submodule "Robo-Knight-Player"]
 	path = Robo-Knight-Player
 	url = https://github.com/mercwar/Robo-Knight-Player.git
-	branch = main[submodule "CRON"]
+	branch = main
+	update = none
+
+[submodule "CRON"]
 	path = CRON
 	url = https://github.com/mercwar/CRON.git
-	branch = main[submodule "GGML-LLAMA-MSVC-INSTALLER"]
+	branch = main
+	update = none
+
+[submodule "GGML-LLAMA-MSVC-INSTALLER"]
 	path = GGML-LLAMA-MSVC-INSTALLER
 	url = https://github.com/mercwar/GGML-LLAMA-MSVC-INSTALLER.git
-	branch = main[submodule "mercwar"]
+	branch = main
+	update = none
+
+[submodule "mercwar"]
 	path = mercwar
 	url = https://github.com/mercwar/mercwar.git
-	branch = main[submodule "JOE-TRON-LLMA"]
+	branch = main
+	update = none
+
+[submodule "JOE-TRON-LLMA"]
 	path = JOE-TRON-LLMA
 	url = https://github.com/mercwar/JOE-TRON-LLMA.git
-	branch = main[submodule "CYBORG-PROJECT-EXPLORER"]
+	branch = main
+	update = none
+
+[submodule "CYBORG-PROJECT-EXPLORER"]
 	path = CYBORG-PROJECT-EXPLORER
 	url = https://github.com/mercwar/CYBORG-PROJECT-EXPLORER.git
-	branch = main[submodule "JMC-ANDROID-APP-DEMO"]
+	branch = main
+	update = none
+
+[submodule "JMC-ANDROID-APP-DEMO"]
 	path = JMC-ANDROID-APP-DEMO
 	url = https://github.com/mercwar/JMC-ANDROID-APP-DEMO.git
-	branch = main[submodule "dc2url"]
+	branch = main
+	update = none
+
+[submodule "dc2url"]
 	path = dc2url
 	url = https://github.com/mercwar/dc2url.git
 	branch = main
+	update = none
