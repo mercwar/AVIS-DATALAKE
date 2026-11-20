@@ -1,0 +1,52 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F06"
+    VOLUME          : "06_PE_INSPECTION_MEMORY_SCANNING_AND_SEH"
+    VERSION         : "1.5.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F05 (File 05)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:35:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_18_PE_BINARY_AND_HEADER_PARSING::
+@FAULT_NODE [ERR-PE-001] {
+    DOMAIN          : "Portable Executable (PE32 / PE32+) Header & Section Table Inspection (dc2pe)"
+    PHENOMENON      : "Out-of-bounds memory read or misparsed `IMAGE_OPTIONAL_HEADER` on malformed or 32/64-bit binaries"
+    ROOT_CAUSE      : "Casting raw file buffers directly to `IMAGE_NT_HEADERS64` without checking `e_lfanew` bounds, `PE\\0\\0` signature, or `Magic` (`0x10b` vs `0x20b`)."
+    INVARIANT_RULE  : "Validate file size against `e_lfanew + sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER)` first, dispatch strictly on `OptionalHeader.Magic`, and bounds-check every RVA-to-file-offset translation against section boundaries."
+}
+
+::SECTION_19_VIRTUAL_MEMORY_AND_PROCESS_DIAGNOSTICS::
+@FAULT_NODE [ERR-MEM-001] {
+    DOMAIN          : "Remote Process Memory Enumeration & Read-Only Scanning (dc2mem)"
+    PHENOMENON      : "`ERROR_PARTIAL_COPY` (299) failures, access violations on guard pages, or infinite `VirtualQueryEx` loops"
+    ROOT_CAUSE      : "Calling `ReadProcessMemory` on uncommitted (`MEM_FREE`/`MEM_RESERVE`), `PAGE_NOACCESS`, or `PAGE_GUARD` regions, or failing to advance base address by `RegionSize`."
+    INVARIANT_RULE  : "Inspect `MEMORY_BASIC_INFORMATION` via `VirtualQueryEx`; read exclusively when `State == MEM_COMMIT` and `(Protect & (PAGE_NOACCESS | PAGE_GUARD)) == 0`, advancing `addr = (uintptr_t)mbi.BaseAddress + mbi.RegionSize`."
+}
+
+::SECTION_20_DEBUG_API_AND_CRASH_TELEMETRY::
+@FAULT_NODE [ERR-DBG-001] {
+    DOMAIN          : "Win32 Debug Loop & Exception Telemetry Dispatch (dc2trace)"
+    PHENOMENON      : "Target process freeze, leaked file handles from `CREATE_PROCESS_DEBUG_EVENT`, or ignored first-chance breakpoints"
+    ROOT_CAUSE      : "Failing to call `ContinueDebugEvent` on every event or neglecting to close `hFile` handles supplied by `LOAD_DLL_DEBUG_INFO` and `CREATE_PROCESS_DEBUG_INFO`."
+    INVARIANT_RULE  : "Close `u.CreateProcessInfo.hFile` and `u.LoadDll.hFile` immediately upon event receipt, handle initial loader `EXCEPTION_BREAKPOINT` with `DBG_CONTINUE`, and pass unhandled exceptions via `DBG_EXCEPTION_NOT_HANDLED`."
+}
+
+@FAULT_NODE [ERR-DBG-002] {
+    DOMAIN          : "Structured Exception Handling (SEH) & MiniDump Diagnostics"
+    PHENOMENON      : "Silent process termination without stack trace or corrupt minidump writes during heap corruption"
+    ROOT_CAUSE      : "Installing `SetUnhandledExceptionFilter` handlers that allocate heap memory or invoke non-async-signal-safe routines during a crash."
+    INVARIANT_RULE  : "Pre-allocate dump file paths on stack/static memory at startup and invoke `MiniDumpWriteDump` from an out-of-process watchdog or minimal static handler."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F06 {
+    19. PE_BOUNDS_DISPATCH : Verify DOS/NT signatures, branch explicitly on PE32/PE32+ Magic, and validate all RVA translations.
+    20. COMMITTED_MEM_ONLY : Gate `ReadProcessMemory` on `MEM_COMMIT` without `PAGE_NOACCESS` or `PAGE_GUARD` flags.
+    21. DEBUG_HANDLE_HYGIENE: Close debug-event `hFile` handles immediately and preserve first-chance breakpoint continuation semantics.
+    22. STATIC_CRASH_PATH  : Avoid dynamic heap allocations inside unhandled exception filters.
+}
+::AVIS_MANIFEST_END::
