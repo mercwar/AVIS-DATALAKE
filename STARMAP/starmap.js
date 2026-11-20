@@ -474,672 +474,784 @@
       viewMode: 'preview',
       rawText: ''
     };
+/* ============================================================================
+ * STARMAP/starmap.js
+ * Imports headers from ./starmap-data.js and reads live repo data from GitHub
+ * ========================================================================== */
 
-    function simpleMarkdownToHtml(md) {
-      let html = md
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+import {
+  OWNER,
+  ROOT_REPO,
+  SECTOR_PALETTE,
+  liveState,
+  modalState,
+  classifyKind,
+  getExtension,
+  isHtmlPath,
+  isMarkdownPath,
+  isTextViewFile,
+  setIndexQuery,
+  readIndexQuery,
+  computeOrbitalPosition,
+  buildHierarchyFromGitTree,
+  simpleMarkdownToHtml
+} from "./starmap-data.js?v=25";
 
-      // Code blocks
-      html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-      // Inline code
-      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-      // Headings
-      html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-      html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-      html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-      // Blockquotes
-      html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
-      // Links
-      html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-      // Bold & Italic
-      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-      // Lists
-      html = html.replace(/^\s*[-*] (.*$)/gim, '<li>$1</li>');
-      html = html.replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
-      // Paragraphs
-      html = html.split(/\n{2,}/).map((block) => {
-        if (block.trim().startsWith('<')) return block;
-        return `<p>${block.replace(/\n/g, '<br/>')}</p>`;
-      }).join('\n');
+// =========================================================================
+// 1. LIVE GITHUB REPOSITORY & TREE LOADER
+// =========================================================================
+async function loadGitHubRepositoryData() {
+  const statusBadge = document.getElementById("tree-sync-status");
+  if (statusBadge) {
+    statusBadge.textContent = "FETCHING GITHUB...";
+    statusBadge.className = "font-mono-tech text-[9.5px] px-1.5 py-0.5 bg-amber-500/20 text-amber-200 border border-amber-400/50";
+  }
 
-      return html;
-    }
-
-    function renderModalContent() {
-      const iframe = document.getElementById('modal-iframe');
-      const mdView = document.getElementById('modal-markdown-view');
-      const rawView = document.getElementById('modal-raw-view');
-      const tabPrimary = document.getElementById('modal-tab-primary');
-      const tabRaw = document.getElementById('modal-tab-raw');
-
-      iframe.classList.add('hidden');
-      mdView.classList.add('hidden');
-      rawView.classList.add('hidden');
-
-      if (modalState.viewMode === 'raw') {
-        tabRaw.className = 'mech-btn px-2.5 py-1 bg-cyan-500/25 text-white border border-cyan-400/60 font-semibold';
-        tabPrimary.className = 'mech-btn px-2.5 py-1 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/50';
-        rawView.textContent = modalState.rawText;
-        rawView.classList.remove('hidden');
-      } else {
-        tabPrimary.className = 'mech-btn px-2.5 py-1 bg-cyan-500/25 text-white border border-cyan-400/60 font-semibold';
-        tabRaw.className = 'mech-btn px-2.5 py-1 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/50';
-        if (modalState.fileType === 'index.html') {
-          const baseTag = `<base href="https://raw.githubusercontent.com/mercwar/${encodeURIComponent(modalState.activeRepoName)}/HEAD/" />`;
-          const injectedHtml = modalState.rawText.includes('<head>')
-            ? modalState.rawText.replace('<head>', `<head>${baseTag}`)
-            : `${baseTag}${modalState.rawText}`;
-          iframe.srcdoc = injectedHtml;
-          iframe.classList.remove('hidden');
-        } else {
-          mdView.innerHTML = simpleMarkdownToHtml(modalState.rawText);
-          mdView.classList.remove('hidden');
-        }
+  try {
+    const repoResp = await fetch(`https://api.github.com/repos/${OWNER}/${ROOT_REPO}`);
+    if (repoResp.ok) {
+      const repoJson = await repoResp.json();
+      if (repoJson.default_branch) {
+        liveState.defaultBranch = repoJson.default_branch;
       }
     }
 
-    async function openFileViewerModal(systemId, fileType) {
-      const sys = SYSTEM_MAP.get(systemId) || SYSTEM_MAP.get('AVIS-DATALAKE');
-      const repoName = sys.isBlob ? 'AVIS-DATALAKE' : sys.name;
-      const targetFile = fileType === 'index.html' ? 'index.html' : 'README.md';
-      const isIndex = targetFile === 'index.html';
+    const treeResp = await fetch(
+      `https://api.github.com/repos/${OWNER}/${ROOT_REPO}/git/trees/${encodeURIComponent(liveState.defaultBranch)}?recursive=1`
+    );
+    if (!treeResp.ok) throw new Error(`HTTP ${treeResp.status}`);
+    const treeJson = await treeResp.json();
+    const items = Array.isArray(treeJson.tree) ? treeJson.tree : [];
 
-      modalState.activeSystemId = sys.id;
-      modalState.activeRepoName = repoName;
-      modalState.fileType = targetFile;
-      modalState.viewMode = 'primary';
+    liveState.rawTree = items;
+    rebuildSystemsFromTree(items);
 
-      const modal = document.getElementById('file-viewer-modal');
-      const modalCard = document.getElementById('file-viewer-card');
-      modalCard.classList.remove('mech-win-modal-index', 'mech-win-modal-readme');
-      modalCard.classList.add(isIndex ? 'mech-win-modal-index' : 'mech-win-modal-readme');
+    const nested = buildHierarchyFromGitTree(items);
+    liveState.treeCache.set(ROOT_REPO, nested);
+    liveState.expandedNodes.add(ROOT_REPO);
 
-      document.getElementById('modal-file-badge').textContent = isIndex
-        ? 'WEB TARGET // INDEX.HTML'
-        : 'HOLO-CODEX // README.MD';
-      document.getElementById('modal-file-badge').className = isIndex
-        ? 'font-mono-tech text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 border border-emerald-400/50'
-        : 'font-mono-tech text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-200 border border-purple-400/50';
-
-      document.getElementById('modal-title').textContent = `mercwar / ${repoName} / ${targetFile}`;
-      document.getElementById('modal-tab-primary').textContent = isIndex ? 'LIVE RENDER' : 'RENDERED DOC';
-      document.getElementById('modal-github-link').href = `https://github.com/mercwar/${encodeURIComponent(repoName)}/blob/HEAD/${targetFile}`;
-
-      const statusEl = document.getElementById('modal-fetch-status');
-      statusEl.textContent = 'FETCHING STREAM...';
-      statusEl.className = 'text-amber-300 shrink-0 ml-2';
-
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-
-      const branches = ['HEAD', 'main', 'master'];
-      let fetched = false;
-
-      for (const br of branches) {
-        const rawUrl = `https://raw.githubusercontent.com/mercwar/${encodeURIComponent(repoName)}/${br}/${targetFile}`;
-        document.getElementById('modal-source-url').textContent = rawUrl;
-        try {
-          const res = await fetch(rawUrl);
-          if (res.ok) {
-            modalState.rawText = await res.text();
-            statusEl.textContent = `200 OK (${br})`;
-            statusEl.className = 'text-emerald-300 shrink-0 ml-2';
-            fetched = true;
-            break;
-          }
-        } catch (e) {
-          // Try next branch
-        }
-      }
-
-      if (!fetched) {
-        statusEl.textContent = 'FALLBACK PREVIEW';
-        statusEl.className = 'text-cyan-300 shrink-0 ml-2';
-        modalState.rawText = isIndex
-          ? `<!DOCTYPE html><html><head><style>body{background:#040812;color:#00f0ff;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}div{border:1px solid #00f0ff;padding:24px;max-width:520px}</style></head><body><div><h2>${repoName} // index.html</h2><p style="color:#cbd5e1">${sys.desc}</p><p style="color:#ffd97d">No standalone index.html detected at HEAD or offline sandbox active. Use ↗ GITHUB above to inspect repository root.</p></div></body></html>`
-          : `# ${repoName}\n\n> **Sector:** ${SECTORS[sys.sector].name}  \n> **Git Mode:** \`${sys.mode}\`  \n> **Path:** \`${sys.path}\`\n\n## Overview\n${sys.desc}\n\n## Direct Uplinks\n- Repository: [https://github.com/mercwar/${repoName}](https://github.com/mercwar/${repoName})\n- Parent Hub: [https://github.com/mercwar/AVIS-DATALAKE](https://github.com/mercwar/AVIS-DATALAKE)`;
-      }
-
-      renderModalContent();
+    if (statusBadge) {
+      statusBadge.textContent = `LIVE (${items.length})`;
+      statusBadge.className = "font-mono-tech text-[9.5px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-200 border border-emerald-400/50";
     }
 
-    function closeFileViewerModal() {
-      const modal = document.getElementById('file-viewer-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      document.getElementById('modal-iframe').srcdoc = '';
+    rebuildThreeNodes();
+    const targetId = liveState.selectedId || (liveState.systems[0] && liveState.systems[0].id);
+    if (targetId) selectSystem(targetId, false);
+    renderTree();
+  } catch (err) {
+    if (statusBadge) {
+      statusBadge.textContent = `GITHUB ERR: ${err.message}`;
+      statusBadge.className = "font-mono-tech text-[9.5px] px-1.5 py-0.5 bg-rose-500/20 text-rose-200 border border-rose-400/50";
     }
+    renderTree();
+  }
+}
 
-    // =========================================================================
-    // 4. THREE.JS 3D NEW EDEN STAR MAP SCENE
-    // =========================================================================
-    let scene, camera, renderer, controls, raycaster, mouse;
-    const starMeshes = new Map();
-    const labelElements = new Map();
-    let laneLinesGroup, starfieldPoints, hubGroup, gimbalRing1, gimbalRing2, selectionReticle;
-    let hoveredSystemId = null;
+function rebuildSystemsFromTree(items) {
+  liveState.systems = [];
+  liveState.systemMap.clear();
+  liveState.lanes = [];
 
-    const cameraTween = {
-      active: false,
-      startPos: new THREE.Vector3(),
-      endPos: new THREE.Vector3(),
-      startTarget: new THREE.Vector3(),
-      endTarget: new THREE.Vector3(),
-      progress: 0
+  const hubNode = {
+    id: ROOT_REPO,
+    name: ROOT_REPO,
+    kind: "repo",
+    type: "repo",
+    mode: "040000 hub",
+    path: "/",
+    repo: ROOT_REPO,
+    sector: SECTOR_PALETTE[0],
+    pos: [0, 0, 0],
+    neighbors: new Set()
+  };
+  liveState.systems.push(hubNode);
+  liveState.systemMap.set(hubNode.id, hubNode);
+
+  items.forEach((entry, idx) => {
+    const kind = classifyKind(entry);
+    const parts = entry.path.split("/");
+    const name = parts[parts.length - 1];
+    const sec = SECTOR_PALETTE[((idx + 1) % (SECTOR_PALETTE.length - 1)) + 1];
+
+    const sys = {
+      id: entry.path,
+      name,
+      kind,
+      type: kind,
+      mode: entry.mode || kind,
+      path: entry.path,
+      repo: kind === "repo" ? name : ROOT_REPO,
+      sector: sec,
+      pos: computeOrbitalPosition(idx + 1, items.length, kind),
+      neighbors: new Set()
     };
-function initThreeScene() {
-  const container = document.getElementById('canvas-container');
-  scene = new THREE.Scene();
 
-  // Remove opaque FogExp2 so the CSS background shows through cleanly
-  // (Optional: if you want subtle distance fade without hiding the background, leave scene.fog = null)
+    liveState.systems.push(sys);
+    liveState.systemMap.set(sys.id, sys);
+
+    // Connect hub to top-level repos/folders/files
+    if (!entry.path.includes("/") && liveState.lanes.length < 40) {
+      liveState.lanes.push({ a: hubNode.id, b: sys.id });
+      hubNode.neighbors.add(sys.id);
+      sys.neighbors.add(hubNode.id);
+    }
+  });
+}
+
+function startMiniCron(intervalMs = 60000) {
+  const initialQueryRepo = readIndexQuery();
+  if (initialQueryRepo) {
+    setIndexQuery(initialQueryRepo);
+  }
+  return window.setInterval(() => {
+    const activeRepo = readIndexQuery() || liveState.selectedId || ROOT_REPO;
+    setIndexQuery(activeRepo);
+    loadGitHubRepositoryData();
+  }, intervalMs);
+}
+
+// =========================================================================
+// 2. RECURSIVE TREE & PAGINATION ENGINE (REPO / FOLDER / FILE)
+// =========================================================================
+function getFlattenedTreeRows() {
+  const q = liveState.searchQuery.trim().toLowerCase();
+  const rows = [];
+
+  function walk(nodes, depth) {
+    if (!Array.isArray(nodes)) return;
+    for (const n of nodes) {
+      const kind = classifyKind(n);
+      const matchesSector =
+        liveState.sectorFilter === "ALL" ||
+        (n.sector && n.sector.id === liveState.sectorFilter) ||
+        depth > 0;
+      const matchesQuery =
+        !q ||
+        n.name.toLowerCase().includes(q) ||
+        (n.path || "").toLowerCase().includes(q) ||
+        kind.includes(q);
+      const hasMatchingChild =
+        Array.isArray(n.children) &&
+        n.children.some((c) => c.name.toLowerCase().includes(q) || (c.path || "").toLowerCase().includes(q));
+
+      if (matchesSector && (matchesQuery || hasMatchingChild)) {
+        const hasChildren = Array.isArray(n.children) && n.children.length > 0;
+        rows.push({
+          rowId: n.id,
+          name: n.name,
+          kind,
+          type: kind,
+          depth,
+          path: n.path,
+          repo: kind === "repo" ? n.name : ROOT_REPO,
+          color: n.sector ? n.sector.color : "#7ce8ff",
+          hasChildren
+        });
+        if (hasChildren && (liveState.expandedNodes.has(n.id) || q.length > 0)) {
+          walk(n.children, depth + 1);
+        }
+      }
+    }
+  }
+
+  walk(liveState.systems, 0);
+  return rows;
+}
+
+function renderTree() {
+  const container = document.getElementById("tree-list-container");
+  if (!container) return;
+
+  const allRows = getFlattenedTreeRows();
+  const totalPages = Math.max(1, Math.ceil(allRows.length / liveState.pageSize));
+  if (liveState.currentPage > totalPages) liveState.currentPage = totalPages;
+
+  const startIdx = (liveState.currentPage - 1) * liveState.pageSize;
+  const pageRows = allRows.slice(startIdx, startIdx + liveState.pageSize);
+
+  document.getElementById("page-indicator").textContent = `PAGE ${liveState.currentPage} / ${totalPages}`;
+  document.getElementById("item-count-indicator").textContent = `${allRows.length} GITHUB NODES`;
+  document.getElementById("btn-prev-page").disabled = liveState.currentPage <= 1;
+  document.getElementById("btn-next-page").disabled = liveState.currentPage >= totalPages;
+
+  container.innerHTML = "";
+  if (pageRows.length === 0) {
+    container.innerHTML = `<div class="p-4 text-center text-slate-400 border border-dashed border-slate-700">NO ITEMS LOADED FROM GITHUB</div>`;
+    return;
+  }
+
+  pageRows.forEach((row) => {
+    const isSelected = row.rowId === liveState.selectedId;
+    const isExpanded = liveState.expandedNodes.has(row.rowId);
+
+    const div = document.createElement("div");
+    div.style.paddingLeft = `${8 + row.depth * 14}px`;
+    div.className = `pr-2 py-1.5 flex items-center justify-between gap-1.5 cursor-pointer border transition-colors ${
+      isSelected
+        ? "bg-cyan-500/20 border-cyan-400/70 text-white"
+        : "bg-slate-900/55 border-transparent hover:border-cyan-500/35 hover:bg-slate-900/90 text-slate-300"
+    }`;
+
+    const leftPart = document.createElement("div");
+    leftPart.className = "flex items-center gap-1.5 min-w-0";
+
+    if (row.hasChildren) {
+      const caret = document.createElement("span");
+      caret.textContent = isExpanded ? "▾" : "▸";
+      caret.className = "text-cyan-400 w-3 text-center shrink-0";
+      caret.onclick = (e) => {
+        e.stopPropagation();
+        if (liveState.expandedNodes.has(row.rowId)) liveState.expandedNodes.delete(row.rowId);
+        else liveState.expandedNodes.add(row.rowId);
+        renderTree();
+      };
+      leftPart.appendChild(caret);
+    } else {
+      const spacer = document.createElement("span");
+      spacer.textContent = row.depth > 0 ? "└" : "•";
+      spacer.className = "text-slate-600 w-3 text-center shrink-0";
+      leftPart.appendChild(spacer);
+    }
+
+    const icon = document.createElement("span");
+    if (row.kind === "repo") {
+      icon.textContent = "◈";
+      icon.style.color = row.color || "#ffd97d";
+    } else if (row.kind === "folder") {
+      icon.textContent = "📁";
+      icon.className = "text-[10px]";
+    } else {
+      icon.textContent = "📄";
+      icon.className = "text-[10px]";
+    }
+    leftPart.appendChild(icon);
+
+    const label = document.createElement("span");
+    label.textContent = row.name;
+    label.className = `truncate ${row.depth === 0 ? "font-semibold text-slate-100" : "text-slate-300"}`;
+    leftPart.appendChild(label);
+    div.appendChild(leftPart);
+
+    const badge = document.createElement("span");
+    if (row.kind === "repo") {
+      badge.textContent = "REPO";
+      badge.className = "text-[9px] px-1 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-400/40 shrink-0";
+    } else if (row.kind === "folder") {
+      badge.textContent = "DIR";
+      badge.className = "text-[9px] px-1 py-0.2 bg-cyan-500/15 text-cyan-300 border border-cyan-400/35 shrink-0";
+    } else {
+      badge.textContent = isTextViewFile(row.path) ? "TEXT" : "VIEW";
+      badge.className = "text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 shrink-0";
+    }
+    div.appendChild(badge);
+
+    div.onclick = () => {
+      if (row.kind === "repo") {
+        setIndexQuery(row.name);
+        if (liveState.systemMap.has(row.rowId)) {
+          selectSystem(row.rowId, true);
+        }
+        if (row.hasChildren) {
+          if (liveState.expandedNodes.has(row.rowId)) liveState.expandedNodes.delete(row.rowId);
+          else liveState.expandedNodes.add(row.rowId);
+          renderTree();
+        }
+      } else if (row.kind === "folder") {
+        if (liveState.expandedNodes.has(row.rowId)) liveState.expandedNodes.delete(row.rowId);
+        else liveState.expandedNodes.add(row.rowId);
+        renderTree();
+      } else {
+        openFileViewerModal(row.path);
+      }
+    };
+
+    container.appendChild(div);
+  });
+}
+
+// =========================================================================
+// 3. POP-UP VIEWER (HTML/MD + TEXT/RAW VIEW FOR .JSON & OTHER FILES)
+// =========================================================================
+function renderModalContent() {
+  const iframe = document.getElementById("modal-iframe");
+  const mdView = document.getElementById("modal-markdown-view");
+  const rawView = document.getElementById("modal-raw-view");
+  const tabPrimary = document.getElementById("modal-tab-primary");
+  const tabRaw = document.getElementById("modal-tab-raw");
+
+  iframe.classList.add("hidden");
+  mdView.classList.add("hidden");
+  rawView.classList.add("hidden");
+
+  const forceText = isTextViewFile(modalState.filePath);
+  const showRaw = modalState.viewMode === "raw" || forceText;
+
+  if (showRaw) {
+    tabRaw.className = "mech-btn px-2.5 py-1 bg-cyan-500/25 text-white border border-cyan-400/60 font-semibold";
+    tabPrimary.className = "mech-btn px-2.5 py-1 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/50";
+    if (getExtension(modalState.filePath) === "json") {
+      try {
+        rawView.textContent = JSON.stringify(JSON.parse(modalState.rawText), null, 2);
+      } catch (_) {
+        rawView.textContent = modalState.rawText;
+      }
+    } else {
+      rawView.textContent = modalState.rawText;
+    }
+    rawView.classList.remove("hidden");
+  } else {
+    tabPrimary.className = "mech-btn px-2.5 py-1 bg-cyan-500/25 text-white border border-cyan-400/60 font-semibold";
+    tabRaw.className = "mech-btn px-2.5 py-1 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/50";
+    if (isHtmlPath(modalState.filePath)) {
+      const baseTag = `<base href="https://raw.githubusercontent.com/${OWNER}/${ROOT_REPO}/${liveState.defaultBranch}/" />`;
+      const injectedHtml = modalState.rawText.includes("<head>")
+        ? modalState.rawText.replace("<head>", `<head>${baseTag}`)
+        : `${baseTag}${modalState.rawText}`;
+      iframe.srcdoc = injectedHtml;
+      iframe.classList.remove("hidden");
+    } else {
+      mdView.innerHTML = simpleMarkdownToHtml(modalState.rawText);
+      mdView.classList.remove("hidden");
+    }
+  }
+}
+
+async function openFileViewerModal(targetPath) {
+  const cleanPath = String(targetPath || "").replace(/^\/+/, "");
+  if (!cleanPath) return;
+
+  const selectedSys = liveState.systemMap.get(liveState.selectedId);
+  const queryRepo = selectedSys && selectedSys.kind === "repo" ? selectedSys.name : ROOT_REPO;
+  setIndexQuery(queryRepo);
+
+  const isHtml = isHtmlPath(cleanPath);
+  const isText = isTextViewFile(cleanPath);
+
+  modalState.filePath = cleanPath;
+  modalState.activeRepoName = ROOT_REPO;
+  modalState.viewMode = isText ? "raw" : "primary";
+
+  const modal = document.getElementById("file-viewer-modal");
+  const modalCard = document.getElementById("file-viewer-card");
+  modalCard.classList.remove("mech-win-modal-index", "mech-win-modal-readme");
+  modalCard.classList.add(isHtml ? "mech-win-modal-index" : "mech-win-modal-readme");
+
+  document.getElementById("modal-file-badge").textContent = isHtml
+    ? "HTML TARGET"
+    : isText
+    ? "TEXT VIEW"
+    : "MARKDOWN DOC";
+  document.getElementById("modal-title").textContent = `${OWNER}/${ROOT_REPO}/${cleanPath}`;
+  document.getElementById("modal-tab-primary").textContent = isHtml ? "LIVE RENDER" : "RENDERED DOC";
+  document.getElementById("modal-github-link").href = `https://github.com/${OWNER}/${ROOT_REPO}/blob/${liveState.defaultBranch}/${cleanPath}`;
+
+  const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${ROOT_REPO}/${liveState.defaultBranch}/${cleanPath}`;
+  document.getElementById("modal-source-url").textContent = rawUrl;
+
+  const statusEl = document.getElementById("modal-fetch-status");
+  statusEl.textContent = "FETCHING STREAM...";
+  statusEl.className = "text-amber-300 shrink-0 ml-2";
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+
+  try {
+    const res = await fetch(rawUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    modalState.rawText = await res.text();
+    statusEl.textContent = "200 OK";
+    statusEl.className = "text-emerald-300 shrink-0 ml-2";
+  } catch (err) {
+    modalState.viewMode = "raw";
+    modalState.rawText = `${rawUrl}\n${err.message}`;
+    statusEl.textContent = "TEXT FALLBACK";
+    statusEl.className = "text-cyan-300 shrink-0 ml-2";
+  }
+
+  renderModalContent();
+}
+
+function closeFileViewerModal() {
+  const modal = document.getElementById("file-viewer-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  document.getElementById("modal-iframe").srcdoc = "";
+}
+
+// =========================================================================
+// 4. THREE.JS 3D SCENE & HUD
+// =========================================================================
+let scene, camera, renderer, controls, raycaster, mouse;
+let nodesGroup, lanesGroup, selectionReticle, hoveredId = null;
+const starMeshes = new Map();
+const labelElements = new Map();
+
+const cameraTween = {
+  active: false,
+  startPos: new THREE.Vector3(),
+  endPos: new THREE.Vector3(),
+  startTarget: new THREE.Vector3(),
+  endTarget: new THREE.Vector3(),
+  progress: 0
+};
+
+function initThreeScene() {
+  const container = document.getElementById("canvas-container");
+  scene = new THREE.Scene();
   scene.fog = null;
 
   camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 48, 92);
 
-  // 1. Set alpha: true so the WebGL canvas is transparent
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // 2. Set clear alpha to 0 so the background image renders behind the 3D scene
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // ... keep the rest of your initThreeScene() code unchanged ...
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.autoRotate = liveState.autoOrbit;
+  controls.autoRotateSpeed = 0.45;
 
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2(-99, -99);
 
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.06;
-      controls.minDistance = 10;
-      controls.maxDistance = 240;
-      controls.autoRotate = uiState.autoOrbit;
-      controls.autoRotateSpeed = 0.45;
+  scene.add(new THREE.AmbientLight(0x334155, 1.4));
+  const hubLight = new THREE.PointLight(0xffd97d, 2.8, 160);
+  scene.add(hubLight);
 
-      raycaster = new THREE.Raycaster();
-      mouse = new THREE.Vector2(-99, -99);
+  nodesGroup = new THREE.Group();
+  lanesGroup = new THREE.Group();
+  scene.add(nodesGroup);
+  scene.add(lanesGroup);
 
-      // Ambient & Point Lights
-      scene.add(new THREE.AmbientLight(0x334155, 1.4));
-      const hubLight = new THREE.PointLight(0xffd97d, 2.8, 160);
-      hubLight.position.set(0, 0, 0);
-      scene.add(hubLight);
+  selectionReticle = new THREE.Mesh(
+    new THREE.RingGeometry(2.3, 2.75, 6),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
+  );
+  scene.add(selectionReticle);
 
-      // Starfield Background Particles
-      const starGeo = new THREE.BufferGeometry();
-      const starCount = 2200;
-      const starPositions = new Float32Array(starCount * 3);
-      const starColors = new Float32Array(starCount * 3);
-      const palette = [new THREE.Color(0x00f0ff), new THREE.Color(0xb84dff), new THREE.Color(0xffd97d), new THREE.Color(0x94a3b8)];
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 
-      for (let i = 0; i < starCount; i++) {
-        const r = 110 + Math.random() * 240;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-        starPositions[i * 3 + 1] = r * Math.cos(phi);
-        starPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  renderer.domElement.addEventListener("pointermove", (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(Array.from(starMeshes.values()), false);
+    const tooltip = document.getElementById("hover-tooltip");
 
-        const c = palette[i % palette.length];
-        starColors[i * 3] = c.r;
-        starColors[i * 3 + 1] = c.g;
-        starColors[i * 3 + 2] = c.b;
+    if (hits.length > 0) {
+      const id = hits[0].object.userData.systemId;
+      hoveredId = id;
+      document.body.style.cursor = "pointer";
+      const sys = liveState.systemMap.get(id);
+      if (sys && tooltip) {
+        document.getElementById("tt-name").textContent = sys.name;
+        document.getElementById("tt-mode").textContent = `${sys.mode} • ${sys.kind.toUpperCase()}`;
+        document.getElementById("tt-sector").textContent = sys.sector.label;
+        document.getElementById("tt-sector").style.color = sys.sector.color;
+        document.getElementById("tt-desc").textContent = sys.path;
+        document.getElementById("tt-coords").textContent = `X:${sys.pos[0]} Y:${sys.pos[1]} Z:${sys.pos[2]}`;
+        tooltip.style.left = `${Math.min(window.innerWidth - 310, event.clientX + 16)}px`;
+        tooltip.style.top = `${Math.min(window.innerHeight - 150, event.clientY + 16)}px`;
+        tooltip.style.opacity = "1";
       }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-      starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-      const starMat = new THREE.PointsMaterial({ size: 0.95, vertexColors: true, transparent: true, opacity: 0.78 });
-      starfieldPoints = new THREE.Points(starGeo, starMat);
-      scene.add(starfieldPoints);
-
-      // Subtle Galactic Grid Plane
-      const gridHelper = new THREE.PolarGridHelper(95, 16, 8, 64, 0x0f2942, 0x09192b);
-      gridHelper.position.y = -18;
-      scene.add(gridHelper);
-
-      // Build Central Reactor Hub (AVIS-DATALAKE)
-      hubGroup = new THREE.Group();
-      const coreGeo = new THREE.IcosahedronGeometry(3.2, 1);
-      const coreMat = new THREE.MeshStandardMaterial({
-        color: 0xffd97d,
-        emissive: 0xff9d00,
-        emissiveIntensity: 0.85,
-        roughness: 0.2,
-        metalness: 0.8
-      });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      coreMesh.userData = { systemId: 'AVIS-DATALAKE' };
-      hubGroup.add(coreMesh);
-      starMeshes.set('AVIS-DATALAKE', coreMesh);
-
-      const cageGeo = new THREE.IcosahedronGeometry(4.3, 0);
-      const cageMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.45 });
-      hubGroup.add(new THREE.Mesh(cageGeo, cageMat));
-
-      const ringGeo1 = new THREE.TorusGeometry(6.2, 0.12, 8, 64);
-      const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.7 });
-      gimbalRing1 = new THREE.Mesh(ringGeo1, ringMat1);
-      hubGroup.add(gimbalRing1);
-
-      const ringGeo2 = new THREE.TorusGeometry(7.4, 0.09, 8, 64);
-      const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.55 });
-      gimbalRing2 = new THREE.Mesh(ringGeo2, ringMat2);
-      gimbalRing2.rotation.x = Math.PI / 3;
-      hubGroup.add(gimbalRing2);
-
-      // Vertical Plasma Beacon Beam
-      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, 52, 12);
-      const beamMat = new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.22 });
-      hubGroup.add(new THREE.Mesh(beamGeo, beamMat));
-
-      scene.add(hubGroup);
-
-      // Build Satellite Star Nodes & Labels
-      const labelsLayer = document.getElementById('labels-layer');
-
-      RAW_SYSTEMS.forEach((sys) => {
-        if (!sys.isHub) {
-          const sec = SECTORS[sys.sector];
-          const geo = sys.isBlob
-            ? new THREE.BoxGeometry(1.15, 1.15, 1.15)
-            : new THREE.OctahedronGeometry(1.35, 0);
-          const mat = new THREE.MeshStandardMaterial({
-            color: sec.hex,
-            emissive: sec.hex,
-            emissiveIntensity: 0.65,
-            roughness: 0.25,
-            metalness: 0.75
-          });
-          const mesh = new THREE.Mesh(geo, mat);
-          mesh.position.set(sys.pos[0], sys.pos[1], sys.pos[2]);
-          mesh.userData = { systemId: sys.id };
-          scene.add(mesh);
-          starMeshes.set(sys.id, mesh);
-        }
-
-        // Create HTML Floating Label
-        const lbl = document.createElement('div');
-        lbl.textContent = sys.name;
-        lbl.className = `star-label ${sys.isHub ? 'is-hub' : ''}`;
-        lbl.style.color = sys.isHub ? '#ffd97d' : SECTORS[sys.sector].color;
-        lbl.onclick = (e) => {
-          e.stopPropagation();
-          selectSystem(sys.id, true);
-        };
-        labelsLayer.appendChild(lbl);
-        labelElements.set(sys.id, lbl);
-      });
-
-      // Build Filament Jump-Lanes
-      laneLinesGroup = new THREE.Group();
-      JUMP_LANES.forEach((lane) => {
-        const sysA = SYSTEM_MAP.get(lane.a);
-        const sysB = SYSTEM_MAP.get(lane.b);
-        const points = [
-          new THREE.Vector3(...sysA.pos),
-          new THREE.Vector3(...sysB.pos)
-        ];
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        const mat = new THREE.LineBasicMaterial({
-          color: lane.isCross ? 0xffd97d : SECTORS[sysA.sector].hex,
-          transparent: true,
-          opacity: lane.isCross ? 0.34 : 0.24
-        });
-        const line = new THREE.Line(geo, mat);
-        line.userData = { a: lane.a, b: lane.b, isCross: lane.isCross };
-        laneLinesGroup.add(line);
-      });
-      scene.add(laneLinesGroup);
-
-      // Hexagonal Selection Targeting Reticle
-      const retGeo = new THREE.RingGeometry(2.3, 2.75, 6);
-      const retMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-      selectionReticle = new THREE.Mesh(retGeo, retMat);
-      scene.add(selectionReticle);
-
-      // Events
-      window.addEventListener('resize', onWindowResize);
-      renderer.domElement.addEventListener('pointermove', onPointerMove);
-      renderer.domElement.addEventListener('click', onCanvasClick);
+    } else {
+      hoveredId = null;
+      document.body.style.cursor = "default";
+      if (tooltip) tooltip.style.opacity = "0";
     }
+  });
 
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+  renderer.domElement.addEventListener("click", () => {
+    if (hoveredId) selectSystem(hoveredId, true);
+  });
+}
 
-    function onPointerMove(event) {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+function rebuildThreeNodes() {
+  if (!nodesGroup || !lanesGroup) return;
+  while (nodesGroup.children.length) nodesGroup.remove(nodesGroup.children[0]);
+  while (lanesGroup.children.length) lanesGroup.remove(lanesGroup.children[0]);
+  starMeshes.clear();
 
-      raycaster.setFromCamera(mouse, camera);
-      const meshes = Array.from(starMeshes.values());
-      const intersects = raycaster.intersectObjects(meshes, false);
-      const tooltip = document.getElementById('hover-tooltip');
+  const labelsLayer = document.getElementById("labels-layer");
+  if (labelsLayer) labelsLayer.innerHTML = "";
+  labelElements.clear();
 
-      if (intersects.length > 0) {
-        const sysId = intersects[0].object.userData.systemId;
-        hoveredSystemId = sysId;
-        document.body.style.cursor = 'pointer';
-        const sys = SYSTEM_MAP.get(sysId);
+  liveState.systems.forEach((sys, idx) => {
+    const isRoot = idx === 0;
+    const geo = isRoot
+      ? new THREE.IcosahedronGeometry(3.0, 1)
+      : sys.kind === "repo"
+      ? new THREE.OctahedronGeometry(1.3, 0)
+      : sys.kind === "folder"
+      ? new THREE.BoxGeometry(1.1, 1.1, 1.1)
+      : new THREE.SphereGeometry(0.75, 10, 10);
 
-        document.getElementById('tt-name').textContent = sys.name;
-        document.getElementById('tt-mode').textContent = sys.mode;
-        document.getElementById('tt-sector').textContent = SECTORS[sys.sector].name;
-        document.getElementById('tt-sector').style.color = SECTORS[sys.sector].color;
-        document.getElementById('tt-desc').textContent = sys.desc;
-        document.getElementById('tt-coords').textContent = `X:${sys.pos[0]} Y:${sys.pos[1]} Z:${sys.pos[2]}`;
-
-        const tx = Math.min(window.innerWidth - 310, event.clientX + 16);
-        const ty = Math.min(window.innerHeight - 150, event.clientY + 16);
-        tooltip.style.left = `${tx}px`;
-        tooltip.style.top = `${ty}px`;
-        tooltip.style.opacity = '1';
-      } else {
-        hoveredSystemId = null;
-        document.body.style.cursor = 'default';
-        tooltip.style.opacity = '0';
-      }
-    }
-
-    function onCanvasClick() {
-      if (hoveredSystemId) {
-        selectSystem(hoveredSystemId, true);
-      }
-    }
-
-    function selectSystem(systemId, flyCamera = true) {
-      const sys = SYSTEM_MAP.get(systemId);
-      if (!sys) return;
-      uiState.selectedId = systemId;
-
-      // Update Right HUD Telemetry
-      const sec = SECTORS[sys.sector];
-      const repoName = sys.isBlob ? 'AVIS-DATALAKE' : sys.name;
-
-      document.getElementById('hud-title').textContent = sys.name;
-      document.getElementById('hud-mode-badge').textContent = sys.mode;
-      document.getElementById('hud-sector').textContent = sec.name;
-      document.getElementById('hud-sector').style.color = sec.color;
-      document.getElementById('hud-desc').textContent = sys.desc;
-      document.getElementById('hud-path').textContent = sys.path;
-      document.getElementById('hud-coords').textContent = `X:${sys.pos[0]} | Y:${sys.pos[1]} | Z:${sys.pos[2]}`;
-
-      // Update Direct Uplink Buttons
-      document.getElementById('hud-link-repo').href = `https://github.com/mercwar/${encodeURIComponent(repoName)}`;
-      document.getElementById('hud-btn-index').onclick = () => openFileViewerModal(sys.id, 'index.html');
-      document.getElementById('hud-btn-readme').onclick = () => openFileViewerModal(sys.id, 'README.md');
-
-      // Populate Jump-Lane Neighbors
-      const neighborsEl = document.getElementById('hud-neighbors');
-      neighborsEl.innerHTML = '';
-      const neighborIds = Array.from(sys.neighbors);
-      document.getElementById('hud-neighbor-count').textContent = `${neighborIds.length} LINKS`;
-
-      neighborIds.forEach((nId) => {
-        const nSys = SYSTEM_MAP.get(nId);
-        if (!nSys) return;
-        const btn = document.createElement('button');
-        btn.textContent = nSys.name;
-        btn.className = 'mech-btn px-2 py-0.5 font-mono-tech text-[10px] bg-slate-900/90 text-cyan-200 border border-cyan-500/35 hover:border-cyan-300 hover:bg-cyan-500/20';
-        btn.onclick = () => selectSystem(nSys.id, true);
-        neighborsEl.appendChild(btn);
-      });
-
-      // Highlight Jump-Lanes connected to selected node
-      laneLinesGroup.children.forEach((line) => {
-        const isConnected = line.userData.a === systemId || line.userData.b === systemId;
-        line.material.opacity = isConnected ? 0.85 : line.userData.isCross ? 0.25 : 0.16;
-      });
-
-      // Update Label Selection Classes
-      labelElements.forEach((el, id) => {
-        if (id === systemId) el.classList.add('is-selected');
-        else el.classList.remove('is-selected');
-      });
-
-      // Move Selection Reticle & Fly Camera
-      selectionReticle.position.set(sys.pos[0], sys.pos[1], sys.pos[2]);
-      const scale = sys.isHub ? 2.2 : 1.1;
-      selectionReticle.scale.set(scale, scale, scale);
-
-      if (flyCamera) {
-        const targetVec = new THREE.Vector3(sys.pos[0], sys.pos[1], sys.pos[2]);
-        const offset = sys.isHub ? new THREE.Vector3(0, 46, 88) : new THREE.Vector3(14, 10, 22);
-        cameraTween.startPos.copy(camera.position);
-        cameraTween.endPos.copy(targetVec).add(offset);
-        cameraTween.startTarget.copy(controls.target);
-        cameraTween.endTarget.copy(targetVec);
-        cameraTween.progress = 0;
-        cameraTween.active = true;
-      }
-
-      renderTree();
-    }
-
-    function applySectorFilter(sectorKey) {
-      uiState.sectorFilter = sectorKey;
-      uiState.currentPage = 1;
-
-      // Sync top pill buttons & left dropdown
-      document.querySelectorAll('.sector-pill').forEach((btn) => {
-        if (btn.dataset.sector === sectorKey) {
-          btn.classList.add('bg-cyan-500/30', 'text-white', 'border-cyan-400');
-        } else {
-          btn.classList.remove('bg-cyan-500/30', 'text-white', 'border-cyan-400');
-        }
-      });
-      document.getElementById('tree-sector-select').value = sectorKey;
-
-      // Dim non-matching 3D nodes
-      starMeshes.forEach((mesh, id) => {
-        const sys = SYSTEM_MAP.get(id);
-        const visible = sectorKey === 'ALL' || sys.sector === sectorKey || sys.isHub;
-        mesh.material.opacity = visible ? 1.0 : 0.22;
-        mesh.material.transparent = !visible;
-      });
-
-      renderTree();
-    }
-
-    function updateProjectedLabels() {
-      const tempV = new THREE.Vector3();
-      starMeshes.forEach((mesh, id) => {
-        const lbl = labelElements.get(id);
-        const sys = SYSTEM_MAP.get(id);
-        if (!lbl || !sys) return;
-
-        const sectorAllowed = uiState.sectorFilter === 'ALL' || sys.sector === uiState.sectorFilter || sys.isHub;
-        if (!uiState.showLabels || !sectorAllowed) {
-          lbl.style.display = 'none';
-          return;
-        }
-
-        mesh.getWorldPosition(tempV);
-        tempV.project(camera);
-
-        // Hide if behind camera
-        if (tempV.z > 1) {
-          lbl.style.display = 'none';
-          return;
-        }
-
-        const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
-        const y = (-(tempV.y * 0.5) + 0.5) * window.innerHeight;
-        lbl.style.display = 'block';
-        lbl.style.left = `${x}px`;
-        lbl.style.top = `${y}px`;
-      });
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      const t = performance.now() * 0.001;
-      if (hubGroup) {
-        hubGroup.children[0].rotation.y = t * 0.55;
-        hubGroup.children[1].rotation.y = -t * 0.35;
-        gimbalRing1.rotation.z = t * 0.6;
-        gimbalRing1.rotation.x = Math.sin(t * 0.4) * 0.5;
-        gimbalRing2.rotation.y = -t * 0.7;
-      }
-
-      if (selectionReticle) {
-        selectionReticle.lookAt(camera.position);
-        selectionReticle.rotation.z = t * 1.2;
-      }
-
-      // Rotate satellite octahedrons gently
-      starMeshes.forEach((mesh, id) => {
-        if (id !== 'AVIS-DATALAKE') {
-          mesh.rotation.y = t * 0.8;
-        }
-      });
-
-      if (cameraTween.active) {
-        cameraTween.progress += 0.045;
-        const ease = 1 - Math.pow(1 - Math.min(1, cameraTween.progress), 3);
-        camera.position.lerpVectors(cameraTween.startPos, cameraTween.endPos, ease);
-        controls.target.lerpVectors(cameraTween.startTarget, cameraTween.endTarget, ease);
-        if (cameraTween.progress >= 1) {
-          cameraTween.active = false;
-        }
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-      updateProjectedLabels();
-    }
-
-    // =========================================================================
-    // 5. EVENT BINDINGS & INITIALIZATION
-    // =========================================================================
-    window.addEventListener('DOMContentLoaded', () => {
-      initThreeScene();
-      selectSystem('AVIS-DATALAKE', false);
-      renderTree();
-      animate();
-
-      // Top Sector Filter Pills
-      document.querySelectorAll('.sector-pill').forEach((btn) => {
-        btn.addEventListener('click', () => applySectorFilter(btn.dataset.sector));
-      });
-
-      // Left Drawer Controls
-      document.getElementById('tree-search').addEventListener('input', (e) => {
-        uiState.searchQuery = e.target.value;
-        uiState.currentPage = 1;
-        renderTree();
-      });
-
-      document.getElementById('tree-sector-select').addEventListener('change', (e) => {
-        applySectorFilter(e.target.value);
-      });
-
-      document.getElementById('page-size-select').addEventListener('change', (e) => {
-        uiState.pageSize = parseInt(e.target.value, 10) || 14;
-        uiState.currentPage = 1;
-        renderTree();
-      });
-
-      document.getElementById('btn-prev-page').addEventListener('click', () => {
-        if (uiState.currentPage > 1) {
-          uiState.currentPage--;
-          renderTree();
-        }
-      });
-
-      document.getElementById('btn-next-page').addEventListener('click', () => {
-        uiState.currentPage++;
-        renderTree();
-      });
-
-      document.getElementById('btn-expand-all').addEventListener('click', () => {
-        RAW_SYSTEMS.forEach((s) => expandedNodes.add(s.id));
-        renderTree();
-      });
-
-      document.getElementById('btn-collapse-all').addEventListener('click', () => {
-        expandedNodes.clear();
-        uiState.currentPage = 1;
-        renderTree();
-      });
-
-      // Live GitHub Tree Sync Button
-      document.getElementById('btn-sync-live').addEventListener('click', () => {
-        fetchLiveRepoTree(uiState.selectedId);
-      });
-
-      // Drawer Visibility Toggles
-      const leftDrawer = document.getElementById('left-drawer');
-      const rightDrawer = document.getElementById('right-drawer');
-      document.getElementById('btn-toggle-left').addEventListener('click', () => {
-        leftDrawer.classList.toggle('-translate-x-[120%]');
-      });
-      document.getElementById('btn-toggle-right').addEventListener('click', () => {
-        rightDrawer.classList.toggle('translate-x-[120%]');
-      });
-
-      // Bottom Tactical Dock Controls
-      document.getElementById('btn-reset-cam').addEventListener('click', () => {
-        selectSystem('AVIS-DATALAKE', true);
-      });
-
-      document.getElementById('btn-toggle-labels').addEventListener('click', (e) => {
-        uiState.showLabels = !uiState.showLabels;
-        e.target.textContent = `LABELS: ${uiState.showLabels ? 'ON' : 'OFF'}`;
-      });
-
-      document.getElementById('btn-toggle-lanes').addEventListener('click', (e) => {
-        uiState.showLanes = !uiState.showLanes;
-        laneLinesGroup.visible = uiState.showLanes;
-        e.target.textContent = `JUMP-LANES: ${uiState.showLanes ? 'ON' : 'OFF'}`;
-      });
-
-      document.getElementById('btn-toggle-orbit').addEventListener('click', (e) => {
-        uiState.autoOrbit = !uiState.autoOrbit;
-        controls.autoRotate = uiState.autoOrbit;
-        e.target.textContent = `AUTO-ORBIT: ${uiState.autoOrbit ? 'ON' : 'OFF'}`;
-      });
-
-      // Modal Pop-Up Event Listeners
-      document.getElementById('modal-tab-primary').addEventListener('click', () => {
-        modalState.viewMode = 'primary';
-        renderModalContent();
-      });
-      document.getElementById('modal-tab-raw').addEventListener('click', () => {
-        modalState.viewMode = 'raw';
-        renderModalContent();
-      });
-      document.getElementById('modal-close-btn').addEventListener('click', closeFileViewerModal);
-      document.getElementById('file-viewer-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'file-viewer-modal') closeFileViewerModal();
-      });
-
-      // Keyboard Shortcuts ([ / ] Pagination & ESC Overview/Close)
-      window.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-        if (e.key === '[') {
-          if (uiState.currentPage > 1) {
-            uiState.currentPage--;
-            renderTree();
-          }
-        } else if (e.key === ']') {
-          uiState.currentPage++;
-          renderTree();
-        } else if (e.key === 'Escape') {
-          const modal = document.getElementById('file-viewer-modal');
-          if (!modal.classList.contains('hidden')) {
-            closeFileViewerModal();
-          } else {
-            applySectorFilter('ALL');
-            selectSystem('AVIS-DATALAKE', true);
-          }
-        }
-      });
+    const mat = new THREE.MeshStandardMaterial({
+      color: sys.sector.hex,
+      emissive: sys.sector.hex,
+      emissiveIntensity: isRoot ? 0.8 : 0.55,
+      roughness: 0.25,
+      metalness: 0.75
     });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(...sys.pos);
+    mesh.userData = { systemId: sys.id };
+    nodesGroup.add(mesh);
+    starMeshes.set(sys.id, mesh);
+
+    if (labelsLayer && idx < 45) {
+      const lbl = document.createElement("div");
+      lbl.textContent = sys.name;
+      lbl.className = `star-label ${isRoot ? "is-hub" : ""}`;
+      lbl.style.color = sys.sector.color;
+      lbl.onclick = (e) => {
+        e.stopPropagation();
+        selectSystem(sys.id, true);
+      };
+      labelsLayer.appendChild(lbl);
+      labelElements.set(sys.id, lbl);
+    }
+  });
+
+  liveState.lanes.forEach((lane) => {
+    const a = liveState.systemMap.get(lane.a);
+    const b = liveState.systemMap.get(lane.b);
+    if (!a || !b) return;
+    const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a.pos), new THREE.Vector3(...b.pos)]);
+    const mat = new THREE.LineBasicMaterial({ color: 0x7ce8ff, transparent: true, opacity: 0.22 });
+    lanesGroup.add(new THREE.Line(geo, mat));
+  });
+}
+
+function selectSystem(systemId, flyCamera = true) {
+  const sys = liveState.systemMap.get(systemId);
+  if (!sys) return;
+  liveState.selectedId = systemId;
+
+  const repoForQuery = sys.kind === "repo" ? sys.name : ROOT_REPO;
+  setIndexQuery(repoForQuery);
+
+  document.getElementById("hud-title").textContent = sys.name;
+  document.getElementById("hud-mode-badge").textContent = `${sys.mode} • ${sys.kind.toUpperCase()}`;
+  document.getElementById("hud-sector").textContent = sys.sector.label;
+  document.getElementById("hud-sector").style.color = sys.sector.color;
+  document.getElementById("hud-desc").textContent = sys.path;
+  document.getElementById("hud-path").textContent = sys.path;
+  document.getElementById("hud-coords").textContent = `X:${sys.pos[0]} | Y:${sys.pos[1]} | Z:${sys.pos[2]}`;
+
+  const targetRepoUrl = `https://github.com/${OWNER}/${encodeURIComponent(repoForQuery)}`;
+  document.getElementById("hud-link-repo").href = targetRepoUrl;
+
+  document.getElementById("hud-btn-index").onclick = () => {
+    const htmlMatch = liveState.rawTree.find((t) => classifyKind(t) === "file" && isHtmlPath(t.path));
+    openFileViewerModal(htmlMatch ? htmlMatch.path : sys.path);
+  };
+
+  document.getElementById("hud-btn-readme").onclick = () => {
+    const mdMatch = liveState.rawTree.find((t) => classifyKind(t) === "file" && isMarkdownPath(t.path));
+    openFileViewerModal(mdMatch ? mdMatch.path : sys.path);
+  };
+
+  const neighborsEl = document.getElementById("hud-neighbors");
+  neighborsEl.innerHTML = "";
+  const neighborIds = Array.from(sys.neighbors);
+  document.getElementById("hud-neighbor-count").textContent = `${neighborIds.length} LINKS`;
+  neighborIds.forEach((nId) => {
+    const nSys = liveState.systemMap.get(nId);
+    if (!nSys) return;
+    const btn = document.createElement("button");
+    btn.textContent = nSys.name;
+    btn.className = "mech-btn px-2 py-0.5 font-mono-tech text-[10px] bg-slate-900/90 text-cyan-200 border border-cyan-500/35 hover:border-cyan-300";
+    btn.onclick = () => selectSystem(nSys.id, true);
+    neighborsEl.appendChild(btn);
+  });
+
+  labelElements.forEach((el, id) => el.classList.toggle("is-selected", id === systemId));
+
+  if (selectionReticle) {
+    selectionReticle.position.set(...sys.pos);
+  }
+
+  if (flyCamera && camera && controls) {
+    const targetVec = new THREE.Vector3(...sys.pos);
+    cameraTween.startPos.copy(camera.position);
+    cameraTween.endPos.copy(targetVec).add(new THREE.Vector3(14, 10, 22));
+    cameraTween.startTarget.copy(controls.target);
+    cameraTween.endTarget.copy(targetVec);
+    cameraTween.progress = 0;
+    cameraTween.active = true;
+  }
+
+  renderTree();
+}
+
+function applySectorFilter(sectorKey) {
+  liveState.sectorFilter = sectorKey;
+  liveState.currentPage = 1;
+  document.querySelectorAll(".sector-pill").forEach((btn) => {
+    btn.classList.toggle("bg-cyan-500/30", btn.dataset.sector === sectorKey);
+  });
+  const sel = document.getElementById("tree-sector-select");
+  if (sel) sel.value = sectorKey;
+  renderTree();
+}
+
+function updateProjectedLabels() {
+  const tempV = new THREE.Vector3();
+  labelElements.forEach((lbl, id) => {
+    const mesh = starMeshes.get(id);
+    if (!mesh) return;
+    if (!liveState.showLabels) {
+      lbl.style.display = "none";
+      return;
+    }
+    mesh.getWorldPosition(tempV);
+    tempV.project(camera);
+    if (tempV.z > 1) {
+      lbl.style.display = "none";
+      return;
+    }
+    lbl.style.display = "block";
+    lbl.style.left = `${(tempV.x * 0.5 + 0.5) * window.innerWidth}px`;
+    lbl.style.top = `${(-(tempV.y * 0.5) + 0.5) * window.innerHeight}px`;
+  });
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = performance.now() * 0.001;
+
+  if (selectionReticle && camera) {
+    selectionReticle.lookAt(camera.position);
+    selectionReticle.rotation.z = t * 1.2;
+  }
+
+  if (cameraTween.active && camera && controls) {
+    cameraTween.progress += 0.045;
+    const ease = 1 - Math.pow(1 - Math.min(1, cameraTween.progress), 3);
+    camera.position.lerpVectors(cameraTween.startPos, cameraTween.endPos, ease);
+    controls.target.lerpVectors(cameraTween.startTarget, cameraTween.endTarget, ease);
+    if (cameraTween.progress >= 1) cameraTween.active = false;
+  }
+
+  if (controls) controls.update();
+  if (renderer && scene && camera) renderer.render(scene, camera);
+  updateProjectedLabels();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  initThreeScene();
+  loadGitHubRepositoryData();
+  startMiniCron();
+  animate();
+
+  document.querySelectorAll(".sector-pill").forEach((btn) => {
+    btn.addEventListener("click", () => applySectorFilter(btn.dataset.sector));
+  });
+
+  document.getElementById("tree-search").addEventListener("input", (e) => {
+    liveState.searchQuery = e.target.value;
+    liveState.currentPage = 1;
+    renderTree();
+  });
+
+  document.getElementById("tree-sector-select").addEventListener("change", (e) => applySectorFilter(e.target.value));
+
+  document.getElementById("page-size-select").addEventListener("change", (e) => {
+    liveState.pageSize = parseInt(e.target.value, 10) || 14;
+    liveState.currentPage = 1;
+    renderTree();
+  });
+
+  document.getElementById("btn-prev-page").addEventListener("click", () => {
+    if (liveState.currentPage > 1) {
+      liveState.currentPage--;
+      renderTree();
+    }
+  });
+
+  document.getElementById("btn-next-page").addEventListener("click", () => {
+    liveState.currentPage++;
+    renderTree();
+  });
+
+  document.getElementById("btn-expand-all").addEventListener("click", () => {
+    liveState.systems.forEach((s) => liveState.expandedNodes.add(s.id));
+    renderTree();
+  });
+
+  document.getElementById("btn-collapse-all").addEventListener("click", () => {
+    liveState.expandedNodes.clear();
+    liveState.currentPage = 1;
+    renderTree();
+  });
+
+  document.getElementById("btn-sync-live").addEventListener("click", () => loadGitHubRepositoryData());
+
+  const leftDrawer = document.getElementById("left-drawer");
+  const rightDrawer = document.getElementById("right-drawer");
+  document.getElementById("btn-toggle-left").addEventListener("click", () => leftDrawer.classList.toggle("-translate-x-[120%]"));
+  document.getElementById("btn-toggle-right").addEventListener("click", () => rightDrawer.classList.toggle("translate-x-[120%]"));
+
+  document.getElementById("btn-reset-cam").addEventListener("click", () => selectSystem(ROOT_REPO, true));
+
+  document.getElementById("btn-toggle-labels").addEventListener("click", (e) => {
+    liveState.showLabels = !liveState.showLabels;
+    e.target.textContent = `LABELS: ${liveState.showLabels ? "ON" : "OFF"}`;
+  });
+
+  document.getElementById("btn-toggle-lanes").addEventListener("click", (e) => {
+    liveState.showLanes = !liveState.showLanes;
+    if (lanesGroup) lanesGroup.visible = liveState.showLanes;
+    e.target.textContent = `JUMP-LANES: ${liveState.showLanes ? "ON" : "OFF"}`;
+  });
+
+  document.getElementById("btn-toggle-orbit").addEventListener("click", (e) => {
+    liveState.autoOrbit = !liveState.autoOrbit;
+    if (controls) controls.autoRotate = liveState.autoOrbit;
+    e.target.textContent = `AUTO-ORBIT: ${liveState.autoOrbit ? "ON" : "OFF"}`;
+  });
+
+  document.getElementById("modal-tab-primary").addEventListener("click", () => {
+    modalState.viewMode = "primary";
+    renderModalContent();
+  });
+
+  document.getElementById("modal-tab-raw").addEventListener("click", () => {
+    modalState.viewMode = "raw";
+    renderModalContent();
+  });
+
+  document.getElementById("modal-close-btn").addEventListener("click", closeFileViewerModal);
+  document.getElementById("file-viewer-modal").addEventListener("click", (e) => {
+    if (e.target.id === "file-viewer-modal") closeFileViewerModal();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+    if (e.key === "[" && liveState.currentPage > 1) {
+      liveState.currentPage--;
+      renderTree();
+    } else if (e.key === "]") {
+      liveState.currentPage++;
+      renderTree();
+    } else if (e.key === "Escape") {
+      const modal = document.getElementById("file-viewer-modal");
+      if (!modal.classList.contains("hidden")) {
+        closeFileViewerModal();
+      } else {
+        applySectorFilter("ALL");
+        selectSystem(ROOT_REPO, true);
+      }
+    }
+  });
+});
