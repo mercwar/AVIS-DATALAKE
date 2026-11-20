@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F15"
+    VOLUME          : "15_XML_SITEMAPS_MONOTONIC_TIMERS_AND_SHELL_DROPS"
+    VERSION         : "2.4.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F14 (File 14)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:41:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_45_XML_SITEMAPS_AND_STRUCTURED_SCHEMAS::
+@FAULT_NODE [ERR-XML-001] {
+    DOMAIN          : "Recursive XML Sitemap & Event Manifest Generation (JOE-TRON / EV.4.*.xml)"
+    PHENOMENON      : "XML parser fatal entity errors, broken `<loc>` URLs with raw `&` or `<` characters, or >50,000-node sitemap rejection"
+    ROOT_CAUSE      : "Interpolating raw filesystem paths or query parameters into XML tags without entity escaping (`&amp;`, `&lt;`, `&gt;`, `&quot;`, `&apos;`), or exceeding XML sitemap protocol size/node limits."
+    INVARIANT_RULE  : "Escape all five XML predefined entities on every interpolated path/value, emit UTF-8 `<?xml version=\"1.0\" encoding=\"UTF-8\"?>` headers, and split sitemaps automatically before reaching 50,000 URLs or 50MB uncompressed."
+}
+
+::SECTION_46_MONOTONIC_TIMERS_AND_DELTA_STEPPING::
+@FAULT_NODE [ERR-TMR-001] {
+    DOMAIN          : "High-Resolution Performance Counters & Simulation Frame Stepping (QueryPerformanceCounter)"
+    PHENOMENON      : "Negative delta-time jumps on NTP clock sync, physics/animation explosion after window drag pauses, or 32-bit `GetTickCount()` 49.7-day wraparound"
+    ROOT_CAUSE      : "Using wall-clock `GetSystemTimeAsFileTime` or `GetTickCount()` for frame/poll intervals, or passing unclamped `dt` values into simulation loops."
+    INVARIANT_RULE  : "Compute intervals exclusively via monotonic `QueryPerformanceCounter` divided by `QueryPerformanceFrequency`, and clamp frame `dt` to a hard ceiling (e.g., `dt <= 0.1f`) to survive OS modal drag stalls."
+}
+
+::SECTION_47_SHELL_DRAG_DROP_AND_CLIPBOARD_HANDLES::
+@FAULT_NODE [ERR-SHL-001] {
+    DOMAIN          : "Win32 Drag-and-Drop Ingestion & Global Clipboard Memory (DragQueryFileW / GlobalLock)"
+    PHENOMENON      : "Truncated Unicode filenames, leaked `HDROP` handles, or heap corruption from writing directly to `OpenClipboard` pointers"
+    ROOT_CAUSE      : "Using ANSI `DragQueryFileA` on Unicode paths, omitting `DragFinish(hDrop)`, or calling `GlobalFree()` on handles already owned by `SetClipboardData()`."
+    INVARIANT_RULE  : "Query required buffer length via `DragQueryFileW(hDrop, i, NULL, 0)`, copy paths into wide buffers, always call `DragFinish(hDrop)`, and transfer `GMEM_MOVEABLE` ownership cleanly to `SetClipboardData` without freeing post-handoff."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F15 {
+    47. XML_ENTITY_PURE    : Escape all 5 XML entities in `<loc>` and manifest nodes and enforce 50k-URL partition bounds.
+    48. MONOTONIC_DT_CLAMP : Drive timers via `QueryPerformanceCounter` and clamp delta-time spikes across modal window stalls.
+    49. HDROP_CLIP_HYGIENE : Use wide `DragQueryFileW` with mandatory `DragFinish()` and respect `GMEM_MOVEABLE` clipboard ownership transfer.
+}
+::AVIS_MANIFEST_END::
