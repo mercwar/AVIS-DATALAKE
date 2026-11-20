@@ -1,0 +1,51 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F05"
+    VOLUME          : "05_THREADING_IPC_AND_CRYPTOGRAPHIC_INTEGRITY"
+    VERSION         : "1.4.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F04 (File 04)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:35:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_15_MULTITHREADING_AND_SYNCHRONIZATION::
+@FAULT_NODE [ERR-THR-001] {
+    DOMAIN          : "Worker Thread Pools, Critical Sections & Win32 GUI Message Pumps (firegem_console / WndProc)"
+    PHENOMENON      : "AB-BA lock-order deadlocks, UI thread freeze, or use-after-free on thread-transferred heap buffers"
+    ROOT_CAUSE      : "Acquiring nested locks in inconsistent order across threads, blocking inside `WndProc`, or freeing buffers before worker threads finish reading."
+    INVARIANT_RULE  : "Enforce strict global lock hierarchy, offload all I/O and inference out of `WndProc` via `PostMessageW`, and transfer explicit buffer ownership with deterministic cleanup on worker exit."
+}
+
+@FAULT_NODE [ERR-THR-002] {
+    DOMAIN          : "Thread-Local Encoding & Wide-Char Conversion Lifecycles (MultiByteToWideChar / WideCharToMultiByte)"
+    PHENOMENON      : "Heap exhaustion leaks or off-by-one null truncation during UTF-8 <-> UTF-16 conversions"
+    ROOT_CAUSE      : "Allocating conversion buffers inside high-frequency loops without matching `free()`/`HeapFree()` on early return paths, or omitting space for the null terminator."
+    INVARIANT_RULE  : "Query exact required length with `cbMultiByte = -1`, validate `len > 0`, allocate `len * sizeof(wchar_t)`, and route all exit paths through a single cleanup label."
+}
+
+::SECTION_16_IPC_AND_NAMED_PIPES::
+@FAULT_NODE [ERR-IPC-001] {
+    DOMAIN          : "Windows Named Pipes & Shared Memory Channels (dc2pipe / Local Agent Bridges)"
+    PHENOMENON      : "Message framing coalescence, `ERROR_BROKEN_PIPE` crash loops, or unauthorized cross-session pipe hijacking"
+    ROOT_CAUSE      : "Reading raw byte streams without length-prefixed frames, treating broken-pipe EOF as a fatal exception, or creating pipes without `FILE_FLAG_FIRST_PIPE_INSTANCE`."
+    INVARIANT_RULE  : "Prepend a 4-byte `uint32_t` payload length header to every IPC frame, enforce a `MAX_FRAME_SIZE` cap, create servers with `FILE_FLAG_FIRST_PIPE_INSTANCE`, and recycle disconnected pipe instances cleanly."
+}
+
+::SECTION_17_CRYPTOGRAPHIC_INTEGRITY_AND_HASHING::
+@FAULT_NODE [ERR-CRY-001] {
+    DOMAIN          : "Artifact Digesting, Manifest Verification & Entropy Generation (Windows CNG / BCrypt)"
+    PHENOMENON      : "Non-deterministic hash mismatches, weak PRNG collisions, or unclosed `BCRYPT_ALG_HANDLE` / `BCRYPT_HASH_HANDLE` leaks"
+    ROOT_CAUSE      : "Using legacy `rand()`/`srand(time(NULL))` for tokens/IDs, hashing files in text mode (`\"r\"`) instead of binary (`\"rb\"`), or leaking CNG handles."
+    INVARIANT_RULE  : "Generate all nonces/IDs via `BCryptGenRandom(..., BCRYPT_USE_SYSTEM_PREFERRED_RNG)`, stream files strictly in binary mode (`\"rb\"`), and destroy CNG handles deterministically."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F05 {
+    16. LOCK_AND_OWNERSHIP : Enforce strict lock ordering, non-blocking `WndProc` handlers, and single-exit cleanup for wide-char allocations.
+    17. IPC_FRAME_GUARD    : Length-prefix all Named Pipe messages, cap max frame size, and bind server instances with `FILE_FLAG_FIRST_PIPE_INSTANCE`.
+    18. BINARY_CRYPTO_PURE : Use Windows CNG (`BCrypt`) for all hashing/RNG and open hashed artifacts strictly in binary mode.
+}
+::AVIS_MANIFEST_END::
