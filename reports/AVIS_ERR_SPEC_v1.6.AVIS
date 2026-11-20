@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F07"
+    VOLUME          : "07_SERVICES_COM_WMI_AND_DEVICE_IO"
+    VERSION         : "1.6.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F06 (File 06)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:36:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_21_WINDOWS_SERVICES_AND_SCM::
+@FAULT_NODE [ERR-SVC-001] {
+    DOMAIN          : "Windows Service Control Manager & Background Daemons (StartServiceCtrlDispatcherW)"
+    PHENOMENON      : "Error 1053 (service did not respond in a timely fashion) or `ERROR_FAILED_SERVICE_CONTROLLER_CONNECT` (1063)"
+    ROOT_CAUSE      : "Running heavy initialization inside `ServiceMain` before reporting `SERVICE_RUNNING`, or calling `StartServiceCtrlDispatcherW` when launched interactively from CMD."
+    INVARIANT_RULE  : "Report `SERVICE_START_PENDING` with incremental `dwCheckPoint` hints, transition to `SERVICE_RUNNING` prior to worker loop entry, and support a `--console` CLI flag for interactive execution."
+}
+
+::SECTION_22_COM_AND_WMI_TELEMETRY::
+@FAULT_NODE [ERR-COM-001] {
+    DOMAIN          : "COM Apartment Initialization & WMI System Queries (CoInitializeEx / IWbemServices)"
+    PHENOMENON      : "`RPC_E_CHANGED_MODE` (0x80010106) failures, `BSTR` / `VARIANT` memory leaks, or silent null-pointer crashes on `IWbemClassObject::Get`"
+    ROOT_CAUSE      : "Mixing `COINIT_APARTMENTTHREADED` and `COINIT_MULTITHREADED` on the same thread, omitting `VariantClear()`, or reading `vtVal` without checking `vt != VT_NULL && vt != VT_EMPTY`."
+    INVARIANT_RULE  : "Initialize COM once per thread with `COINIT_MULTITHREADED`, guard every `VARIANT` extraction by checking `FAILED(hr)` and `vt` type tags, and release all interfaces in reverse acquisition order."
+}
+
+::SECTION_23_SERIAL_AND_DEVICE_IO::
+@FAULT_NODE [ERR-DEV-001] {
+    DOMAIN          : "Serial COM Ports & DeviceIoControl Hardware Handles (\\\\.\\COMx)"
+    PHENOMENON      : "`CreateFileW` failure on COM10+, indefinite `ReadFile` blocks, or corrupted baud/parity framing"
+    ROOT_CAUSE      : "Opening `COM10` without the `\\\\.\\` Win32 device namespace prefix, or failing to configure `COMMTIMEOUTS` and `DCB` structures."
+    INVARIANT_RULE  : "Format all port paths as `\\\\.\\COM%u`, configure explicit `COMMTIMEOUTS` (`ReadIntervalTimeout`, `ReadTotalTimeoutConstant`), and purge stale RX/TX buffers via `PurgeComm` upon open."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F07 {
+    23. SCM_STATE_CADENCE  : Emit `SERVICE_START_PENDING` checkpoints, transition to `SERVICE_RUNNING` early, and provide `--console` fallback.
+    24. COM_VARIANT_GUARD  : Enforce consistent MTA initialization, validate `VARIANT.vt` before dereferencing, and invoke `VariantClear()`.
+    25. DEVICE_NAMESPACE   : Prefix hardware handles with `\\\\.\\` and enforce deterministic `COMMTIMEOUTS` prior to I/O.
+}
+::AVIS_MANIFEST_END::
