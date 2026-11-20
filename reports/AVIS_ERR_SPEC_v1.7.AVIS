@@ -1,0 +1,51 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F08"
+    VOLUME          : "08_WEBVIEW2_BUILD_TOOLCHAINS_AND_PS_BRIDGES"
+    VERSION         : "1.7.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F07 (File 07)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:36:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_24_WEBVIEW2_HOST_AND_BRIDGE::
+@FAULT_NODE [ERR-WV2-001] {
+    DOMAIN          : "WebView2 C/C++ Host Environment & Navigation Lifecycle (headless.c / NavCompleted_Invoke)"
+    PHENOMENON      : "Null `ICoreWebView2Controller` pointer, `E_ACCESSDENIED` on user data folder, or missed `NavigationCompleted` callbacks"
+    ROOT_CAUSE      : "Invoking `Navigate()` before async environment/controller creation completes, or sharing a single `userDataFolder` across concurrent elevated/non-elevated processes."
+    INVARIANT_RULE  : "Chain `Navigate()` strictly inside `CreateCoreWebView2ControllerCompleted`, isolate `userDataFolder` per process/profile path, and verify `IsSuccess` inside `NavigationCompleted` before script injection."
+}
+
+@FAULT_NODE [ERR-WV2-002] {
+    DOMAIN          : "Host-to-WebView2 JSON Message Bridge (PostWebMessageAsJson / WebMessageReceived)"
+    PHENOMENON      : "Silent message drop or `E_INVALIDARG` when dispatching dynamic telemetry from C to JavaScript"
+    ROOT_CAUSE      : "Passing unvalidated or improperly escaped UTF-16 strings to `PostWebMessageAsJson`, or omitting `CoTaskMemFree()` on strings returned by `TryGetWebMessageAsString`."
+    INVARIANT_RULE  : "Serialize outbound payloads through a verified JSON builder (`cJSON_PrintUnformatted`) converted cleanly to UTF-16, and free all `[out]` LPWSTR WebView2 pointers via `CoTaskMemFree()`."
+}
+
+::SECTION_25_BUILD_TOOLCHAINS_AND_LINKER_ABI::
+@FAULT_NODE [ERR-BLD-001] {
+    DOMAIN          : "MSVC / UCRT64 Compilation, NuGet Dependencies & Subsystem Entry Points"
+    PHENOMENON      : "`LNK2019` unresolved external symbol (`WinMain` vs `main`), CRT heap mismatch crashes, or missing `WebView2Loader.dll`"
+    ROOT_CAUSE      : "Mixing `/MT` static CRT with `/MD` DLL dependencies, mismatching `/SUBSYSTEM:CONSOLE` vs `/SUBSYSTEM:WINDOWS`, or omitting NuGet native `x64` import libs."
+    INVARIANT_RULE  : "Align `/MD` CRT linkage across host and DLLs, match entry points (`wmain` for console, `wWinMain` for GUI), and verify native `WebView2LoaderStatic.lib` or co-located `WebView2Loader.dll` in output directory."
+}
+
+::SECTION_26_POWERSHELL_AND_COM_SCRIPTLETS::
+@FAULT_NODE [ERR-PS-001] {
+    DOMAIN          : "PowerShell Host Wrappers & Windows Script Components (.wsc / headless_ps.c)"
+    PHENOMENON      : "`regsvr32` class registration failure, `New-Object` null reference, or `0x80040154` (Class not registered)"
+    ROOT_CAUSE      : "Attempting system-wide registry registration of `.wsc` components without elevation or across mismatched 32/64-bit PowerShell hosts."
+    INVARIANT_RULE  : "Bind `.wsc` scriptlets directly via file moniker (`[Microsoft.VisualBasic.Interaction]::GetObject(\"script:C:\\full\\path\\comp.wsc\")`) without registry mutation, and enforce `$ErrorActionPreference = 'Stop'`."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F08 {
+    26. WV2_ASYNC_CHAIN    : Gate WebView2 navigation and JS injection behind async controller and navigation completion callbacks; free all `CoTaskMem` strings.
+    27. CRT_SUBSYSTEM_SYNC : Match `/MD` runtime flags, subsystem entry points, and `x64` import libraries across build scripts.
+    28. MONIKER_BINDING    : Instantiate `.wsc` components via direct `script:` monikers instead of `regsvr32` registry writes.
+}
+::AVIS_MANIFEST_END::
