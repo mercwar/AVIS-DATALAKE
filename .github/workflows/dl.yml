@@ -16,12 +16,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Link all mercwar repositories and forks
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "Error: GH_PAT secret is missing."
+            exit 1
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@://github.com"
           git config --global url."https://x-access-token:${GH_TOKEN}@://github.com".insteadOf "https://://github.com"
@@ -41,7 +46,7 @@ jobs:
           git submodule sync --recursive
           git submodule update --init --recursive --remote || true
 
-          # Auto-generate _config.yml excluding all submodule folders so Jekyll never crashes on broken symlinks
+          # Auto-exclude all submodule folders from Jekyll so GitHub Pages never crashes on symlinks
           {
             echo "exclude:"
             echo "  - .github/"
@@ -52,5 +57,5 @@ jobs:
           } > _config.yml
 
           git add -A
-          git commit -m "Link mercwar repositories into AVIS-DATALAKE and update Jekyll excludes" || exit 0
+          git commit -m "Link mercwar repositories into AVIS-DATALAKE" || exit 0
           git push
