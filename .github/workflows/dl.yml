@@ -129,16 +129,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout updated main branch (skip submodules)
+      - name: Checkout root files only (ignore submodules)
         uses: actions/checkout@v4
         with:
           ref: main
           submodules: false
 
-      - name: Remove empty submodule stub folders before packaging
+      - name: Ignore submodule stubs in deploy artifact
         run: |
           if [ -f .gitmodules ]; then
             git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | xargs -r rm -rf
+            rm -f .gitmodules
           fi
 
       - name: Setup Pages
