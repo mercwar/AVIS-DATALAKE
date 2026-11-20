@@ -1,0 +1,51 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F10"
+    VOLUME          : "10_DIRECTX12_REGISTRY_DEPLOYMENT_AND_SWAPCHAIN_SYNC"
+    VERSION         : "1.9.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F09 (File 09)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:38:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_30_DIRECTX12_AND_GPU_SYNCHRONIZATION::
+@FAULT_NODE [ERR-DX12-001] {
+    DOMAIN          : "DirectX 12 Command Allocators, Fences & Resource State Barriers (ID3D12GraphicsCommandList)"
+    PHENOMENON      : "`DXGI_ERROR_DEVICE_REMOVED` (0x887A0005), command allocator reset race conditions, or GPU page faults"
+    ROOT_CAUSE      : "Calling `ID3D12CommandAllocator::Reset()` while the GPU command queue is still executing commands from that allocator, or transitioning resources across incompatible states."
+    INVARIANT_RULE  : "Track per-frame `ID3D12Fence` values, wait on `GetCompletedValue() < frameFenceValue` via `SetEventOnCompletion` before resetting allocators, and validate `D3D12_RESOURCE_BARRIER` before/after state transitions."
+}
+
+@FAULT_NODE [ERR-DX12-002] {
+    DOMAIN          : "Descriptor Heap Bounds & Root Signature Slot Alignment"
+    PHENOMENON      : "Silent rendering corruption or `D3D12 ERROR` debug layer faults on CBV/SRV/UAV bindings"
+    ROOT_CAUSE      : "Exceeding `NumDescriptors` capacity when incrementing `CD3DX12_CPU_DESCRIPTOR_HANDLE` offsets or binding root parameter indices out of order."
+    INVARIANT_RULE  : "Query `GetDescriptorHandleIncrementSize` per heap type at init, enforce hard slot capacity bounds checks, and match root signature parameter indices strictly to HLSL `register()` declarations."
+}
+
+::SECTION_31_REGISTRY_WRAPPERS_AND_NATIVE_DEPLOYMENT::
+@FAULT_NODE [ERR-REG-001] {
+    DOMAIN          : "Pure WinAPI / reg.exe Installer Wrappers & File Association Deployment"
+    PHENOMENON      : "`ERROR_ACCESS_DENIED` (Exit Code 1), partial HKCU/HKLM split registrations, or unrefreshed Explorer shell icons"
+    ROOT_CAUSE      : "Writing to `HKLM` without checking elevated token privileges, omitting `/reg:64` on 64-bit systems, or failing to notify Windows Explorer after `.AVIS` / `.cyborg` association writes."
+    INVARIANT_RULE  : "Default per-user associations to `HKCU\\Software\\Classes`, pass explicit `/reg:64 /f` flags to `reg.exe`, and broadcast `SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL)` upon completion."
+}
+
+::SECTION_32_WINDOW_PRESENTATION_AND_FLICKER_ELIMINATION::
+@FAULT_NODE [ERR-VSYNC-001] {
+    DOMAIN          : "Win32 Window Class Background Erasure & DXGI Flip-Model Swap Chains"
+    PHENOMENON      : "Severe visual flashing/flickering during window resize or high-frequency frame updates"
+    ROOT_CAUSE      : "Leaving a non-null `hbrBackground` on `WNDCLASSEXW` (causing GDI `WM_ERASEBKGND` white/black flashes before GPU present) or using legacy `DXGI_SWAP_EFFECT_DISCARD`."
+    INVARIANT_RULE  : "Set `wc.hbrBackground = NULL`, intercept `WM_ERASEBKGND` returning `1`, and configure swap chains with `DXGI_SWAP_EFFECT_FLIP_DISCARD` and explicit `Present(1, 0)` VSync cadence."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F10 {
+    32. DX12_FENCE_SYNC    : Gate `CommandAllocator::Reset()` behind completed `ID3D12Fence` signals and validate resource barrier state transitions.
+    33. REG64_SHELL_NOTIFY : Scope user associations to `HKCU\\Software\\Classes`, enforce `/reg:64 /f`, and emit `SHChangeNotify(SHCNE_ASSOCCHANGED, ...)`.
+    34. ZERO_ERASE_PRESENT : Suppress GDI `WM_ERASEBKGND` erasure (`hbrBackground = NULL`) and use `DXGI_SWAP_EFFECT_FLIP_DISCARD`.
+}
+::AVIS_MANIFEST_END::
