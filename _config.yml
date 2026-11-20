@@ -2,13 +2,13 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
-  - Sentinel/
-  - robo-knight-inventory/
   - Cyborg/
-  - dc2php/
-  - Mercwar-AI/
-  - Navigator-MSVC-Academy/
   - NEXUS/
+  - Navigator-MSVC-Academy/
+  - Mercwar-AI/
+  - robo-knight-inventory/
+  - dc2php/
+  - Sentinel/
   - Dark-Com-2/
   - Constellation/
   - bin/
