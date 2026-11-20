@@ -24,6 +24,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
           gh repo list mercwar \
             --limit 200 \
@@ -31,11 +32,14 @@ jobs:
             --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false) | "\(.name) \(.url) \(.defaultBranchRef.name)"' \
           | while read -r name url branch; do
               if [ -n "$branch" ] && [ "$branch" != "null" ]; then
-                git submodule add -f -b "$branch" "$url" "$name" || true
+                if ! git config -f .gitmodules --get "submodule.${name}.url" >/dev/null 2>&1; then
+                  git submodule add -f -b "$branch" "$url" "$name" || true
+                fi
               fi
             done
 
-          git submodule update --remote --merge || true
-          git add .gitmodules *
+          git submodule sync --recursive
+          git submodule update --init --recursive --remote || true
+          git add -A
           git commit -m "Link mercwar repositories into AVIS-DATALAKE" || exit 0
           git push
