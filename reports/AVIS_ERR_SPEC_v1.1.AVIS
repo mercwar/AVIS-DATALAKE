@@ -1,0 +1,59 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F03"
+    VOLUME          : "03_RUNTIME_SURFACE_INFERENCE_AND_RECOVERY"
+    VERSION         : "1.2.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F02 (File 02)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:33:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_09_DOM_AND_FRONTEND_SURFACES::
+@FAULT_NODE [ERR-UI-001] {
+    DOMAIN          : "Dynamic DOM Injection & Static Template Hydration (print.js / window.RRU_STATIC_TEMPLATES)"
+    PHENOMENON      : "XSS payload execution, broken event listeners, or unescaped HTML entity corruption during telemetry rendering"
+    ROOT_CAUSE      : "Assigning untrusted or raw log strings directly to `.innerHTML` instead of isolated text nodes."
+    INVARIANT_RULE  : "Hydrate text payloads strictly via `.textContent` or `document.createTextNode()`. Sanitize structural HTML nodes via explicit allowlists before insertion."
+}
+
+@FAULT_NODE [ERR-UI-002] {
+    DOMAIN          : "High-Frequency Telemetry Stream Rendering & Browser Main-Thread Lockup"
+    PHENOMENON      : "UI freeze or tab OOM crash when streaming thousands of AVIS events or file-crawl hits"
+    ROOT_CAUSE      : "Triggering synchronous DOM reflows on every incoming event packet without batching or node caps."
+    INVARIANT_RULE  : "Buffer incoming events into a queue, flush to DOM via `requestAnimationFrame()` using `DocumentFragment`, and enforce a rolling ring-buffer cap (e.g., max 1,000 active nodes)."
+}
+
+::SECTION_10_INFERENCE_AND_NATIVE_MODEL_WRAPPERS::
+@FAULT_NODE [ERR-INF-001] {
+    DOMAIN          : "GGUF / GGML Model Loading & Context Window Allocation (FireGem / Local LLM Bridges)"
+    PHENOMENON      : "Silent segmentation fault, VRAM/RAM OOM crash, or truncated context generation"
+    ROOT_CAUSE      : "Loading GGUF shards without verifying header magic bytes, tensor alignment, or available physical memory prior to `mmap` / allocation."
+    INVARIANT_RULE  : "Validate GGUF magic header (`0x46554747`), check available system/GPU memory against model tensor footprint + KV cache size, and cap `n_ctx` explicitly before initialization."
+}
+
+@FAULT_NODE [ERR-INF-002] {
+    DOMAIN          : "LLM Code Generation Output Extraction & Token Stop-Sequence Drift"
+    PHENOMENON      : "Trailing markdown fences, conversational filler, or unclosed code blocks breaking automated file writers"
+    ROOT_CAUSE      : "Writing raw LLM text streams directly to disk without stripping wrapper delimiters or verifying balanced syntax markers."
+    INVARIANT_RULE  : "Isolate payload via strict boundary markers (`::AVIS_MANIFEST_BEGIN::` / fenced block extraction), verify balanced braces/tags, and reject empty or truncated outputs prior to atomic disk commit."
+}
+
+::SECTION_11_AUTOMATED_RECOVERY_AND_GATE_ROUTING::
+@FAULT_NODE [ERR-REC-001] {
+    DOMAIN          : "Crashed Gate Resubmission & Retry Storm Prevention (AVIS-DATALAKE)"
+    PHENOMENON      : "Infinite resubmission loops or duplicate artifact collisions when a file triggers a crashed gate"
+    ROOT_CAUSE      : "Retrying failed submissions without incrementing auto-index counters, changing state hashes, or applying exponential backoff."
+    INVARIANT_RULE  : "Compute SHA-256 content digest before resubmission; halt automated retries after `MAX_RETRIES = 3` on identical fault signatures and route to deterministic quarantine with diagnostic trace."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F03 {
+    9.  DOM_ISOLATION      : Confirm all telemetry text uses `.textContent` and high-rate streams batch via `requestAnimationFrame`.
+    10. TENSOR_GUARD       : Verify GGUF magic bytes and memory headroom before initializing inference contexts.
+    11. OUTPUT_EXTRACTION  : Strip wrapper artifacts and validate structural balance before writing generated code to disk.
+    12. RETRY_CIRCUIT      : Enforce SHA-256 deduplication and hard retry caps (`<= 3`) on crashed-gate artifacts.
+}
+::AVIS_MANIFEST_END::
