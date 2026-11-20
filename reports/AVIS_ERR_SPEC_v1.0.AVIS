@@ -1,0 +1,73 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11"
+    VERSION         : "1.0.0-MERCWAR-CORE"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:29:00-05:00"
+    PURPOSE         : "Deterministic pre-generation fault prevention and scientific root-cause indexing."
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_01_MEMORY_AND_NATIVE_C::
+@FAULT_NODE [ERR-C-001] {
+    DOMAIN          : "C / C++ Native Runtimes (rc_cmd.c, FireGem, LLMA wrappers)"
+    PHENOMENON      : "snprintf buffer truncation, format specifier type mismatch, or uninitialized stack reads"
+    ROOT_CAUSE      : "Passing mismatched integer widths (%d vs %zu/%lld) or failing to verify return value >= buffer_size."
+    INVARIANT_RULE  : "Always validate return `n < 0 || (size_t)n >= sizeof(buf)`. Explicitly cast size_t/uint64_t to match format specifiers."
+}
+
+@FAULT_NODE [ERR-C-002] {
+    DOMAIN          : "String Tokenization & Payload Builders (build_payload, validate_avis_payload)"
+    PHENOMENON      : "Destructive in-place string splitting or premature null-termination on multi-dot filenames"
+    ROOT_CAUSE      : "Using strtok() on shared buffers or scanning for first '.' instead of strrchr() when validating extensions (.cyborg, .quasar, .AVIS)."
+    INVARIANT_RULE  : "Isolate extension checks using `strrchr(path, '.')` on read-only pointers. Never mutate input path buffers during validation."
+}
+
+::SECTION_02_TELEMETRY_AND_SERIALIZATION::
+@FAULT_NODE [ERR-NET-001] {
+    DOMAIN          : "HTTP POST Ingress & JSON Encapsulation (dc2url -> avis.php)"
+    PHENOMENON      : "Malformed JSON payloads or dropped POST fields when transmitting raw HTML/CSS/code blocks"
+    ROOT_CAUSE      : "Unescaped double quotes, raw newlines, or unencoded '&' / '%' characters breaking multipart/form-data or application/json boundaries."
+    INVARIANT_RULE  : "Base64-encode raw HTML/CSS/source payloads prior to transport, or serialize strictly via native JSON encoders with UTF-8 enforcement."
+}
+
+@FAULT_NODE [ERR-NET-002] {
+    DOMAIN          : "PHP $_POST Telemetry & Namespace Routing"
+    PHENOMENON      : "Undefined array key warnings or silent flat-key collisions during namespace grouping"
+    ROOT_CAUSE      : "Assuming nested $_POST keys exist without `isset()` / `??` guards, or failing to verify `$_SERVER['REQUEST_METHOD'] === 'POST'`."
+    INVARIANT_RULE  : "Enforce strict ingress guards: verify content-type, validate top-level namespace keys before traversal, and return explicit HTTP 400/422 JSON error codes."
+}
+
+::SECTION_03_SHELL_AND_CLI_ORCHESTRATION::
+@FAULT_NODE [ERR-SH-001] {
+    DOMAIN          : "Windows CMD / PowerShell Argument Passing & Escaping"
+    PHENOMENON      : "Quote stripping, variable expansion collisions, or broken JSON strings in CLI invocations"
+    ROOT_CAUSE      : "CMD.exe treats `^`, `&`, `|`, and `\"` differently than PowerShell's parser, corrupting inline JSON payloads passed to binaries like dc2url."
+    INVARIANT_RULE  : "Pass complex JSON/HTML payloads via file-path reference (`@payload.json`) or stdin stream rather than inline CLI string arguments. Execute commands using explicit paths without manual `cd`."
+}
+
+@FAULT_NODE [ERR-SH-002] {
+    DOMAIN          : "Batch Script Argument Routing & Exit Code Propagation"
+    PHENOMENON      : "Silent failure continuation when a sub-process or compiler fails"
+    ROOT_CAUSE      : "Omitting `if %errorlevel% neq 0 exit /b %errorlevel%` or failing to quote `%~1` paths containing spaces."
+    INVARIANT_RULE  : "Quote all path expansions (`\"%~f1\"`) and trap non-zero exit codes immediately after every native binary invocation."
+}
+
+::SECTION_04_CONFIG_AND_PROTOCOL_INTEGRITY::
+@FAULT_NODE [ERR-CFG-001] {
+    DOMAIN          : "AVIS / Firelang / JSON Schema & Security Boundaries"
+    PHENOMENON      : "Credential exposure or schema drift between static templates and runtime parsers"
+    ROOT_CAUSE      : "Embedding database strings, API keys, or mock fallback values inside portable JSON/AVIS manifests."
+    INVARIANT_RULE  : "Zero credentials in JSON/AVIS files; inject secrets exclusively via runtime environment variables. Reject placeholder/mock data."
+}
+
+::PRE_GENERATION_VERIFICATION_GATE::
+@GATE_CHECK {
+    1. BOUNDARY_SAFETY    : Verify all buffers, array indices, and string slices have explicit bounds checks.
+    2. ESCAPE_INTEGRITY   : Confirm CLI, JSON, and HTTP transport layers isolate raw code/HTML from control delimiters.
+    3. DETERMINISTIC_FAIL : Ensure every error path emits a structured code, offending file/line, and non-zero exit status.
+    4. ZERO_ASSUMPTION    : Do not inject mock data, fake backups, or implicit directory changes.
+}
+::AVIS_MANIFEST_END::
