@@ -52,7 +52,3 @@ exclude:
   - CRON/
   - Robo-Knight-Gallery/
   - Robo-Knight-Demos/
-  - Darkstar/
-  - AI_PUB/
-  - AI_COPILOT_INSTALL/
-  - dc2win/
