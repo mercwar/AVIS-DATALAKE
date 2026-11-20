@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F12"
+    VOLUME          : "12_GITHUB_SYNC_LAYERED_UI_AND_MMAP_IO"
+    VERSION         : "2.1.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F11 (File 11)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:40:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_36_GITHUB_API_AND_DATALAKE_PUSH::
+@FAULT_NODE [ERR-GIT-001] {
+    DOMAIN          : "GitHub Contents API & Workflow Dispatch Synchronization (/dl/<year>/<month>/<day>/*.json)"
+    PHENOMENON      : "HTTP 409 Conflict (missing blob `sha`), HTTP 422 Unprocessable Entity (unencoded Base64), or HTTP 403 secondary rate-limit throttling"
+    ROOT_CAUSE      : "Issuing `PUT /repos/{owner}/{repo}/contents/{path}` to overwrite an existing file without fetching its current blob `sha` first, omitting `User-Agent` headers, or firing concurrent unthrottled commits."
+    INVARIANT_RULE  : "Query `GET /contents/{path}` to capture `sha` prior to updates, Base64-encode payloads with zero line-wrapping, include an explicit `User-Agent` and `X-GitHub-Api-Version: 2022-11-28` header, and serialize commits sequentially."
+}
+
+::SECTION_37_HOLOGRAPHIC_LAYERED_WINDOWS::
+@FAULT_NODE [ERR-HOLO-001] {
+    DOMAIN          : "Win32 Layered Windows & Per-Pixel Alpha Composition (WS_EX_LAYERED / UpdateLayeredWindow)"
+    PHENOMENON      : "Invisible window, black halo artifacts around translucent edges, or `UpdateLayeredWindow` returning `ERROR_INVALID_PARAMETER` (87)"
+    ROOT_CAUSE      : "Combining `WM_PAINT` / `BeginPaint` with `UpdateLayeredWindow`, or supplying straight-alpha RGB pixels instead of premultiplied alpha (`R*A/255, G*A/255, B*A/255`)."
+    INVARIANT_RULE  : "Premultiply all 32-bit BGRA pixel channels by their alpha byte prior to blit, pass `AC_SRC_ALPHA` in `BLENDFUNCTION`, and update visuals exclusively via `UpdateLayeredWindow` without `WM_PAINT` mixing."
+}
+
+::SECTION_38_MEMORY_MAPPED_FILE_ENGINES::
+@FAULT_NODE [ERR-MMAP-001] {
+    DOMAIN          : "Win32 Memory-Mapped File Views & Zero-Copy Datalake Scanners (CreateFileMappingW / MapViewOfFile)"
+    PHENOMENON      : "`CreateFileMappingW` failing with `ERROR_FILE_INVALID` (1006) on 0-byte files, or `EXCEPTION_IN_PAGE_ERROR` on removable/network media"
+    ROOT_CAUSE      : "Attempting to map a 0-byte file without checking `GetFileSizeEx`, or dereferencing mapped pointers without SEH `__try/__except(GetExceptionCode() == EXCEPTION_IN_PAGE_ERROR)` guards."
+    INVARIANT_RULE  : "Verify `fileSize.QuadPart > 0` before calling `CreateFileMappingW`, align view offsets to `SYSTEM_INFO.dwAllocationGranularity`, and unmap views (`UnmapViewOfFile`) before closing mapping and file handles."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F12 {
+    38. GITHUB_SHA_GUARD   : Fetch existing blob `sha` before `PUT` updates, strip Base64 newlines, and enforce explicit API version headers.
+    39. PREMULTIPLIED_BGRA : Premultiply RGB channels by alpha for `WS_EX_LAYERED` holographic windows and avoid mixing `WM_PAINT` with `UpdateLayeredWindow`.
+    40. ZERO_BYTE_MMAP     : Reject 0-byte files before `CreateFileMappingW` and unmap views in strict reverse handle order.
+}
+::AVIS_MANIFEST_END::
