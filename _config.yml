@@ -2,23 +2,23 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
-  - Cyborg/
-  - NEXUS/
-  - Navigator-MSVC-Academy/
-  - Mercwar-AI/
-  - robo-knight-inventory/
-  - dc2php/
-  - Sentinel/
-  - Dark-Com-2/
-  - Constellation/
-  - bin/
+  - AI/
+  - AVIS/
+  - Navigator/
+  - dc2sql/
+  - Powershell/
   - Fire-Star-Alpha/
   - Nebula/
-  - Powershell/
-  - AVIS/
-  - dc2sql/
-  - Navigator/
-  - AI/
+  - Dark-Com-2/
+  - Constellation/
+  - Sentinel/
+  - robo-knight-inventory/
+  - dc2php/
+  - NEXUS/
+  - Mercwar-AI/
+  - Cyborg/
+  - Navigator-MSVC-Academy/
+  - bin/
   - NAVIGATOR-LLM-ACADEMY/
   - AVIS-DL/
   - Station/

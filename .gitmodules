@@ -1,60 +1,30 @@
-[submodule "Cyborg"]
-	path = Cyborg
-	url = https://github.com/mercwar/Cyborg.git
+[submodule "AI"]
+	path = AI
+	url = https://github.com/mercwar/AI.git
 	branch = main
 	update = none
 
-[submodule "NEXUS"]
-	path = NEXUS
-	url = https://github.com/mercwar/NEXUS.git
+[submodule "AVIS"]
+	path = AVIS
+	url = https://github.com/mercwar/AVIS.git
 	branch = main
 	update = none
 
-[submodule "Navigator-MSVC-Academy"]
-	path = Navigator-MSVC-Academy
-	url = https://github.com/mercwar/Navigator-MSVC-Academy.git
+[submodule "Navigator"]
+	path = Navigator
+	url = https://github.com/mercwar/Navigator.git
 	branch = main
 	update = none
 
-[submodule "Mercwar-AI"]
-	path = Mercwar-AI
-	url = https://github.com/mercwar/Mercwar-AI.git
+[submodule "dc2sql"]
+	path = dc2sql
+	url = https://github.com/mercwar/dc2sql.git
 	branch = main
 	update = none
 
-[submodule "robo-knight-inventory"]
-	path = robo-knight-inventory
-	url = https://github.com/mercwar/robo-knight-inventory.git
-	branch = main
-	update = none
-
-[submodule "dc2php"]
-	path = dc2php
-	url = https://github.com/mercwar/dc2php.git
-	branch = main
-	update = none
-
-[submodule "Sentinel"]
-	path = Sentinel
-	url = https://github.com/mercwar/Sentinel.git
-	branch = main
-	update = none
-
-[submodule "Dark-Com-2"]
-	path = Dark-Com-2
-	url = https://github.com/mercwar/Dark-Com-2.git
-	branch = main
-	update = none
-
-[submodule "Constellation"]
-	path = Constellation
-	url = https://github.com/mercwar/Constellation.git
-	branch = main
-	update = none
-
-[submodule "bin"]
-	path = bin
-	url = https://github.com/mercwar/bin.git
+[submodule "Powershell"]
+	path = Powershell
+	url = https://github.com/mercwar/Powershell.git
 	branch = main
 	update = none
 
@@ -70,33 +40,63 @@
 	branch = main
 	update = none
 
-[submodule "Powershell"]
-	path = Powershell
-	url = https://github.com/mercwar/Powershell.git
+[submodule "Dark-Com-2"]
+	path = Dark-Com-2
+	url = https://github.com/mercwar/Dark-Com-2.git
 	branch = main
 	update = none
 
-[submodule "AVIS"]
-	path = AVIS
-	url = https://github.com/mercwar/AVIS.git
+[submodule "Constellation"]
+	path = Constellation
+	url = https://github.com/mercwar/Constellation.git
 	branch = main
 	update = none
 
-[submodule "dc2sql"]
-	path = dc2sql
-	url = https://github.com/mercwar/dc2sql.git
+[submodule "Sentinel"]
+	path = Sentinel
+	url = https://github.com/mercwar/Sentinel.git
 	branch = main
 	update = none
 
-[submodule "Navigator"]
-	path = Navigator
-	url = https://github.com/mercwar/Navigator.git
+[submodule "robo-knight-inventory"]
+	path = robo-knight-inventory
+	url = https://github.com/mercwar/robo-knight-inventory.git
 	branch = main
 	update = none
 
-[submodule "AI"]
-	path = AI
-	url = https://github.com/mercwar/AI.git
+[submodule "dc2php"]
+	path = dc2php
+	url = https://github.com/mercwar/dc2php.git
+	branch = main
+	update = none
+
+[submodule "NEXUS"]
+	path = NEXUS
+	url = https://github.com/mercwar/NEXUS.git
+	branch = main
+	update = none
+
+[submodule "Mercwar-AI"]
+	path = Mercwar-AI
+	url = https://github.com/mercwar/Mercwar-AI.git
+	branch = main
+	update = none
+
+[submodule "Cyborg"]
+	path = Cyborg
+	url = https://github.com/mercwar/Cyborg.git
+	branch = main
+	update = none
+
+[submodule "Navigator-MSVC-Academy"]
+	path = Navigator-MSVC-Academy
+	url = https://github.com/mercwar/Navigator-MSVC-Academy.git
+	branch = main
+	update = none
+
+[submodule "bin"]
+	path = bin
+	url = https://github.com/mercwar/bin.git
 	branch = main
 	update = none
 
