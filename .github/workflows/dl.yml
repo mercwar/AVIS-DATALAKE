@@ -11,17 +11,21 @@ permissions:
 jobs:
   sync-datalake-folders:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout mercwar/AVIS-DATALAKE
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GH_PAT }}
 
       - name: Link all mercwar repositories and forks
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+          GIT_TERMINAL_PROMPT: "0"
         run: |
+          set -euo pipefail
+
           if [ -z "$GH_TOKEN" ]; then
             echo "Error: GH_PAT secret is missing."
             exit 1
@@ -31,31 +35,53 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           gh auth setup-git
 
-          gh repo list mercwar \
-            --limit 200 \
-            --json name,url,defaultBranchRef,isEmpty \
-            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false) | "\(.name) \(.url) \(.defaultBranchRef.name)"' \
-          | while read -r name url branch; do
-              if [ -n "$branch" ] && [ "$branch" != "null" ]; then
-                if ! git config -f .gitmodules --get "submodule.${name}.url" >/dev/null 2>&1; then
-                  git submodule add -f -b "$branch" "${url}.git" "$name" || true
-                fi
-              fi
-            done
+          # Ensure HTTPS is used and never prompts interactively
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
 
-          git submodule sync --recursive
-          git submodule update --init --recursive --remote || true
+          while IFS=$'\t' read -r name url branch is_empty; do
+            [ -z "$name" ] && continue
+            [ "$name" = "AVIS-DATALAKE" ] && continue
+            [ "$is_empty" = "true" ] && continue
+            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
 
-          # Auto-exclude all submodule folders from Jekyll so GitHub Pages never crashes on symlinks
+            # Normalize .git suffix so we don't end up with .git.git
+            clone_url="${url%.git}.git"
+
+            if ! git config -f .gitmodules --get "submodule.${name}.url" >/dev/null 2>&1; then
+              echo "Adding submodule: $name ($branch)"
+              git submodule add --depth 1 -f -b "$branch" "$clone_url" "$name" || {
+                echo "Warning: failed to add $name, skipping."
+                rm -rf ".git/modules/$name" "$name"
+              }
+            fi
+          done < <(
+            gh repo list mercwar \
+              --limit 200 \
+              --json name,url,defaultBranchRef,isEmpty \
+              --jq '.[] | [.name, .url, (.defaultBranchRef.name // ""), (.isEmpty | tostring)] | @tsv'
+          )
+
+          # Shallow init/update only if .gitmodules has entries (avoids --remote hammering all remotes)
+          if [ -f .gitmodules ] && [ -s .gitmodules ]; then
+            git submodule sync
+            git submodule update --init --depth 1 || true
+          fi
+
+          # Auto-exclude all submodule folders from Jekyll so GitHub Pages never crashes
           {
             echo "exclude:"
             echo "  - .github/"
             echo "  - .gitmodules"
             if [ -f .gitmodules ]; then
-              git config -f .gitmodules --get-regexp path | awk '{print "  - " $2 "/"}'
+              git config -f .gitmodules --get-regexp '\.path$' | awk '{print "  - " $2 "/"}'
             fi
           } > _config.yml
 
           git add -A
-          git commit -m "Link mercwar repositories into AVIS-DATALAKE" || exit 0
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Link mercwar repositories into AVIS-DATALAKE"
+            git push
+          fi
