@@ -9,7 +9,7 @@ jobs:
   callback-link-datalake:
     runs-on: ubuntu-latest
     steps:
-      - name: Place AVIS-DATALAKE pointer link in each public repo
+      - name: Place AVIS-DATALAKE link in each public repo
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -18,8 +18,7 @@ jobs:
             exit 1
           fi
 
-          DL_SHA=$(gh api "repos/mercwar/AVIS-DATALAKE/git/ref/heads/main" --jq '.object.sha')
-          echo "AVIS-DATALAKE main SHA: $DL_SHA"
+          LINK_CONTENT=$(printf '# AVIS-DATALAKE\n\nCentral AVIS Datalake Repository: https://github.com\n')
 
           gh repo list mercwar \
             --visibility public \
@@ -35,60 +34,39 @@ jobs:
               }
 
               LAST_MSG=$(gh api "repos/mercwar/${name}/commits/${HEAD_SHA}" --jq '.commit.message' 2>/dev/null || true)
-              if echo "$LAST_MSG" | grep -q "Link AVIS-DATALAKE folder"; then
-                echo "[$name] Skipped (HEAD is already a Link AVIS-DATALAKE folder commit)."
+              if echo "$LAST_MSG" | grep -q "Link AVIS-DATALAKE repository"; then
+                echo "[$name] Skipped (HEAD is already updated)."
                 continue
               fi
 
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+              RAW_TREE=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}")
 
-              EXISTING_SHA=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
-                --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .sha' 2>/dev/null || true)
+              HAS_SUBMOD=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE") | .path')
+              HAS_GM=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == ".gitmodules") | .path')
 
-              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=${branch}" \
+              EXISTING_LINK=$(gh api "repos/mercwar/${name}/contents/AVIS-DATALAKE.md?ref=${branch}" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
-              NEEDS_CFG=false
-              if [ -z "$CFG" ]; then
-                CFG=$(printf 'exclude:\n  - AVIS-DATALAKE\n')
-                NEEDS_CFG=true
-              elif ! echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
-                if echo "$CFG" | grep -q '^exclude:'; then
-                  CFG=$(echo "$CFG" | sed '/^exclude:/a\  - AVIS-DATALAKE')
-                else
-                  CFG=$(printf '%s\n\nexclude:\n  - AVIS-DATALAKE\n' "$CFG")
-                fi
-                NEEDS_CFG=true
-              fi
-
-              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_CFG" = "false" ]; then
+              if [ -z "$HAS_SUBMOD" ] && [ -z "$HAS_GM" ] && [ "$EXISTING_LINK" = "$LINK_CONTENT" ]; then
                 echo "[$name] Already linked on $branch."
                 continue
               fi
 
-              TREE_ITEMS=$(jq -n \
-                --arg sha "$DL_SHA" \
-                '[
-                  { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $sha }
-                ]')
+              # Strip old 160000 AVIS-DATALAKE gitlink & .gitmodules, then place AVIS-DATALAKE.md
+              CLEAN_TREE=$(echo "$RAW_TREE" | jq \
+                --arg lc "$LINK_CONTENT" \
+                '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != ".gitmodules" and .path != "AVIS-DATALAKE.md") | {path, mode, type, sha}]
+                 + [{path: "AVIS-DATALAKE.md", mode: "100644", type: "blob", content: $lc}]')
 
-              if [ "$NEEDS_CFG" = "true" ]; then
-                TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
-                  --arg cfg "$CFG" \
-                  '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
-              fi
-
-              NEW_TREE=$(jq -n \
-                --arg base "$BASE_TREE" \
-                --argjson tree "$TREE_ITEMS" \
-                '{ base_tree: $base, tree: $tree }' | \
+              NEW_TREE=$(jq -n --argjson tree "$CLEAN_TREE" '{ tree: $tree }' | \
                 gh api "repos/mercwar/${name}/git/trees" --input - --jq '.sha') || {
                   echo "[$name] ERROR creating tree."
                   continue
                 }
 
               NEW_COMMIT=$(jq -n \
-                --arg msg "Link AVIS-DATALAKE folder" \
+                --arg msg "Link AVIS-DATALAKE repository" \
                 --arg tree "$NEW_TREE" \
                 --arg parent "$HEAD_SHA" \
                 '{ message: $msg, tree: $tree, parents: [$parent] }' | \
