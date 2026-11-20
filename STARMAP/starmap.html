@@ -482,6 +482,48 @@
     .md-render pre code { background: transparent; border: none; padding: 0; color: #e2e8f0; }
     .md-render a { color: #00ff9d; text-decoration: underline; }
     .md-render blockquote { border-left: 3px solid #ff9d00; padding-left: 0.85rem; color: #94a3b8; font-style: italic; margin: 0.6rem 0; }
+
+    /* Variant G: Repository Inspector Modal Window */
+    .mech-win-modal-repo {
+      background:
+        linear-gradient(180deg, rgba(6, 18, 32, 0.96) 0%, rgba(4, 9, 18, 0.98) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      box-shadow:
+        0 0 0 1px rgba(0, 240, 255, 0.14),
+        0 24px 70px rgba(0, 0, 0, 0.9),
+        inset 0 0 32px rgba(0, 240, 255, 0.08);
+      clip-path: polygon(
+        22px 0%, calc(100% - 22px) 0%, 100% 22px,
+        100% calc(100% - 22px), calc(100% - 22px) 100%,
+        22px 100%, 0% calc(100% - 22px), 0% 22px
+      );
+    }
+
+    .repo-tab-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 5px 12px;
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      background: rgba(6, 14, 26, 0.75);
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .repo-tab-btn:hover {
+      color: #e2e8f0;
+      border-color: rgba(0, 240, 255, 0.55);
+    }
+
+    .repo-tab-btn.active {
+      color: #030711;
+      background: #00f0ff;
+      border-color: #00f0ff;
+      font-weight: 700;
+    }
+
+    
   </style>
 </head>
 <body>
@@ -817,7 +859,94 @@
         <span id="modal-source-url" class="truncate selectable-text">https://raw.githubusercontent.com/mercwar/AVIS-DATALAKE/HEAD/index.html</span>
         <span id="modal-fetch-status" class="text-cyan-300 shrink-0 ml-2">READY</span>
       </div>
+<!-- Repository Pop-Up Inspector Modal -->
+  <div id="repo-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div id="repo-modal-window" class="mech-win-modal-repo w-full max-w-5xl h-[84vh] flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-cyan-500/30 bg-slate-950/80">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-2.5 h-2.5 rotate-45 bg-cyan-400 shrink-0"></span>
+          <div class="truncate">
+            <div id="repo-modal-title" class="font-display text-xs md:text-sm font-bold tracking-widest text-cyan-300 truncate">
+              REPOSITORY TELEMETRY
+            </div>
+            <div id="repo-modal-subtitle" class="font-mono-tech text-[10px] text-slate-400 truncate">
+              mercwar/REPO
+            </div>
+          </div>
+        </div>
 
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="hidden sm:flex items-center gap-1 mr-1">
+            <button id="repo-tab-overview" onclick="setRepoModalTab('overview')" class="repo-tab-btn active">OVERVIEW</button>
+            <button id="repo-tab-tree" onclick="setRepoModalTab('tree')" class="repo-tab-btn">FILE TREE</button>
+            <button id="repo-tab-commits" onclick="setRepoModalTab('commits')" class="repo-tab-btn">COMMITS</button>
+            <button id="repo-tab-embed" onclick="setRepoModalTab('embed')" class="repo-tab-btn">FRAME VIEW</button>
+          </div>
+          <a id="repo-modal-external" href="#" target="_blank" rel="noopener noreferrer"
+             class="px-3 py-1.5 font-mono-tech text-[10px] tracking-wider border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/15 transition">
+            GITHUB ↗
+          </a>
+          <button onclick="closeRepoModal()"
+                  class="px-2.5 py-1.5 font-mono-tech text-[10px] border border-red-400/40 text-red-300 hover:bg-red-500/20 transition">
+            ESC [X]
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div id="repo-modal-status" class="px-4 py-1.5 font-mono-tech text-[10px] text-cyan-200/80 bg-cyan-950/25 border-b border-cyan-500/15 flex items-center justify-between">
+        <span id="repo-status-text">INITIALIZING REPOSITORY UPLINK...</span>
+        <span id="repo-meta-badges" class="text-slate-400"></span>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-1 overflow-auto p-4 bg-[#030712]/90">
+        <!-- Tab 1: Overview -->
+        <div id="repo-pane-overview" class="space-y-4">
+          <div id="repo-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono-tech"></div>
+          <div class="p-3 border border-cyan-500/20 bg-slate-950/60">
+            <div class="text-[10px] font-display tracking-widest text-cyan-400 mb-1">DESCRIPTION &amp; TOPICS</div>
+            <p id="repo-description" class="font-mono-tech text-xs text-slate-300 mb-2">Loading...</p>
+            <div id="repo-topics" class="flex flex-wrap gap-1.5"></div>
+          </div>
+          <div class="p-3 border border-cyan-500/20 bg-slate-950/60">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-display tracking-widest text-cyan-400">README SNAPSHOT</span>
+              <button id="repo-open-full-readme-btn" class="font-mono-tech text-[10px] text-emerald-300 hover:underline">
+                OPEN IN DOC POPUP →
+              </button>
+            </div>
+            <pre id="repo-readme-preview" class="font-mono-tech text-[11px] text-slate-300 whitespace-pre-wrap max-h-64 overflow-auto leading-relaxed">Loading README...</pre>
+          </div>
+        </div>
+
+        <!-- Tab 2: Recursive File Tree -->
+        <div id="repo-pane-tree" class="hidden space-y-2">
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <input id="repo-tree-filter" type="text" placeholder="Filter files/folders in repo..."
+                   oninput="renderRepoTreePane()"
+                   class="w-full max-w-sm px-2.5 py-1.5 bg-slate-950 border border-cyan-500/30 font-mono-tech text-xs text-cyan-100 focus:outline-none focus:border-cyan-400" />
+            <span id="repo-tree-count" class="font-mono-tech text-[10px] text-slate-400"></span>
+          </div>
+          <div id="repo-tree-list" class="font-mono-tech text-xs divide-y divide-slate-900"></div>
+        </div>
+
+        <!-- Tab 3: Recent Commits -->
+        <div id="repo-pane-commits" class="hidden space-y-2 font-mono-tech text-xs">
+          <div id="repo-commits-list" class="space-y-2"></div>
+        </div>
+
+        <!-- Tab 4: Embedded Frame Fallback -->
+        <div id="repo-pane-embed" class="hidden h-full flex flex-col">
+          <div class="mb-2 font-mono-tech text-[10px] text-amber-300">
+            Note: GitHub sets X-Frame-Options on some pages; if blocked by the browser, use GITHUB ↗ or the OVERVIEW / FILE TREE tabs.
+          </div>
+          <iframe id="repo-modal-iframe" class="w-full flex-1 border border-cyan-500/30 bg-white"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
       <!-- Modal Content Viewport -->
       <div class="flex-1 relative overflow-hidden bg-slate-950">
         <!-- Sandboxed Live HTML Preview Iframe -->
