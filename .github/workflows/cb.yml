@@ -26,6 +26,7 @@ jobs:
           OWNER="mercwar"
           TARGET_REPO="AVIS-DATALAKE"
           TARGET_BRANCH="main"
+          TARGET_URL="https://github.com{OWNER}/${TARGET_REPO}.git"
 
           TARGET_SHA=$(gh api "repos/${OWNER}/${TARGET_REPO}/git/ref/heads/${TARGET_BRANCH}" --jq '.object.sha')
           if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
@@ -34,8 +35,8 @@ jobs:
           fi
           echo "Target ${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
 
-          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n\tbranch = %s\n\n' \
-            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_BRANCH")
+          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\n' \
+            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
 
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
@@ -68,12 +69,8 @@ jobs:
               continue
             fi
 
-            CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
-
-            # Preserve all root entries except AVIS-DATALAKE, AVIS-DATALAKE.md, .gitmodules, and _config.yml (no base_tree)
             PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != "AVIS-DATALAKE.md" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
-            # Ensure _config.yml excludes AVIS-DATALAKE/ and .gitmodules
             EXISTING_CFG=$(gh api "repos/${OWNER}/${name}/contents/_config.yml?ref=${branch}" \
               --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
