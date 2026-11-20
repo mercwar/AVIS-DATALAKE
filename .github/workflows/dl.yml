@@ -45,14 +45,12 @@ jobs:
           EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
           PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
-          # Fetch up to 1000 public repos
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
             --limit 1000 \
             --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
             --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
 
-          # Force-check any existing 160000 link via direct API lookup
           for existing_name in $(echo "$EXISTING_LINKS" | jq -r 'keys[]'); do
             if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
               def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // empty' 2>/dev/null || true)
@@ -100,7 +98,7 @@ jobs:
               '. + { ($path): $sha }')
 
             REPO_URL="https://github.com/${OWNER}/${name}.git"
-            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\tupdate = none\n\n' "$name" "$name" "$REPO_URL" "$branch")
+            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\n' "$name" "$name" "$REPO_URL" "$branch")
             EXCLUDES+=$'\n  - '"${name}/"
           done <<< "$REPO_ROWS"
 
@@ -136,7 +134,6 @@ jobs:
             echo "No tree changes needed."
           fi
 
-          # Verify all folder links exist on live branch
           echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
           LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
           LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
@@ -175,7 +172,6 @@ jobs:
           gh api "repos/mercwar/AVIS-DATALAKE/tarball/main" > repo.tar.gz
           tar -xzf repo.tar.gz --strip-components=1 -C src
           rm -f repo.tar.gz src/.gitmodules
-          # Remove empty submodule directories from archive so Jekyll builds only site files
           gh api "repos/mercwar/AVIS-DATALAKE/git/trees/main" --jq '.tree[] | select(.mode == "160000") | .path' | while read -r sub_path; do
             [ -n "$sub_path" ] && rm -rf "src/${sub_path}"
           done
