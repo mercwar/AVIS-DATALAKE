@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F13"
+    VOLUME          : "13_JOB_OBJECTS_SINGLETON_LOCKS_AND_DPI_GLASS_UI"
+    VERSION         : "2.2.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F12 (File 12)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:41:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_39_JOB_OBJECTS_AND_PROCESS_CONTAINMENT::
+@FAULT_NODE [ERR-JOB-001] {
+    DOMAIN          : "Win32 Job Objects & Child Process Tree Termination (CreateJobObjectW / AssignProcessToJobObject)"
+    PHENOMENON      : "Orphaned background worker processes (`php.exe`, `dc2url.exe`, inference servers) surviving parent exit or locking executable files on rebuild"
+    ROOT_CAUSE      : "Spawning child processes via `CreateProcessW` without binding them to a Job Object configured with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`."
+    INVARIANT_RULE  : "Create an unnamed Job Object with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE` via `SetInformationJobObject`, spawn children with `CREATE_SUSPENDED`, assign to the job before `ResumeThread`, and keep the job handle open for the host lifetime."
+}
+
+::SECTION_40_CROSS_PROCESS_MUTEX_AND_SINGLETON_GUARDS::
+@FAULT_NODE [ERR-SYNC-001] {
+    DOMAIN          : "Named Kernel Mutexes & Single-Instance Daemon Enforcement (CreateMutexW)"
+    PHENOMENON      : "Duplicate daemon instances corrupting `e:\\dl` datalake files, or `ERROR_ACCESS_DENIED` across elevated/standard integrity levels"
+    ROOT_CAUSE      : "Using unprefixed mutex names without checking `GetLastError() == ERROR_ALREADY_EXISTS`, or failing to scope kernel objects to `Local\\`."
+    INVARIANT_RULE  : "Prefix instance mutexes with `Local\\MERCWAR_AVIS_<MODULE>`, check `GetLastError() == ERROR_ALREADY_EXISTS` immediately after `CreateMutexW`, and exit cleanly with status `0` if an active primary instance is detected."
+}
+
+::SECTION_41_DPI_SCALING_AND_DARK_GLASS_RENDERING::
+@FAULT_NODE [ERR-DPI-001] {
+    DOMAIN          : "Per-Monitor DPI Awareness & Custom Dark-Glass / DWM Acrylic Frames (SetProcessDpiAwarenessContext / DwmSetWindowAttribute)"
+    PHENOMENON      : "Blurry bitmap-scaled text on high-DPI displays, clipped custom titlebar hitboxes, or `E_INVALIDARG` on Windows 11 DWM backdrop attributes"
+    ROOT_CAUSE      : "Hardcoding 96-DPI pixel coordinates without `GetDpiForWindow(hwnd)` scaling, or calling `DWMWA_SYSTEMBACKDROP_TYPE` without checking Windows 11 build version (`>= 22621`)."
+    INVARIANT_RULE  : "Declare `DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2` at entry, scale all layout metrics via `MulDiv(px, dpi, 96)`, and guard `DwmSetWindowAttribute` calls with explicit `HRESULT` fallbacks to solid `#0A0A0C` dark-glass brushes."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F13 {
+    41. JOB_TREE_CLEANUP   : Bind spawned worker processes to a `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE` Job Object before resuming threads.
+    42. LOCAL_MUTEX_GUARD  : Enforce `Local\\` named mutexes and check `ERROR_ALREADY_EXISTS` to prevent concurrent datalake collisions.
+    43. DPI_AND_DWM_SAFE   : Scale all UI coordinates via `GetDpiForWindow` and provide deterministic `#0A0A0C` dark-glass fallbacks when DWM attributes fail.
+}
+::AVIS_MANIFEST_END::
