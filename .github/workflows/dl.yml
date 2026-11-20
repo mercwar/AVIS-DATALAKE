@@ -1,102 +1,35 @@
-name: Link Public Repos into AVIS-DATALAKE
+name: Deploy Pages (No Submodule Clones)
 
 on:
+  push:
+    branches: ["main"]
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  link-public-repos:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Place public repo pointer links and .gitmodules in AVIS-DATALAKE
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          set -euo pipefail
+      - name: Checkout root only (skip submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: false
 
-          if [ -z "$GH_TOKEN" ]; then
-            echo "Error: GH_PAT secret is missing."
-            exit 1
-          fi
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-          OWNER="mercwar"
-          REPO="AVIS-DATALAKE"
-          BRANCH="main"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
 
-          HEAD_SHA=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
-          BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
-          RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
-
-          # Keep existing root files/folders, stripping old 160000 gitlinks, .gitmodules, and _config.yml
-          PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
-
-          LINK_ITEMS="[]"
-          GITMODULES=""
-          EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules'
-
-          while IFS=$'\t' read -r name branch is_empty is_private is_archived; do
-            [ -z "$name" ] && continue
-            [ "$name" = "$REPO" ] && continue
-            [ "$is_empty" = "true" ] && continue
-            [ "$is_private" = "true" ] && continue
-            [ "$is_archived" = "true" ] && continue
-            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
-
-            REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
-            if [ -z "$REPO_SHA" ]; then
-              echo "Skipping $name (could not resolve $branch)."
-              continue
-            fi
-
-            echo "Linking pointer: $name -> $REPO_SHA ($branch)"
-            LINK_ITEMS=$(echo "$LINK_ITEMS" | jq \
-              --arg path "$name" \
-              --arg sha "$REPO_SHA" \
-              '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
-
-            GITMODULES+=$'[submodule "'"${name}"$'"]\n\tpath = '"${name}"$'\n\turl = https://github.com'"${OWNER}/${name}"$'.git\n'
-            EXCLUDES+=$'\n  - '"${name}/"
-          done < <(
-            gh repo list "$OWNER" \
-              --visibility public \
-              --limit 200 \
-              --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
-              --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // ""), (.isEmpty | tostring), (.isPrivate | tostring), (.isArchived | tostring)] | @tsv'
-          )
-
-          if [ "$(echo "$LINK_ITEMS" | jq 'length')" -eq 0 ]; then
-            echo "No public repos to link."
-            exit 0
-          fi
-
-          FINAL_TREE=$(jq -n \
-            --argjson preserved "$PRESERVED_ITEMS" \
-            --argjson links "$LINK_ITEMS" \
-            --arg gm "$GITMODULES" \
-            --arg cfg "$EXCLUDES" \
-            '$preserved + $links + [
-              { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
-              { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
-            ]')
-
-          NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
-            gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
-
-          if [ "$NEW_TREE" = "$BASE_TREE" ]; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          NEW_COMMIT=$(jq -n \
-            --arg msg "Link mercwar repositories into AVIS-DATALAKE" \
-            --arg tree "$NEW_TREE" \
-            --arg parent "$HEAD_SHA" \
-            '{ message: $msg, tree: $tree, parents: [$parent] }' | \
-            gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
-
-          gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
-          echo "Done! Linked public repo pointers + .gitmodules on ${OWNER}/${REPO}@${BRANCH} -> ${NEW_COMMIT}"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
