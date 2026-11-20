@@ -1475,3 +1475,243 @@
       renderRecursiveTree();
       animate();
     };
+const repoModalState = {
+    repo: null,
+    tab: 'overview',
+    meta: null,
+    tree: [],
+    commits: [],
+    readmeText: ''
+  };
+
+  function setRepoModalTab(tab) {
+    repoModalState.tab = tab;
+    ['overview', 'tree', 'commits', 'embed'].forEach((t) => {
+      const btn = document.getElementById(`repo-tab-${t}`);
+      const pane = document.getElementById(`repo-pane-${t}`);
+      if (btn) btn.classList.toggle('active', t === tab);
+      if (pane) pane.classList.toggle('hidden', t !== tab);
+    });
+
+    if (tab === 'embed' && repoModalState.repo) {
+      const frame = document.getElementById('repo-modal-iframe');
+      if (frame) {
+        frame.src = `https://github.com/mercwar/${encodeURIComponent(repoModalState.repo)}`;
+      }
+    }
+  }
+
+  function closeRepoModal() {
+    const modal = document.getElementById('repo-modal');
+    const frame = document.getElementById('repo-modal-iframe');
+    if (frame) frame.src = 'about:blank';
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function renderRepoTreePane() {
+    const listEl = document.getElementById('repo-tree-list');
+    const countEl = document.getElementById('repo-tree-count');
+    const filterVal = (document.getElementById('repo-tree-filter')?.value || '').trim().toLowerCase();
+    if (!listEl) return;
+
+    const items = repoModalState.tree.filter((entry) =>
+      !filterVal || entry.path.toLowerCase().includes(filterVal)
+    );
+
+    if (countEl) {
+      countEl.textContent = `${items.length} / ${repoModalState.tree.length} entries`;
+    }
+
+    if (!items.length) {
+      listEl.innerHTML = `<div class="py-6 text-center text-slate-500">No matching files or folders.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = items.slice(0, 400).map((entry) => {
+      const isTree = entry.type === 'tree';
+      const repo = repoModalState.repo;
+      const ghUrl = isTree
+        ? `https://github.com/mercwar/${repo}/tree/HEAD/${entry.path}`
+        : `https://github.com/mercwar/${repo}/blob/HEAD/${entry.path}`;
+
+      const lowerName = entry.path.split('/').pop().toLowerCase();
+      const canPopup = !isTree && (lowerName === 'index.html' || lowerName === 'readme.md');
+
+      return `
+        <div class="py-1.5 px-2 flex items-center justify-between gap-3 hover:bg-cyan-500/10">
+          <div class="truncate flex items-center gap-2">
+            <span class="${isTree ? 'text-amber-400' : 'text-cyan-300'}">${isTree ? 'DIR' : 'FILE'}</span>
+            <span class="text-slate-200 truncate">${entry.path}</span>
+          </div>
+          <div class="flex items-center gap-3 shrink-0 text-[10px]">
+            ${canPopup
+              ? `<button onclick="openDocModal('${repo}', '${entry.path}')" class="text-emerald-300 hover:underline">POPUP</button>`
+              : ''
+            }
+            <a href="${ghUrl}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">OPEN ↗</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function openRepoPopup(repoName) {
+    if (!repoName) return;
+    const owner = 'mercwar';
+    const repoUrl = `https://github.com/${owner}/${repoName}`;
+
+    repoModalState.repo = repoName;
+    repoModalState.meta = null;
+    repoModalState.tree = [];
+    repoModalState.commits = [];
+    repoModalState.readmeText = '';
+
+    const modal = document.getElementById('repo-modal');
+    const titleEl = document.getElementById('repo-modal-title');
+    const subEl = document.getElementById('repo-modal-subtitle');
+    const extEl = document.getElementById('repo-modal-external');
+    const statusEl = document.getElementById('repo-status-text');
+    const badgesEl = document.getElementById('repo-meta-badges');
+    const descEl = document.getElementById('repo-description');
+    const topicsEl = document.getElementById('repo-topics');
+    const statsEl = document.getElementById('repo-stats-grid');
+    const readmeEl = document.getElementById('repo-readme-preview');
+    const commitsEl = document.getElementById('repo-commits-list');
+    const fullReadmeBtn = document.getElementById('repo-open-full-readme-btn');
+
+    if (titleEl) titleEl.textContent = `REPOSITORY INSPECTOR // ${repoName.toUpperCase()}`;
+    if (subEl) subEl.textContent = `${owner}/${repoName} — ${repoUrl}`;
+    if (extEl) extEl.href = repoUrl;
+    if (statusEl) statusEl.textContent = `FETCHING LIVE TELEMETRY FOR ${owner}/${repoName}...`;
+    if (badgesEl) badgesEl.textContent = '';
+    if (descEl) descEl.textContent = 'Querying GitHub REST API...';
+    if (topicsEl) topicsEl.innerHTML = '';
+    if (statsEl) statsEl.innerHTML = '';
+    if (readmeEl) readmeEl.textContent = 'Loading README.md...';
+    if (commitsEl) commitsEl.innerHTML = '<div class="text-slate-400">Loading recent commits...</div>';
+    if (fullReadmeBtn) {
+      fullReadmeBtn.onclick = () => openDocModal(repoName, 'README.md');
+    }
+
+    setRepoModalTab('overview');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    try {
+      const [metaRes, treeRes, commitsRes, readmeRes] = await Promise.allSettled([
+        fetch(`https://api.github.com/repos/${owner}/${encodeURIComponent(repoName)}`),
+        fetch(`https://api.github.com/repos/${owner}/${encodeURIComponent(repoName)}/git/trees/HEAD?recursive=1`),
+        fetch(`https://api.github.com/repos/${owner}/${encodeURIComponent(repoName)}/commits?per_page=10`),
+        fetch(`https://raw.githubusercontent.com/${owner}/${encodeURIComponent(repoName)}/HEAD/README.md`)
+      ]);
+
+      if (metaRes.status === 'fulfilled' && metaRes.value.ok) {
+        const meta = await metaRes.value.json();
+        repoModalState.meta = meta;
+        if (descEl) descEl.textContent = meta.description || 'No repository description provided.';
+        if (topicsEl) {
+          topicsEl.innerHTML = (meta.topics || []).map((tp) =>
+            `<span class="px-2 py-0.5 text-[10px] border border-cyan-500/30 text-cyan-200 bg-cyan-950/30">#${tp}</span>`
+          ).join('');
+        }
+        if (badgesEl) {
+          badgesEl.textContent = `BRANCH: ${meta.default_branch || 'main'} · VISIBILITY: ${meta.private ? 'PRIVATE' : 'PUBLIC'}`;
+        }
+        if (statsEl) {
+          const cards = [
+            ['STARS', meta.stargazers_count ?? 0],
+            ['FORKS', meta.forks_count ?? 0],
+            ['LANGUAGE', meta.language || 'N/A'],
+            ['OPEN ISSUES', meta.open_issues_count ?? 0]
+          ];
+          statsEl.innerHTML = cards.map(([label, val]) => `
+            <div class="p-2.5 border border-cyan-500/20 bg-slate-950/70">
+              <div class="text-[10px] text-slate-400">${label}</div>
+              <div class="text-sm font-bold text-cyan-300 mt-0.5">${val}</div>
+            </div>
+          `).join('');
+        }
+      } else if (descEl) {
+        descEl.textContent = 'Metadata unavailable (rate limit or private/uninitialized repo). Use GITHUB ↗ for direct view.';
+      }
+
+      if (treeRes.status === 'fulfilled' && treeRes.value.ok) {
+        const treeJson = await treeRes.value.json();
+        repoModalState.tree = Array.isArray(treeJson.tree) ? treeJson.tree : [];
+        renderRepoTreePane();
+      }
+
+      if (commitsRes.status === 'fulfilled' && commitsRes.value.ok) {
+        const commitsJson = await commitsRes.value.json();
+        repoModalState.commits = Array.isArray(commitsJson) ? commitsJson : [];
+        if (commitsEl) {
+          commitsEl.innerHTML = repoModalState.commits.map((c) => {
+            const msg = (c.commit?.message || '').split('\n')[0];
+            const author = c.commit?.author?.name || c.author?.login || 'unknown';
+            const sha = (c.sha || '').slice(0, 7);
+            const dateStr = c.commit?.author?.date ? new Date(c.commit.author.date).toLocaleString() : '';
+            return `
+              <div class="p-2.5 border border-slate-800 bg-slate-950/70 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="text-cyan-200 truncate">${msg}</div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">${author} · ${dateStr}</div>
+                </div>
+                <a href="${c.html_url}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline shrink-0">${sha} ↗</a>
+              </div>
+            `;
+          }).join('') || '<div class="text-slate-500">No commits found.</div>';
+        }
+      }
+
+      if (readmeRes.status === 'fulfilled' && readmeRes.value.ok) {
+        const txt = await readmeRes.value.text();
+        repoModalState.readmeText = txt;
+        if (readmeEl) readmeEl.textContent = txt.slice(0, 8000) || '(Empty README.md)';
+      } else if (readmeEl) {
+        readmeEl.textContent = 'No README.md found at HEAD.';
+      }
+
+      if (statusEl) {
+        statusEl.textContent = `UPLINK ACTIVE // ${owner}/${repoName} (${repoModalState.tree.length} OBJECTS INDEXED)`;
+      }
+    } catch (err) {
+      if (statusEl) statusEl.textContent = `UPLINK ERROR // ${err.message}`;
+    }
+  }
+
+  // Intercept clicks on mercwar repo links so they open in the pop-up modal
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href*="github.com/mercwar/"]');
+    if (!link) return;
+    if (link.id === 'repo-modal-external' || link.id === 'doc-modal-external') return;
+
+    const match = link.href.match(/https?:\/\/github\.com\/mercwar\/([^/?#]+)\/?$/i);
+    if (match && match[1]) {
+      e.preventDefault();
+      openRepoPopup(decodeURIComponent(match[1]));
+    }
+  });
+
+  // Wire OPEN REPO button in telemetry HUD if present
+  const openRepoBtn = document.getElementById('open-repo-btn');
+  if (openRepoBtn) {
+    openRepoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetRepo = window.selectedNode?.repo || window.selectedNode?.id || 'AVIS-DATALAKE';
+      openRepoPopup(targetRepo);
+    });
+  }
+
+  // Close repo modal on backdrop click or Escape
+  document.getElementById('repo-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'repo-modal') closeRepoModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeRepoModal();
+  });
