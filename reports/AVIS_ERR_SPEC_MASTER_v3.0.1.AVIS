@@ -1,0 +1,440 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-MASTER"
+    VERSION         : "3.0.1-MERCWAR-MASTER"
+    SCOPE           : "CONSOLIDATED_ALL_VOLUMES (v1.0.0 -> v3.0.0)"
+    TOTAL_VOLUMES   : 21
+    TOTAL_NODES     : 67
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:48:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::VOLUME_01_MEMORY_TELEMETRY_SHELL_CONFIG [v1.0.0]::
+@FAULT_NODE [ERR-C-001] {
+    HEX_CODE  : "0x01010001"
+    DOMAIN    : "C / C++ Native Runtimes (rc_cmd.c, FireGem, LLMA wrappers)"
+    INVARIANT : "Validate `snprintf` return `n >= 0 && (size_t)n < sizeof(buf)` and explicitly cast integer widths (`%zu`, `%lld`) to match format specifiers."
+}
+@FAULT_NODE [ERR-C-002] {
+    HEX_CODE  : "0x01010002"
+    DOMAIN    : "String Tokenization & Multi-Dot Extension Validation"
+    INVARIANT : "Locate file extensions via `strrchr(path, '.')` on read-only pointers; never mutate shared buffers with `strtok()`."
+}
+@FAULT_NODE [ERR-NET-001] {
+    HEX_CODE  : "0x01020001"
+    DOMAIN    : "HTTP POST Ingress & JSON Encapsulation (dc2url -> avis.php)"
+    INVARIANT : "Base64-encode raw HTML/CSS/source payloads prior to transport or serialize strictly via native UTF-8 JSON encoders."
+}
+@FAULT_NODE [ERR-NET-002] {
+    HEX_CODE  : "0x01020002"
+    DOMAIN    : "PHP $_POST Telemetry & Namespace Routing"
+    INVARIANT : "Verify `$_SERVER['REQUEST_METHOD'] === 'POST'`, guard all nested keys with `isset()`/`??`, and emit explicit HTTP 400/422 JSON errors."
+}
+@FAULT_NODE [ERR-SH-001] {
+    HEX_CODE  : "0x01030001"
+    DOMAIN    : "Windows CMD / PowerShell Argument Escaping"
+    INVARIANT : "Pass complex JSON/HTML payloads via file reference (`@payload.json`) or stdin stream rather than inline CLI strings; execute via explicit paths without manual `cd`."
+}
+@FAULT_NODE [ERR-SH-002] {
+    HEX_CODE  : "0x01030002"
+    DOMAIN    : "Batch Script Path Expansion & Exit Propagation"
+    INVARIANT : "Quote all path expansions (`\"%~f1\"`) and trap `if %errorlevel% neq 0 exit /b %errorlevel%` after every binary invocation."
+}
+@FAULT_NODE [ERR-CFG-001] {
+    HEX_CODE  : "0x01040001"
+    DOMAIN    : "AVIS / Firelang / JSON Schema & Secret Isolation"
+    INVARIANT : "Zero database credentials, PATs, or mock fallback values inside portable JSON/AVIS files; inject secrets strictly at runtime."
+}
+
+::VOLUME_02_STORAGE_PARSING_CONCURRENCY [v1.1.0]::
+@FAULT_NODE [ERR-FS-001] {
+    HEX_CODE  : "0x02050001"
+    DOMAIN    : "Recursive Directory Crawlers"
+    INVARIANT : "Skip `FILE_ATTRIBUTE_REPARSE_POINT`, prefix paths with `\\\\?\\`, and isolate output targets outside scanned roots."
+}
+@FAULT_NODE [ERR-FS-002] {
+    HEX_CODE  : "0x02050002"
+    DOMAIN    : "Atomic File Writes & Lock Contention"
+    INVARIANT : "Write to `<target>.tmp` on the same volume, flush buffers (`_commit`/`FlushFileBuffers`), and atomically replace via `MoveFileExW(..., MOVEFILE_REPLACE_EXISTING)`."
+}
+@FAULT_NODE [ERR-DB-001] {
+    HEX_CODE  : "0x02060001"
+    DOMAIN    : "SQLite / Local Datalake Telemetry Indexing"
+    INVARIANT : "Configure `PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=5000;` and batch writes inside `BEGIN IMMEDIATE` / `COMMIT`."
+}
+@FAULT_NODE [ERR-DB-002] {
+    HEX_CODE  : "0x02060002"
+    DOMAIN    : "Dynamic SQL Query Construction"
+    INVARIANT : "Use `sqlite3_prepare_v2` and `sqlite3_bind_*` exclusively; never concatenate raw file content or paths into SQL strings."
+}
+@FAULT_NODE [ERR-PRS-001] {
+    HEX_CODE  : "0x02070001"
+    DOMAIN    : "AVIS / Firelang Block Delimiter Extraction"
+    INVARIANT : "Parse blocks via stateful line-anchored lexers (`^::[A-Z0-9_]+::$`) rather than naive `strstr()` scans."
+}
+@FAULT_NODE [ERR-PRS-002] {
+    HEX_CODE  : "0x02070002"
+    DOMAIN    : "UTF-8 BOM & CRLF Normalization"
+    INVARIANT : "Strip leading `0xEF 0xBB 0xBF` BOM headers and normalize `\\r\\n` -> `\\n` at ingress before lexical tokenization."
+}
+@FAULT_NODE [ERR-PROC-001] {
+    HEX_CODE  : "0x02080001"
+    DOMAIN    : "Subprocess Spawning & Pipe Deadlocks"
+    INVARIANT : "Drain child `stdout` and `stderr` asynchronously or via temp file handles prior to blocking on `WaitForSingleObject`."
+}
+
+::VOLUME_03_UI_INFERENCE_RECOVERY [v1.2.0]::
+@FAULT_NODE [ERR-UI-001] {
+    HEX_CODE  : "0x03090001"
+    DOMAIN    : "Dynamic DOM Injection & Template Hydration"
+    INVARIANT : "Render telemetry strings strictly via `.textContent` or `document.createTextNode()`; sanitize structural HTML via explicit allowlists."
+}
+@FAULT_NODE [ERR-UI-002] {
+    HEX_CODE  : "0x03090002"
+    DOMAIN    : "High-Frequency Telemetry Stream DOM Batching"
+    INVARIANT : "Queue incoming packets, flush via `requestAnimationFrame()` with `DocumentFragment`, and cap active DOM nodes (`<= 1000`)."
+}
+@FAULT_NODE [ERR-INF-001] {
+    HEX_CODE  : "0x030A0001"
+    DOMAIN    : "GGUF / GGML Model Loading & Context Allocation"
+    INVARIANT : "Verify GGUF magic (`0x46554747`), validate tensor + KV memory footprint against available RAM/VRAM, and cap `n_ctx` explicitly."
+}
+@FAULT_NODE [ERR-INF-002] {
+    HEX_CODE  : "0x030A0002"
+    DOMAIN    : "LLM Code Output Extraction & Boundary Verification"
+    INVARIANT : "Extract code via strict boundary markers, strip wrapper fences, and verify balanced syntax before atomic disk commit."
+}
+@FAULT_NODE [ERR-REC-001] {
+    HEX_CODE  : "0x030B0001"
+    DOMAIN    : "Crashed-Gate Resubmission & Retry Circuit Breaker"
+    INVARIANT : "Deduplicate artifacts via SHA-256 digest and halt automated retries after `MAX_RETRIES = 3` on identical fault signatures."
+}
+
+::VOLUME_04_WIN32_ABI_SIGNING_WINSOCK [v1.3.0]::
+@FAULT_NODE [ERR-WIN-001] {
+    HEX_CODE  : "0x040C0001"
+    DOMAIN    : "Dynamic Library Loading & Calling Conventions"
+    INVARIANT : "Load DLLs via `LoadLibraryExW` with `LOAD_LIBRARY_SEARCH_SYSTEM32` or full canonical paths; verify `GetProcAddress != NULL`."
+}
+@FAULT_NODE [ERR-WIN-002] {
+    HEX_CODE  : "0x040C0002"
+    DOMAIN    : "Windows Registry Inspection & Handle Lifecycle"
+    INVARIANT : "Specify `KEY_WOW64_64KEY` flags, allocate `cbData + sizeof(wchar_t)` to force null termination, and close every `HKEY` on exit."
+}
+@FAULT_NODE [ERR-CAT-001] {
+    HEX_CODE  : "0x040D0001"
+    DOMAIN    : "Catalog Signing & MakeCAB Pipelines (Dark-Com-2-bat.cat)"
+    INVARIANT : "Generate `.cdf`/`.ddf` entries from live workspace inventories, quote all source paths, and verify signatures post-build."
+}
+@FAULT_NODE [ERR-SOCK-001] {
+    HEX_CODE  : "0x040E0001"
+    DOMAIN    : "Winsock2 Low-Level Socket Framing (dc2ws2)"
+    INVARIANT : "Set explicit `SO_RCVTIMEO` and `SO_SNDTIMEO` timeouts, loop `send()`/`recv()` across partial packets, and parse `\\r\\n\\r\\n` boundaries."
+}
+
+::VOLUME_05_THREADING_IPC_CRYPTO [v1.4.0]::
+@FAULT_NODE [ERR-THR-001] {
+    HEX_CODE  : "0x050F0001"
+    DOMAIN    : "Worker Thread Synchronization & Win32 GUI Message Pumps"
+    INVARIANT : "Enforce strict lock hierarchy, keep `WndProc` non-blocking via `PostMessageW`, and transfer buffer ownership deterministically."
+}
+@FAULT_NODE [ERR-THR-002] {
+    HEX_CODE  : "0x050F0002"
+    DOMAIN    : "UTF-8 <-> UTF-16 Conversion Lifecycles"
+    INVARIANT : "Query exact length with `cbMultiByte = -1`, validate `len > 0`, and release heap buffers through a single cleanup exit path."
+}
+@FAULT_NODE [ERR-IPC-001] {
+    HEX_CODE  : "0x05100001"
+    DOMAIN    : "Windows Named Pipes & IPC Framing"
+    INVARIANT : "Prepend 4-byte `uint32_t` length headers, cap `MAX_FRAME_SIZE`, bind servers with `FILE_FLAG_FIRST_PIPE_INSTANCE`, and recycle broken pipes."
+}
+@FAULT_NODE [ERR-CRY-001] {
+    HEX_CODE  : "0x05110001"
+    DOMAIN    : "Windows CNG (BCrypt) Hashing & Entropy"
+    INVARIANT : "Use `BCryptGenRandom(..., BCRYPT_USE_SYSTEM_PREFERRED_RNG)`, hash files strictly in binary mode (`\"rb\"`), and destroy CNG handles."
+}
+
+::VOLUME_06_PE_MEMORY_DEBUG [v1.5.0]::
+@FAULT_NODE [ERR-PE-001] {
+    HEX_CODE  : "0x06120001"
+    DOMAIN    : "PE32 / PE32+ Header & Section Inspection (dc2pe)"
+    INVARIANT : "Validate file size against `e_lfanew` and NT headers first, branch strictly on `Magic` (`0x10b`/`0x20b`), and bounds-check RVA translations."
+}
+@FAULT_NODE [ERR-MEM-001] {
+    HEX_CODE  : "0x06130001"
+    DOMAIN    : "Remote Process Memory Scanning (dc2mem)"
+    INVARIANT : "Read exclusively when `mbi.State == MEM_COMMIT` and `(mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) == 0`; advance by `mbi.RegionSize`."
+}
+@FAULT_NODE [ERR-DBG-001] {
+    HEX_CODE  : "0x06140001"
+    DOMAIN    : "Win32 Debug Loop & Exception Telemetry (dc2trace)"
+    INVARIANT : "Close `CreateProcessInfo.hFile` and `LoadDll.hFile` immediately on event receipt and preserve first-chance breakpoint continuation."
+}
+@FAULT_NODE [ERR-DBG-002] {
+    HEX_CODE  : "0x06140002"
+    DOMAIN    : "Structured Exception Handling & MiniDump Telemetry"
+    INVARIANT : "Pre-allocate crash dump paths in static memory at startup; avoid heap allocations inside unhandled exception filters."
+}
+
+::VOLUME_07_SERVICES_COM_DEVICES [v1.6.0]::
+@FAULT_NODE [ERR-SVC-001] {
+    HEX_CODE  : "0x07150001"
+    DOMAIN    : "Windows Service Control Manager (SCM) Lifecycles"
+    INVARIANT : "Emit `SERVICE_START_PENDING` checkpoints, transition to `SERVICE_RUNNING` before worker loop entry, and support `--console` interactive mode."
+}
+@FAULT_NODE [ERR-COM-001] {
+    HEX_CODE  : "0x07160001"
+    DOMAIN    : "COM Apartment Initialization & WMI Queries"
+    INVARIANT : "Initialize COM once per thread (`COINIT_MULTITHREADED`), verify `VARIANT.vt` before dereferencing, and call `VariantClear()`."
+}
+@FAULT_NODE [ERR-DEV-001] {
+    HEX_CODE  : "0x07170001"
+    DOMAIN    : "Serial COM Ports & DeviceIoControl Handles"
+    INVARIANT : "Format port paths as `\\\\.\\COM%u`, configure explicit `COMMTIMEOUTS` and `DCB`, and purge stale buffers via `PurgeComm`."
+}
+
+::VOLUME_08_WEBVIEW2_BUILD_POWERSHELL [v1.7.0]::
+@FAULT_NODE [ERR-WV2-001] {
+HEX_CODE  : "0x08180001"
+DOMAIN    : "WebView2 Host Environment & Navigation Lifecycle"
+INVARIANT : "Chain Navigate() inside CreateCoreWebView2ControllerCompleted, isolate userDataFolder per profile, and check IsSuccess in NavigationCompleted."
+}
+@FAULT_NODE [ERR-WV2-002] {
+HEX_CODE  : "0x08180002"
+DOMAIN    : "Host-to-WebView2 JSON Message Bridge"
+INVARIANT : "Serialize outbound payloads via verified UTF-8->UTF-16 JSON builders and free all [out] WebView2 strings with CoTaskMemFree()."
+}
+@FAULT_NODE [ERR-BLD-001] {
+HEX_CODE  : "0x08190001"
+DOMAIN    : "MSVC / UCRT64 Toolchains & Subsystem Entry Points"
+INVARIANT : "Align /MD CRT linkage across host and DLLs, match entry points (wmain vs wWinMain), and co-locate native x64 dependencies."
+}
+@FAULT_NODE [ERR-PS-001] {
+HEX_CODE  : "0x081A0001"
+DOMAIN    : "PowerShell Host Wrappers & .wsc Scriptlets"
+INVARIANT : "Instantiate .wsc components via direct script: monikers without registry writes and enforce $ErrorActionPreference = 'Stop'."
+}
+::VOLUME_09_OPENGL_KINEMATICS_AUDIO [v1.8.0]::
+@FAULT_NODE [ERR-GFX-001] {
+HEX_CODE  : "0x091B0001"
+DOMAIN    : "OpenGL Context Binding & Shader Compilation"
+INVARIANT : "Verify active HGLRC via wglMakeCurrent before loading extensions, inspect shader/program info logs, and bind VAO before vertex attribs."
+}
+@FAULT_NODE [ERR-KIN-001] {
+HEX_CODE  : "0x091C0001"
+DOMAIN    : "Track-Locked Camera Kinematics & Quaternion Orientation"
+INVARIANT : "Guard vector normalization (length_sq >= 1e-8f), compose track tangent with local yaw/pitch/roll quaternions, and clamp pitch to [-89°, +89°]."
+}
+@FAULT_NODE [ERR-AUD-001] {
+HEX_CODE  : "0x091D0001"
+DOMAIN    : "Real-Time WASAPI / WaveOut Audio Streaming"
+INVARIANT : "Feed audio callbacks strictly from lock-free SPSC ring buffers and rebind default endpoints on AUDCLNT_E_DEVICE_INVALIDATED."
+}
+::VOLUME_10_DX12_REGISTRY_SWAPCHAIN [v1.9.0]::
+@FAULT_NODE [ERR-DX12-001] {
+HEX_CODE  : "0x0A1E0001"
+DOMAIN    : "DirectX 12 Command Allocators, Fences & Resource Barriers"
+INVARIANT : "Wait on per-frame ID3D12Fence completion before calling CommandAllocator::Reset() and validate resource barrier state transitions."
+}
+@FAULT_NODE [ERR-DX12-002] {
+HEX_CODE  : "0x0A1E0002"
+DOMAIN    : "DirectX 12 Descriptor Heaps & Root Signatures"
+INVARIANT : "Query GetDescriptorHandleIncrementSize per heap type, enforce slot capacity bounds, and match root parameters to HLSL registers."
+}
+@FAULT_NODE [ERR-REG-001] {
+HEX_CODE  : "0x0A1F0001"
+DOMAIN    : "Pure WinAPI / reg.exe Installer Wrappers"
+INVARIANT : "Default per-user associations to HKCU\\Software\\Classes, pass /reg:64 /f to reg.exe, and broadcast SHChangeNotify(SHCNE_ASSOCCHANGED, ...)."
+}
+@FAULT_NODE [ERR-VSYNC-001] {
+HEX_CODE  : "0x0A200001"
+DOMAIN    : "Win32 Window Presentation & Flicker Elimination"
+INVARIANT : "Set wc.hbrBackground = NULL, return 1 on WM_ERASEBKGND, and present via DXGI_SWAP_EFFECT_FLIP_DISCARD."
+}
+::VOLUME_11_WINHTTP_PHP85_EDGE_MV3 [v2.0.0]::
+@FAULT_NODE [ERR-HTTP-001] {
+HEX_CODE  : "0x0B210001"
+DOMAIN    : "Native WinHTTP Request & TLS Handshake Lifecycle"
+INVARIANT : "Loop WinHttpQueryDataAvailable + WinHttpReadData until dwSize == 0, enforce TLS 1.2+, and close HINTERNET handles in reverse order."
+}
+@FAULT_NODE [ERR-PHP-001] {
+HEX_CODE  : "0x0B220001"
+DOMAIN    : "PHP 8.5+ NTS Built-In Server & CLI Execution"
+INVARIANT : "Anchor includes to __DIR__, guard optional extensions with extension_loaded(), and pass JSON_THROW_ON_ERROR to JSON routines."
+}
+@FAULT_NODE [ERR-EXT-001] {
+HEX_CODE  : "0x0B230001"
+DOMAIN    : "Microsoft Edge MV3 Native Messaging C Hosts"
+INVARIANT : "Switch stdin/stdout to _O_BINARY at main() entry, route logs exclusively to stderr, and prefix UTF-8 JSON with 32-bit length headers."
+}
+::VOLUME_12_GITHUB_LAYERED_UI_MMAP [v2.1.0]::
+@FAULT_NODE [ERR-GIT-001] {
+HEX_CODE  : "0x0C240001"
+DOMAIN    : "GitHub Contents API & Datalake Push (/dl////*.json)"
+INVARIANT : "Fetch existing blob sha before PUT updates, strip Base64 line-wraps, include User-Agent + API version headers, and serialize commits."
+}
+@FAULT_NODE [ERR-HOLO-001] {
+HEX_CODE  : "0x0C250001"
+DOMAIN    : "Win32 Layered Windows & Per-Pixel Alpha Composition"
+INVARIANT : "Premultiply 32-bit BGRA channels by alpha, pass AC_SRC_ALPHA, and render via UpdateLayeredWindow without WM_PAINT mixing."
+}
+@FAULT_NODE [ERR-MMAP-001] {
+HEX_CODE  : "0x0C260001"
+DOMAIN    : "Win32 Memory-Mapped File Views"
+INVARIANT : "Verify fileSize.QuadPart > 0 before CreateFileMappingW, align offsets to dwAllocationGranularity, and unmap views before closing handles."
+}
+::VOLUME_13_JOBS_SINGLETONS_DPI_GLASS [v2.2.0]::
+@FAULT_NODE [ERR-JOB-001] {
+HEX_CODE  : "0x0D270001"
+DOMAIN    : "Win32 Job Objects & Child Process Tree Containment"
+INVARIANT : "Assign spawned workers to a JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE Job Object prior to ResumeThread."
+}
+@FAULT_NODE [ERR-SYNC-001] {
+HEX_CODE  : "0x0D280001"
+DOMAIN    : "Named Kernel Mutexes & Single-Instance Daemons"
+INVARIANT : "Scope mutexes to Local\\MERCWAR_AVIS_<MODULE> and exit cleanly if GetLastError() == ERROR_ALREADY_EXISTS."
+}
+@FAULT_NODE [ERR-DPI-001] {
+HEX_CODE  : "0x0D290001"
+DOMAIN    : "Per-Monitor DPI Awareness & Custom Dark-Glass Frames"
+INVARIANT : "Enable DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2, scale metrics via MulDiv(px, dpi, 96), and fall back to #0A0A0C brushes if DWM attributes fail."
+}
+::VOLUME_14_ANSI_VT_DPAPI_WATCHERS [v2.3.0]::
+@FAULT_NODE [ERR-VT-001] {
+HEX_CODE  : "0x0E2A0001"
+DOMAIN    : "Windows Console Virtual Terminal & UTF-8 Output"
+INVARIANT : "Set CP_UTF8 and ENABLE_VIRTUAL_TERMINAL_PROCESSING only after verifying GetFileType(hOut) == FILE_TYPE_CHAR."
+}
+@FAULT_NODE [ERR-SEC-001] {
+HEX_CODE  : "0x0E2B0001"
+DOMAIN    : "Windows DPAPI Local Token Sealing & Memory Scrubbing"
+INVARIANT : "Seal persisted secrets via CryptProtectData(..., CRYPTPROTECT_UI_FORBIDDEN) and scrub runtime token buffers with SecureZeroMemory()."
+}
+@FAULT_NODE [ERR-MON-001] {
+HEX_CODE  : "0x0E2C0001"
+DOMAIN    : "NTFS Directory Change Watchers (ReadDirectoryChangesW)"
+INVARIANT : "Use 64KB DWORD-aligned buffers, rescan on ERROR_NOTIFY_ENUM_DIR, and debounce events until FILE_SHARE_READ succeeds."
+}
+::VOLUME_15_XML_TIMERS_SHELL_DROPS [v2.4.0]::
+@FAULT_NODE [ERR-XML-001] {
+HEX_CODE  : "0x0F2D0001"
+DOMAIN    : "Recursive XML Sitemap & Event Manifest Generation"
+INVARIANT : "Escape all 5 XML entities (&amp;, &lt;, &gt;, &quot;, &apos;) and partition sitemaps before 50,000 URLs or 50MB."
+}
+@FAULT_NODE [ERR-TMR-001] {
+HEX_CODE  : "0x0F2E0001"
+DOMAIN    : "Monotonic High-Resolution Timers & Frame Stepping"
+INVARIANT : "Compute intervals via QueryPerformanceCounter / QueryPerformanceFrequency and clamp frame dt <= 0.1f across modal stalls."
+}
+@FAULT_NODE [ERR-SHL-001] {
+HEX_CODE  : "0x0F2F0001"
+DOMAIN    : "Win32 Drag-and-Drop & Global Clipboard Memory"
+INVARIANT : "Query lengths via DragQueryFileW, call DragFinish(hDrop), and never free GMEM_MOVEABLE handles after SetClipboardData handoff."
+}
+::VOLUME_16_RAW_INPUT_CAB_GDI_D2D [v2.5.0]::
+@FAULT_NODE [ERR-INP-001] {
+HEX_CODE  : "0x10300001"
+DOMAIN    : "Win32 Raw Input & HID Capture"
+INVARIANT : "Query GetRawInputData buffer size dynamically, distinguish relative vs. absolute mouse flags, and reset key states on WM_KILLFOCUS."
+}
+@FAULT_NODE [ERR-ARC-001] {
+HEX_CODE  : "0x10310001"
+DOMAIN    : "CAB / ZIP Archive Extraction & Path Containment"
+INVARIANT : "Canonicalize target paths with GetFullPathNameW and enforce strict destination root-prefix containment before writing."
+}
+@FAULT_NODE [ERR-GDI-001] {
+HEX_CODE  : "0x10320001"
+DOMAIN    : "Win32 GDI Object & Direct2D Target Lifecycles"
+INVARIANT : "Deselect GDI handles (SelectObject(hdc, hOld)) before DeleteObject() and rebuild device-dependent resources on D2DERR_RECREATE_TARGET."
+}
+::VOLUME_17_WIC_TRAY_LOOPBACK_PORTS [v2.6.0]::
+@FAULT_NODE [ERR-IMG-001] {
+HEX_CODE  : "0x11330001"
+DOMAIN    : "Windows Imaging Component (WIC) Decoding"
+INVARIANT : "Convert frames to GUID_WICPixelFormat32bppPBGRA with DWORD-aligned row strides and release decoders immediately after CopyPixels()."
+}
+@FAULT_NODE [ERR-TRY-001] {
+HEX_CODE  : "0x11340001"
+DOMAIN    : "Win32 System Tray & Explorer Restart Recovery"
+INVARIANT : "Listen for RegisterWindowMessageW(L\"TaskbarCreated\") in WndProc to re-add notification icons after explorer.exe restarts."
+}
+@FAULT_NODE [ERR-PRT-001] {
+HEX_CODE  : "0x11350001"
+DOMAIN    : "Localhost Micro-Server Port Binding"
+INVARIANT : "Bind local servers strictly to 127.0.0.1, probe deterministic ephemeral ports on WSAEADDRINUSE, and record active port in a lockfile."
+}
+::VOLUME_18_SCHEDULER_MIDI_ENV_PATHS [v2.7.0]::
+@FAULT_NODE [ERR-TSK-001] {
+HEX_CODE  : "0x12360001"
+DOMAIN    : "Windows Task Scheduler Unattended Triggers"
+INVARIANT : "Specify full canonical paths for executable and working directory and target /SUBSYSTEM:WINDOWS binaries to eliminate console flashes."
+}
+@FAULT_NODE [ERR-MID-001] {
+HEX_CODE  : "0x12370001"
+DOMAIN    : "WinMM MIDI Playback & Scheduler Granularity"
+INVARIANT : "Pair timeBeginPeriod(1) with timeEndPeriod(1) and send channel All-Notes-Off (CC 123) + midiOutReset() before midiOutClose()."
+}
+@FAULT_NODE [ERR-ENV-001] {
+HEX_CODE  : "0x12380001"
+DOMAIN    : "Executable Self-Location & Environment Expansion"
+INVARIANT : "Anchor asset/datalake paths relative to GetModuleFileNameW(NULL, ...) rather than GetCurrentDirectoryW()."
+}
+::VOLUME_19_HOLO_JSON_UAC_CHECKPOINTS [v2.8.0]::
+@FAULT_NODE [ERR-3D-001] {
+HEX_CODE  : "0x13390001"
+DOMAIN    : "3D Window Holographic Item JSON Deserialization"
+INVARIANT : "Validate isfinite() on all 3D transforms, clamp non-zero scales (>= 1e-4f), cap MAX_HOLO_NODES, and reject invalid nodes with zero mock geometry."
+}
+@FAULT_NODE [ERR-UAC-001] {
+HEX_CODE  : "0x133A0001"
+DOMAIN    : "UAC Token Elevation & UIPI Message Filtering"
+INVARIANT : "Inspect TokenElevation before runas relaunch and allow WM_DROPFILES/WM_COPYDATA via ChangeWindowMessageFilterEx when elevated."
+}
+@FAULT_NODE [ERR-CHK-001] {
+HEX_CODE  : "0x133B0001"
+DOMAIN    : "Datalake Ingestion Checkpoints (e:\dl)"
+INVARIANT : "Commit checkpoint cursors atomically strictly after downstream HTTP 200 or SQLite COMMIT acknowledgment."
+}
+::VOLUME_19B_JSONL_ROTATION_MONITORS_KV [v2.9.0]::
+@FAULT_NODE [ERR-LOG-001] {
+HEX_CODE  : "0x133C0001"
+DOMAIN    : "JSONL Telemetry Append & Size-Bounded Log Rotation"
+INVARIANT : "Write complete newline-terminated JSON records via single FILE_APPEND_DATA calls, rotate at MAX_LOG_BYTES, and prune old generations."
+}
+@FAULT_NODE [ERR-MON-002] {
+HEX_CODE  : "0x133D0001"
+DOMAIN    : "Multi-Monitor Workspace Restoration"
+INVARIANT : "Validate persisted window coordinates via MonitorFromRect(&rc, MONITOR_DEFAULTTONULL) and clamp off-screen rects inside active rcWork."
+}
+@FAULT_NODE [ERR-KV-001] {
+HEX_CODE  : "0x133E0001"
+DOMAIN    : "Local LLM Context & KV-Cache Pruning (FireGem / Qwen)"
+INVARIANT : "Pin system/AVIS tokens [0 .. n_keep) and shift/evict older conversational KV cache ranges before n_past saturates n_ctx."
+}
+::VOLUME_20_SOVEREIGN_GOVERNANCE_FINAL [v3.0.0]::
+@FAULT_NODE [ERR-SOV-001] {
+HEX_CODE  : "0x143F0001"
+DOMAIN    : "Executable & Manifest Self-Integrity Auditing"
+INVARIANT : "Verify Authenticode signatures (WinVerifyTrust) and SHA-256 manifest digests before activating autonomous pipelines."
+}
+@FAULT_NODE [ERR-AGT-001] {
+HEX_CODE  : "0x14400001"
+DOMAIN    : "Autonomous Intent Routing & Zero-Guess Synthesis"
+INVARIANT : "Separate conversational inputs from rigid command parsers so greetings never crash, and halt with explicit diagnostics rather than emitting mock/guessed data."
+}
+@FAULT_NODE [ERR-HW-001] {
+HEX_CODE  : "0x14410001"
+DOMAIN    : "Quad-Core CPU & 16GB RAM / Low-Power VRAM Governance"
+INVARIANT : "Bound worker thread pools to physical core count (<= 4), enforce <= 6GB local model ceilings, and query GlobalMemoryStatusEx + DXGI memory info pre-allocation."
+}
+::MASTER_SOVEREIGN_GATE::
+@GATE_CHECK_MASTER {
+STATUS             : "ACTIVE_ENFORCEMENT"
+TOTAL_INVARIANTS   : 67
+HEADER_BINDING     : "avis_err_spec.h (v3.0.1)"
+SYNTHETIC_FALLBACK : "STRICTLY_PROHIBITED"
+}
+::AVIS_MANIFEST_END::
