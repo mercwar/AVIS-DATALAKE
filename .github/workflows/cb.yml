@@ -18,7 +18,7 @@ jobs:
             exit 1
           fi
 
-          LINK_CONTENT=$(printf '# AVIS-DATALAKE\n\nCentral AVIS Datalake Repository: https://github.com\n')
+          LINK_CONTENT=$(printf '# AVIS-DATALAKE\n\nCentral AVIS Datalake Repository: https://github.com')
 
           gh repo list mercwar \
             --visibility public \
@@ -32,12 +32,6 @@ jobs:
                 echo "[$name] Skipped (could not read $branch)."
                 continue
               }
-
-              LAST_MSG=$(gh api "repos/mercwar/${name}/commits/${HEAD_SHA}" --jq '.commit.message' 2>/dev/null || true)
-              if echo "$LAST_MSG" | grep -q "Link AVIS-DATALAKE repository"; then
-                echo "[$name] Skipped (HEAD is already updated)."
-                continue
-              fi
 
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
               RAW_TREE=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}")
