@@ -1,0 +1,60 @@
+name: Remove Private Submodules (One-Time)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  remove-private-submodules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout mercwar/AVIS-DATALAKE
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Remove private submodules
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [ ! -f .gitmodules ]; then
+            echo "No .gitmodules found."
+            exit 0
+          fi
+
+          while IFS= read -r name; do
+            [ -z "$name" ] && continue
+            if git config -f .gitmodules --get "submodule.${name}.url" >/dev/null 2>&1; then
+              echo "Removing private submodule: $name"
+              git submodule deinit -f -- "$name" 2>/dev/null || true
+              git rm -f --cached "$name" 2>/dev/null || true
+              rm -rf ".git/modules/$name" "$name"
+              git config -f .gitmodules --remove-section "submodule.${name}" 2>/dev/null || true
+            fi
+          done < <(
+            gh repo list mercwar \
+              --limit 200 \
+              --json name,isPrivate \
+              --jq '.[] | select(.isPrivate == true) | .name'
+          )
+
+          if [ -z "$(git config -f .gitmodules --list 2>/dev/null)" ]; then
+            git rm -f .gitmodules
+          fi
+
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No private submodules found to remove."
+          else
+            git commit -m "Remove private repository submodules"
+            git push
+          fi
