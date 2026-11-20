@@ -1,0 +1,112 @@
+name: Callback - Remove AVIS-DATALAKE Links from Public Repos
+
+on:
+  workflow_dispatch:
+
+jobs:
+  callback-remove-datalake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove AVIS-DATALAKE link and submodule config from each public repo
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "Error: GH_PAT secret is missing."
+            exit 1
+          fi
+
+          gh repo list mercwar \
+            --visibility public \
+            --limit 200 \
+            --json name,defaultBranchRef,isEmpty,isArchived \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false) | "\(.name) \(.defaultBranchRef.name)"' \
+          | while read -r name branch; do
+              [ -z "$branch" ] || [ "$branch" = "null" ] && continue
+
+              HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null) || {
+                echo "[$name] Skipped (could not read $branch)."
+                continue
+              }
+
+              BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+
+              TREE_ITEMS="[]"
+
+              # 1. Remove AVIS-DATALAKE gitlink / directory entry if present
+              HAS_LINK=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
+                --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .path' 2>/dev/null || true)
+
+              if [ -n "$HAS_LINK" ]; then
+                TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                  '. + [{ path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: null }]')
+              fi
+
+              # 2. Clean AVIS-DATALAKE out of .gitmodules (or delete .gitmodules if nothing else is in it)
+              GITMODULES=$(gh api "repos/mercwar/${name}/contents/.gitmodules?ref=${branch}" \
+                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
+
+              if [ -n "$GITMODULES" ] && echo "$GITMODULES" | grep -q 'AVIS-DATALAKE'; then
+                CLEAN_GM=$(echo "$GITMODULES" | awk '
+                  /^\[submodule "AVIS-DATALAKE"\]/ { skip=1; next }
+                  /^\[/ { skip=0 }
+                  !skip { print }
+                ')
+                if [ -z "$(echo "$CLEAN_GM" | tr -d '[:space:]')" ]; then
+                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                    '. + [{ path: ".gitmodules", mode: "100644", type: "blob", sha: null }]')
+                else
+                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                    --arg gm "$CLEAN_GM" \
+                    '. + [{ path: ".gitmodules", mode: "100644", type: "blob", content: $gm }]')
+                fi
+              fi
+
+              # 3. Clean AVIS-DATALAKE out of _config.yml if present
+              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=${branch}" \
+                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
+
+              if [ -n "$CFG" ] && echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
+                CLEAN_CFG=$(echo "$CFG" | grep -v 'AVIS-DATALAKE' || true)
+                if [ "$(echo "$CLEAN_CFG" | tr -d '[:space:]')" = "exclude:" ] || [ -z "$(echo "$CLEAN_CFG" | tr -d '[:space:]')" ]; then
+                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                    '. + [{ path: "_config.yml", mode: "100644", type: "blob", sha: null }]')
+                else
+                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                    --arg cfg "$CLEAN_CFG" \
+                    '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
+                fi
+              fi
+
+              if [ "$(echo "$TREE_ITEMS" | jq 'length')" -eq 0 ]; then
+                echo "[$name] Clean (no AVIS-DATALAKE entry found)."
+                continue
+              fi
+
+              NEW_TREE=$(jq -n \
+                --arg base "$BASE_TREE" \
+                --argjson tree "$TREE_ITEMS" \
+                '{ base_tree: $base, tree: $tree }' | \
+                gh api "repos/mercwar/${name}/git/trees" --input - --jq '.sha') || {
+                  echo "[$name] ERROR creating tree."
+                  continue
+                }
+
+              NEW_COMMIT=$(jq -n \
+                --arg msg "Remove AVIS-DATALAKE link" \
+                --arg tree "$NEW_TREE" \
+                --arg parent "$HEAD_SHA" \
+                '{ message: $msg, tree: $tree, parents: [$parent] }' | \
+                gh api "repos/mercwar/${name}/git/commits" --input - --jq '.sha') || {
+                  echo "[$name] ERROR creating commit."
+                  continue
+                }
+
+              if gh api -X PATCH "repos/mercwar/${name}/git/refs/heads/${branch}" -f sha="$NEW_COMMIT" >/dev/null; then
+                echo "[$name] REMOVED -> Cleaned AVIS-DATALAKE on $branch ($NEW_COMMIT)"
+              else
+                echo "[$name] ERROR updating $branch (check GH_PAT permissions)."
+              fi
+            done
