@@ -630,8 +630,8 @@
       endTarget: new THREE.Vector3(),
       progress: 0
     };
-
-const container = document.getElementById('canvas-container');
+function initThreeScene() {
+  const container = document.getElementById('canvas-container');
   scene = new THREE.Scene();
 
   // Remove opaque FogExp2 so the CSS background shows through cleanly
@@ -649,6 +649,9 @@ const container = document.getElementById('canvas-container');
   // 2. Set clear alpha to 0 so the background image renders behind the 3D scene
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
+
+  // ... keep the rest of your initThreeScene() code unchanged ...
+
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
