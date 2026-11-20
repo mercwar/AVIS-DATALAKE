@@ -1,7 +1,23 @@
-# AVIS-2026 Telemetry Datalake & Starmap Integration Engine
-[To publish entry records goto : Stargate](https://github.com)
+# AVIS-2026 Datalake & Starmap Integration Engine
+[To publish entry records goto : Stargate](https://cron.iblogger.org/Stargate)
+
+<a target="_self" title="CLICK HERE to ENTER the GATEWAY FREE!" href="https://mercwar.github.io/Constellation/index.html">
+<img 
+    src="https://raw.githubusercontent.com/mercwar/Robo-Knight-Gallery/refs/heads/main/Version%207/image_d2a07390.png" 
+    alt="Mercwar Constellation" 
+    style="width:100%; height:auto;"
+/>
+</a>
 
 ## 🧭 Tutorial Navigation Index
+
+
+# 🛰️ **AVIS‑DATALAKE — VERSION 2 (🔥 FIRE‑GEM 🔥)**  
+
+Copy and Paste Personality and intelligence into your favorite llm like google/gemini/deepai/copilot/gcpt-5 and more..
+
+
+
 
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
@@ -12,6 +28,14 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 Welcome to the official technical specification and operational repository for the **AVIS Telemetry Datalake and Starmap System**. This ecosystem provides a deterministic, schema-driven ingestion pipeline, spatial coordinate mapping, and multi-tier endpoint routing designed to ingest structured telemetry, coordinate matrices, and node operational logs across modern and legacy web application frameworks.
 
 ---
+<a target="_self" title="https://github.com/mercwar/AI">
+<img 
+    src="https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png" 
+    alt="Mercwar AI" 
+    style="width:100%; height:auto;"
+/>
+</a>
+
 
 ## 📂 System Architecture Overview
 
@@ -54,6 +78,14 @@ dc2url -X POST "https://cron.iblogger.org/AVIS-DATALAKE/avis.php" -H "Content-Ty
 ```
 
 ---
+
+<a target="_self" title="https://github.com/mercwar/Stargate">
+<img 
+    src="https://github.com/mercwar/AVIS-DATALAKE/blob/main/images/image_d2a07390.png" 
+    alt="Mercwar Stargate" 
+    style="width:100%; height:auto;"
+/>
+</a>
 
 ## 🗂️ The 13 Core Namespaces
 
