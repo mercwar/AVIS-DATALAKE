@@ -28,8 +28,8 @@ jobs:
           fi
 
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@://github.com"
-          git config --global url."https://x-access-token:${GH_TOKEN}@://github.com".insteadOf "https://://github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          gh auth setup-git
 
           gh repo list mercwar \
             --limit 200 \
@@ -38,7 +38,7 @@ jobs:
           | while read -r name url branch; do
               if [ -n "$branch" ] && [ "$branch" != "null" ]; then
                 if ! git config -f .gitmodules --get "submodule.${name}.url" >/dev/null 2>&1; then
-                  git submodule add -f -b "$branch" "$url" "$name" || true
+                  git submodule add -f -b "$branch" "${url}.git" "$name" || true
                 fi
               fi
             done
