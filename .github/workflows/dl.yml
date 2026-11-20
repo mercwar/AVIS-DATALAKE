@@ -45,6 +45,23 @@ jobs:
           EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
           PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
+          # Fetch up to 1000 public repos
+          REPO_ROWS=$(gh repo list "$OWNER" \
+            --visibility public \
+            --limit 1000 \
+            --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
+            --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
+
+          # Force-check any existing 160000 link (such as robo-knight-inventory) via direct API lookup
+          for existing_name in $(echo "$EXISTING_LINKS" | jq -r 'keys[]'); do
+            if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
+              def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // empty' 2>/dev/null || true)
+              if [ -n "$def_branch" ]; then
+                REPO_ROWS+=$'\n'"${existing_name}"$'\t'"${def_branch}"
+              fi
+            fi
+          done
+
           LINK_ITEMS="[]"
           EXPECTED_MAP="{}"
           GITMODULES=""
@@ -52,12 +69,9 @@ jobs:
           CREATED_COUNT=0
           UPDATED_COUNT=0
 
-          while IFS=$'\t' read -r name branch is_empty is_private is_archived; do
+          while IFS=$'\t' read -r name branch; do
             [ -z "$name" ] && continue
             [ "$name" = "$REPO" ] && continue
-            [ "$is_empty" = "true" ] && continue
-            [ "$is_private" = "true" ] && continue
-            [ "$is_archived" = "true" ] && continue
             [ -z "$branch" ] || [ "$branch" = "null" ] && continue
 
             REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
@@ -87,13 +101,7 @@ jobs:
 
             GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n\tbranch = %s\n\n' "$name" "$name" "$OWNER" "$name" "$branch")
             EXCLUDES+=$'\n  - '"${name}/"
-          done < <(
-            gh repo list "$OWNER" \
-              --visibility public \
-              --limit 200 \
-              --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
-              --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // ""), (.isEmpty | tostring), (.isPrivate | tostring), (.isArchived | tostring)] | @tsv'
-          )
+          done <<< "$REPO_ROWS"
 
           if [ "$(echo "$LINK_ITEMS" | jq 'length')" -eq 0 ]; then
             echo "No public repos found to link."
@@ -158,29 +166,18 @@ jobs:
     needs: link-public-repos
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout root files only (ignore submodules)
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          submodules: false
-
-      - name: Verify folder links in checkout & clean workspace for full Jekyll build
+      - name: Download root repository archive (zero git/submodule execution)
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          GITLINK_COUNT=$(git ls-files --stage | awk '$1 == "160000"' | wc -l)
-          echo "Verified $GITLINK_COUNT folder links in checked-out commit."
-          if [ "$GITLINK_COUNT" -eq 0 ]; then
-            echo "ERROR: No 160000 folder links found in checked-out tree!"
-            exit 1
-          fi
-
-          # Remove empty 160000 stub folders & .gitmodules from runner disk so Jekyll ignores them completely
-          while read -r sub_path; do
-            [ -n "$sub_path" ] && rm -rf "$sub_path"
-          done < <(git ls-files --stage | awk '$1 == "160000" { print $4 }')
-          rm -f .gitmodules
-
-          # Remove .git so actions/checkout post-job cleanup exits cleanly with 0 warnings
-          rm -rf .git
+          mkdir -p src
+          gh api "repos/mercwar/AVIS-DATALAKE/tarball/main" > repo.tar.gz
+          tar -xzf repo.tar.gz --strip-components=1 -C src
+          rm -f repo.tar.gz src/.gitmodules
+          # Remove empty submodule directories from archive so Jekyll builds only site files
+          gh api "repos/mercwar/AVIS-DATALAKE/git/trees/main" --jq '.tree[] | select(.mode == "160000") | .path' | while read -r sub_path; do
+            [ -n "$sub_path" ] && rm -rf "src/${sub_path}"
+          done
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -188,7 +185,7 @@ jobs:
       - name: Build with Jekyll (Full GitHub Pages Build)
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
+          source: ./src
           destination: ./_site
 
       - name: Upload artifact
