@@ -28,7 +28,6 @@ jobs:
           TARGET_BRANCH="main"
           TARGET_URL="https://github.com{OWNER}/${TARGET_REPO}.git"
 
-          # Resolve current HEAD SHA of AVIS-DATALAKE
           TARGET_SHA=$(gh api "repos/${OWNER}/${TARGET_REPO}/git/ref/heads/${TARGET_BRANCH}" --jq '.object.sha')
           if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Error: Could not resolve valid 40-char SHA for ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH}: $TARGET_SHA"
@@ -63,7 +62,6 @@ jobs:
             BASE_TREE=$(gh api "repos/${OWNER}/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
             RAW_TREE=$(gh api "repos/${OWNER}/${name}/git/trees/${BASE_TREE}")
 
-            # Check for non-gitlink collision on AVIS-DATALAKE path
             COLLISION=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode != "160000") | .mode')
             if [ -n "$COLLISION" ]; then
               echo "[$name] ERROR: Path 'AVIS-DATALAKE' already exists as mode $COLLISION."
@@ -73,23 +71,27 @@ jobs:
 
             CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
 
-            # Build .gitmodules preserving any existing submodules
+            # Validate existing .gitmodules with git config; replace if corrupted
             EXISTING_GM=$(gh api "repos/${OWNER}/${name}/contents/.gitmodules?ref=${branch}" \
               --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
+            NEW_GM=$(printf '%s\n' "$GM_BLOCK")
             if [ -n "$EXISTING_GM" ]; then
-              CLEAN_GM=$(printf '%s\n' "$EXISTING_GM" | awk '
-                BEGIN { skip = 0 }
-                /^\[submodule "AVIS-DATALAKE"\]/ { skip = 1; next }
-                /^\[submodule / { skip = 0 }
-                !skip { print }
-              ')
-              NEW_GM=$(printf '%s\n\n%s\n' "$CLEAN_GM" "$GM_BLOCK" | sed '/./,$!d')
-            else
-              NEW_GM=$(printf '%s\n' "$GM_BLOCK")
+              TMP_GM=$(mktemp)
+              printf '%s\n' "$EXISTING_GM" > "$TMP_GM"
+              if git config --file "$TMP_GM" --list >/dev/null 2>&1; then
+                git config --file "$TMP_GM" --remove-section "submodule.${TARGET_REPO}" >/dev/null 2>&1 || true
+                CLEAN_GM=$(cat "$TMP_GM")
+                if [ -n "$CLEAN_GM" ]; then
+                  NEW_GM=$(printf '%s\n\n%s\n' "$CLEAN_GM" "$GM_BLOCK")
+                fi
+              else
+                echo "[$name] Existing .gitmodules is corrupted — replacing with clean .gitmodules."
+              fi
+              rm -f "$TMP_GM"
             fi
 
-            # Ensure _config.yml excludes AVIS-DATALAKE/ and .gitmodules so Jekyll/Pages builds cleanly
+            # Ensure _config.yml excludes AVIS-DATALAKE/ and .gitmodules
             EXISTING_CFG=$(gh api "repos/${OWNER}/${name}/contents/_config.yml?ref=${branch}" \
               --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
@@ -113,7 +115,6 @@ jobs:
               continue
             fi
 
-            # Use base_tree so existing .github/workflows and other entries stay untouched
             PATCH_ITEMS=$(jq -n \
               --arg tsha "$TARGET_SHA" \
               --arg gm "$NEW_GM" \
@@ -158,7 +159,6 @@ jobs:
               continue
             fi
 
-            # Strict post-commit verification against live branch tree
             LIVE_HEAD=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha')
             LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${name}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
             VERIFY_SHA=$(gh api "repos/${OWNER}/${name}/git/trees/${LIVE_TREE_SHA}" --jq '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
