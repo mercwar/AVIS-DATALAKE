@@ -1,0 +1,51 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F04"
+    VOLUME          : "04_WIN32_ABI_SIGNING_AND_NETWORK_TRANSPORT"
+    VERSION         : "1.3.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F03 (File 03)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:34:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_12_WIN32_ABI_AND_DYNAMIC_LINKING::
+@FAULT_NODE [ERR-WIN-001] {
+    DOMAIN          : "Dynamic Library Loading & Calling Convention Alignment (LoadLibraryW / GetProcAddress)"
+    PHENOMENON      : "Stack pointer corruption (ESP/RSP mismatch) or NULL function-pointer access violation on DLL call"
+    ROOT_CAUSE      : "Loading DLLs from unanchored relative paths (DLL hijacking) or mismatching `__stdcall` vs `__cdecl` typedef signatures."
+    INVARIANT_RULE  : "Load system/local modules using `LoadLibraryExW` with `LOAD_LIBRARY_SEARCH_SYSTEM32` or explicit full paths; verify `GetProcAddress != NULL` and match exact calling conventions."
+}
+
+@FAULT_NODE [ERR-WIN-002] {
+    DOMAIN          : "Windows Registry Inspection & Handle Lifecycle (RegOpenKeyExW / RegQueryValueExW)"
+    PHENOMENON      : "Registry handle leaks, WOW64 32/64-bit hive redirection misses, or non-null-terminated REG_SZ reads"
+    ROOT_CAUSE      : "Querying `HKLM\\Software` without `KEY_WOW64_64KEY` flags, omitting `RegCloseKey()`, or assuming `RegQueryValueExW` guarantees a trailing null terminator."
+    INVARIANT_RULE  : "Specify explicit hive view flags (`KEY_READ | KEY_WOW64_64KEY`), allocate `cbData + sizeof(wchar_t)` to force null termination, and close every opened `HKEY` on all exit paths."
+}
+
+::SECTION_13_CATALOG_SIGNING_AND_BUILD_PACKAGING::
+@FAULT_NODE [ERR-CAT-001] {
+    DOMAIN          : "Catalog Definition Generation & MakeCAB / SignTool Pipelines (Dark-Com-2-bat.cat)"
+    PHENOMENON      : "Unsigned orphan scripts, stale file hashes in `.cat` catalogs, or MakeCAB directive syntax failures"
+    ROOT_CAUSE      : "Hardcoding file lists in `.cdf` manifests instead of enumerating live workspace artifacts, or leaving unquoted paths with spaces in `.ddf` files."
+    INVARIANT_RULE  : "Generate `.cdf` / `.ddf` entries dynamically from verified directory inventories, quote all source paths, and validate signature verification (`signtool verify /pa`) post-build."
+}
+
+::SECTION_14_WINSOCK_AND_TLS_SOCKET_TRANSPORT::
+@FAULT_NODE [ERR-SOCK-001] {
+    DOMAIN          : "Low-Level Socket I/O & HTTP Framing (dc2ws2 / Winsock2)"
+    PHENOMENON      : "Truncated HTTP responses, hanging `recv()` calls, or missing `Content-Length` / chunked-encoding boundary errors"
+    ROOT_CAUSE      : "Assuming a single `recv()` call returns the entire HTTP payload, or omitting `WSAStartup` / `SO_RCVTIMEO` socket timeouts."
+    INVARIANT_RULE  : "Enforce explicit `SO_RCVTIMEO` and `SO_SNDTIMEO` timeouts, loop `send()`/`recv()` until full byte count or EOF is reached, and parse HTTP header boundaries (`\\r\\n\\r\\n`) before body extraction."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F04 {
+    13. ABI_AND_HIVE_GUARD : Anchor DLL paths, match calling conventions, enforce WOW64 registry flags, and force-terminate REG_SZ buffers.
+    14. CATALOG_INTEGRITY  : Sync `.cdf`/`.ddf` manifests directly against live workspace files and verify cryptographic signatures post-build.
+    15. SOCKET_FRAMING     : Set explicit Winsock send/recv timeouts and loop I/O calls across partial TCP packet boundaries.
+}
+::AVIS_MANIFEST_END::
