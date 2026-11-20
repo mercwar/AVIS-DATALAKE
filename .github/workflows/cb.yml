@@ -1,4 +1,4 @@
-name: Link All Mercwar Repos Back to AVIS-DATALAKE
+name: Callback - Link AVIS-DATALAKE into Each Repo
 
 on:
   workflow_dispatch:
@@ -6,10 +6,10 @@ on:
     - cron: '30 0 * * *'
 
 jobs:
-  link-back-to-datalake:
+  callback-link-datalake:
     runs-on: ubuntu-latest
     steps:
-      - name: Add AVIS-DATALAKE link to main branch of each repo (Zero Clones)
+      - name: Place 1 AVIS-DATALAKE link in main branch of each repo
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -23,14 +23,12 @@ jobs:
 
           gh repo list mercwar \
             --limit 200 \
-            --json name,isEmpty,isArchived \
-            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false) | .name' \
+            --json name,isEmpty,isArchived,isPrivate \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false and .isPrivate == false) | .name' \
           | while read -r name; do
-              # Only target the 'main' branch
               HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/main" --jq '.object.sha' 2>/dev/null) || continue
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
 
-              # Check existing pointer & .gitmodules on main
               EXISTING_SHA=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
                 --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .sha' 2>/dev/null || true)
 
@@ -43,7 +41,6 @@ jobs:
                 NEEDS_GM=true
               fi
 
-              # Exclude AVIS-DATALAKE from Jekyll if _config.yml exists
               CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=main" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
@@ -58,7 +55,7 @@ jobs:
               fi
 
               if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_GM" = "false" ] && [ "$NEEDS_CFG" = "false" ]; then
-                echo "[$name] Already up to date."
+                echo "[$name] Already linked."
                 continue
               fi
 
