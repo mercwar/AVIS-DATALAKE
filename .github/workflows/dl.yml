@@ -144,7 +144,8 @@ jobs:
           echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
           LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
           LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
-          LIVE_LINKS=$(echo "$LIVE_TREE_JSON=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}")" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
+          LIVE_TREE_JSON=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}")
+          LIVE_LINKS=$(echo "$LIVE_TREE_JSON" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
 
           MISSING_OR_BAD=0
           while IFS= read -r repo_name; do
