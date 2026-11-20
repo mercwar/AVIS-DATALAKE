@@ -4,11 +4,19 @@
 
 ## 🧭 Tutorial Navigation Index
 
+<a target="_self" title="https://github.com/mercwar/AI">
+<img 
+    src="https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png" 
+    alt="Mercwar AI" 
+    style="width:100%; height:auto;"
+/>
+</a>
+
+
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
-* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 This tutorial walks through the modular components required to construct, serialize, and transmit a strict schema home record containing an HTML "Hello" payload directly to your `/avis.php` endpoint for data lake storage and GitHub synchronization.
 
 ---
@@ -46,6 +54,7 @@ Construct your input form to incorporate the mandatory root-level identifiers, s
 ---
 
 ## Step 2: Client-Side JavaScript Transmission Logic
+
 
 Use JavaScript to automatically generate a unique transaction ID on load, bind the form data into URL-encoded parameters, and post the payload asynchronously to `/avis.php`.
 
@@ -85,7 +94,7 @@ async function submitHomeRecord(event) {
 
 ---
 
-## Step 3: Server-Side PHP Ingress Receiver (`avis.php`)
+## Step 3: Server-Side PHP API Receiver (`avis.php`)
 
 On the backend, parse the incoming multi-dimensional `$_POST['home']` array, validate mandatory strict schema parameters, persist the HTML content into the local datalake directory structure, and return a JSON status acknowledgment.
 
@@ -145,7 +154,15 @@ echo json_encode([
 
 ```
 
-# 📊 AVIS-DATALAKE Form Ingestion Schemas & Telemetry
+# 📊 AVIS-DATALAKE Form data Schemas & Telemetry
+
+<a target="_self" title="https://github.com/mercwar/Stargate">
+<img 
+    src="https://github.com/mercwar/AVIS-DATALAKE/blob/main/images/image_d2a07390.png" 
+    alt="Mercwar Stargate" 
+    style="width:100%; height:auto;"
+/>
+</a>
 
 The data structures extracted from the `AVIS-DATALAKE` forms reveal that the `avis.php` endpoint (`https://cron.iblogger.org/AVIS-DATALAKE/avis.php`) acts as an ingestion mechanism for system telemetry, asset details, and content storage. The fields are structured hierarchically using array-style bracket notation (e.g., `owner[system_id]`, `home[payload_content]`).
 
@@ -323,7 +340,6 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
-* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 
 ### 📜 All files and repositories
 
