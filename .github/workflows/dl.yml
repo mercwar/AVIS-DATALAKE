@@ -23,7 +23,7 @@ jobs:
   link-public-repos:
     runs-on: ubuntu-latest
     steps:
-      - name: Create or update missing public repo folder links in AVIS-DATALAKE
+      - name: Create, update, and verify public repo folder links in AVIS-DATALAKE
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -46,6 +46,7 @@ jobs:
           PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
           LINK_ITEMS="[]"
+          EXPECTED_MAP="{}"
           GITMODULES=""
           EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules'
           CREATED_COUNT=0
@@ -79,6 +80,11 @@ jobs:
               --arg sha "$REPO_SHA" \
               '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
 
+            EXPECTED_MAP=$(echo "$EXPECTED_MAP" | jq \
+              --arg path "$name" \
+              --arg sha "$REPO_SHA" \
+              '. + { ($path): $sha }')
+
             GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n' "$name" "$name" "$OWNER" "$name")$'\n'
             EXCLUDES+=$'\n  - '"${name}/"
           done < <(
@@ -107,20 +113,46 @@ jobs:
           NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
             gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
 
-          if [ "$NEW_TREE" = "$BASE_TREE" ]; then
-            echo "All folder links already exist and are up to date."
-            exit 0
+          if [ "$NEW_TREE" != "$BASE_TREE" ]; then
+            NEW_COMMIT=$(jq -n \
+              --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
+              --arg tree "$NEW_TREE" \
+              --arg parent "$HEAD_SHA" \
+              '{ message: $msg, tree: $tree, parents: [$parent] }' | \
+              gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
+
+            gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
+            echo "Committed folder links -> ${NEW_COMMIT}"
+          else
+            echo "No tree changes needed."
           fi
 
-          NEW_COMMIT=$(jq -n \
-            --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
-            --arg tree "$NEW_TREE" \
-            --arg parent "$HEAD_SHA" \
-            '{ message: $msg, tree: $tree, parents: [$parent] }' | \
-            gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
+          # --- STRICT VERIFICATION STEP ---
+          echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
+          LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
+          LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
+          LIVE_LINKS=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}" --jq '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
 
-          gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
-          echo "Done! ${CREATED_COUNT} created, ${UPDATED_COUNT} updated -> ${NEW_COMMIT}"
+          MISSING_OR_BAD=0
+          for repo_name in $(echo "$EXPECTED_MAP" | jq -r 'keys[]'); do
+            expected_sha=$(echo "$EXPECTED_MAP" | jq -r --arg k "$repo_name" '.[$k]')
+            actual_sha=$(echo "$LIVE_LINKS" | jq -r --arg k "$repo_name" '.[$k] // empty')
+            if [ -z "$actual_sha" ]; then
+              echo "FAIL: Missing 160000 folder link for '$repo_name'"
+              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
+            elif [ "$actual_sha" != "$expected_sha" ]; then
+              echo "FAIL: SHA mismatch for '$repo_name' (expected $expected_sha, got $actual_sha)"
+              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
+            else
+              echo "OK: $repo_name -> $actual_sha"
+            fi
+          done
+
+          if [ "$MISSING_OR_BAD" -gt 0 ]; then
+            echo "ERROR: $MISSING_OR_BAD folder link(s) failed verification!"
+            exit 1
+          fi
+          echo "All $(echo "$EXPECTED_MAP" | jq 'length') folder links verified!"
 
   deploy:
     needs: link-public-repos
@@ -135,12 +167,23 @@ jobs:
           ref: main
           submodules: false
 
-      - name: Ignore submodule stubs in deploy artifact
+      - name: Verify gitlinks exist in checked-out index & stage _site without them
         run: |
-          if [ -f .gitmodules ]; then
-            git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | xargs -r rm -rf
-            rm -f .gitmodules
+          GITLINK_COUNT=$(git ls-files --stage | awk '$1 == "160000"' | wc -l)
+          echo "Verified $GITLINK_COUNT folder links in checked-out commit."
+          if [ "$GITLINK_COUNT" -eq 0 ]; then
+            echo "ERROR: No 160000 folder links found in checked-out tree!"
+            exit 1
           fi
+
+          mkdir -p _site
+          EXCLUDES=(--exclude='.git' --exclude='.github' --exclude='.gitmodules' --exclude='_site')
+          if [ -f .gitmodules ]; then
+            while read -r sub_path; do
+              [ -n "$sub_path" ] && EXCLUDES+=(--exclude="/${sub_path}")
+            done < <(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+          fi
+          rsync -a "${EXCLUDES[@]}" ./ _site/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -148,7 +191,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
