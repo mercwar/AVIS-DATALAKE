@@ -30,8 +30,8 @@ jobs:
 
           # Resolve current HEAD SHA of AVIS-DATALAKE
           TARGET_SHA=$(gh api "repos/${OWNER}/${TARGET_REPO}/git/ref/heads/${TARGET_BRANCH}" --jq '.object.sha')
-          if [ -z "$TARGET_SHA" ]; then
-            echo "Error: Could not resolve ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH} SHA."
+          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Error: Could not resolve valid 40-char SHA for ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH}: $TARGET_SHA"
             exit 1
           fi
           echo "Target ${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
@@ -39,7 +39,6 @@ jobs:
           GM_BLOCK=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n' \
             "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
 
-          # Fetch up to 1000 public repos
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
             --limit 1000 \
@@ -56,7 +55,7 @@ jobs:
             [ -z "$branch" ] || [ "$branch" = "null" ] && continue
 
             HEAD_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
-            if [ -z "$HEAD_SHA" ]; then
+            if [[ ! "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]; then
               echo "[$name] Skipped (could not resolve $branch)."
               continue
             fi
@@ -106,69 +105,57 @@ jobs:
               NEW_CFG=$(printf '%s\n\nexclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/\n' "$EXISTING_CFG")
             fi
 
-            # Skip commit if link SHA, .gitmodules, and _config.yml are already exact
-            if [ "$CURRENT_LINK_SHA" = "$TARGET_SHA" ] && [ "$EXISTING_GM" = "$NEW_GM" ] && [ "$EXISTING_CFG" = "$NEW_CFG" ]; then
+            HAS_OLD_MD=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE.md") | .path')
+
+            if [ "$CURRENT_LINK_SHA" = "$TARGET_SHA" ] && [ "$EXISTING_GM" = "$NEW_GM" ] && [ "$EXISTING_CFG" = "$NEW_CFG" ] && [ -z "$HAS_OLD_MD" ]; then
               echo "[$name] OK (already up to date) -> $TARGET_SHA"
               OK_COUNT=$((OK_COUNT + 1))
               continue
             fi
 
-            # Rebuild root tree preserving all existing files while setting the 1 AVIS-DATALAKE link
-            CLEAN_TREE=$(echo "$RAW_TREE" | jq \
+            # Use base_tree so existing .github/workflows and other entries stay untouched
+            PATCH_ITEMS=$(jq -n \
               --arg tsha "$TARGET_SHA" \
               --arg gm "$NEW_GM" \
               --arg cfg "$NEW_CFG" \
-              '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != ".gitmodules" and .path != "_config.yml" and .path != "AVIS-DATALAKE.md") | {path, mode, type, sha}]
-               + [
-                 { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $tsha },
-                 { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
-                 { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
-               ]')
+              '[
+                { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $tsha },
+                { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+                { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
+              ]')
 
-            NEW_TREE=$(jq -n --argjson tree "$CLEAN_TREE" '{ tree: $tree }' | \
-              gh api "repos/${OWNER}/${name}/git/trees" --input - --jq '.sha' 2>/dev/null || true)
-            if [ -z "$NEW_TREE" ]; then
-              echo "[$name] ERROR creating Git tree."
+            if [ -n "$HAS_OLD_MD" ]; then
+              PATCH_ITEMS=$(echo "$PATCH_ITEMS" | jq '. + [{ path: "AVIS-DATALAKE.md", mode: "100644", type: "blob", sha: null }]')
+            fi
+
+            TREE_RESP=$(jq -n --arg base "$BASE_TREE" --argjson tree "$PATCH_ITEMS" '{ base_tree: $base, tree: $tree }' | \
+              gh api "repos/${OWNER}/${name}/git/trees" --input - 2>&1 || true)
+            NEW_TREE=$(echo "$TREE_RESP" | jq -r '.sha // empty' 2>/dev/null || true)
+
+            if [[ ! "$NEW_TREE" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "[$name] ERROR creating Git tree: $TREE_RESP"
               FAILED_COUNT=$((FAILED_COUNT + 1))
               continue
             fi
 
-            NEW_COMMIT=$(jq -n \
+            COMMIT_RESP=$(jq -n \
               --arg msg "Link AVIS-DATALAKE folder into repository" \
               --arg tree "$NEW_TREE" \
               --arg parent "$HEAD_SHA" \
               '{ message: $msg, tree: $tree, parents: [$parent] }' | \
-              gh api "repos/${OWNER}/${name}/git/commits" --input - --jq '.sha' 2>/dev/null || true)
-            if [ -z "$NEW_COMMIT" ]; then
-              echo "[$name] ERROR creating commit."
+              gh api "repos/${OWNER}/${name}/git/commits" --input - 2>&1 || true)
+            NEW_COMMIT=$(echo "$COMMIT_RESP" | jq -r '.sha // empty' 2>/dev/null || true)
+
+            if [[ ! "$NEW_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "[$name] ERROR creating commit: $COMMIT_RESP"
               FAILED_COUNT=$((FAILED_COUNT + 1))
               continue
             fi
 
-            # Attempt direct ref update; fall back to PR if branch protection or workflow scope blocks direct push
             if ! PATCH_ERR=$(gh api -X PATCH "repos/${OWNER}/${name}/git/refs/heads/${branch}" -f sha="$NEW_COMMIT" 2>&1); then
-              echo "[$name] Direct PATCH blocked ($PATCH_ERR) -> trying PR fallback..."
-              PR_BRANCH="chore/link-avis-datalake"
-              gh api -X POST "repos/${OWNER}/${name}/git/refs" \
-                -f ref="refs/heads/${PR_BRANCH}" \
-                -f sha="$NEW_COMMIT" >/dev/null 2>&1 || \
-              gh api -X PATCH "repos/${OWNER}/${name}/git/refs/heads/${PR_BRANCH}" \
-                -f sha="$NEW_COMMIT" -F force=true >/dev/null 2>&1 || true
-
-              PR_URL=$(gh pr create --repo "${OWNER}/${name}" \
-                --base "$branch" \
-                --head "$PR_BRANCH" \
-                --title "Link AVIS-DATALAKE folder into repository" \
-                --body "Automated callback link to AVIS-DATALAKE @ ${TARGET_SHA}" 2>/dev/null || true)
-
-              if [ -n "$PR_URL" ]; then
-                gh pr merge "$PR_URL" --merge --delete-branch >/dev/null 2>&1 || true
-                echo "[$name] PR created/merged -> $PR_URL"
-              else
-                echo "[$name] ERROR: Failed both direct PATCH and PR fallback ($PATCH_ERR)"
-                FAILED_COUNT=$((FAILED_COUNT + 1))
-                continue
-              fi
+              echo "[$name] ERROR updating ref heads/${branch}: $PATCH_ERR"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
             fi
 
             # Strict post-commit verification against live branch tree
