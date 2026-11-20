@@ -1,0 +1,45 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F19"
+    VOLUME          : "19_HOLOGRAPHIC_JSON_SCENES_UAC_TOKENS_AND_CHECKPOINTS"
+    VERSION         : "2.8.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F18 (File 18)"
+    NEXT_REF        : "AVIS-ERR-SPEC-2026.11-F20 (Final Release v3.0.0)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:44:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_57_3D_HOLOGRAPHIC_JSON_SCENE_GRAPHS::
+@FAULT_NODE [ERR-3D-001] {
+    DOMAIN          : "3D Window Holographic Item Deserialization & Spatial Transform Validation (JSON -> GPU Mesh/Overlay)"
+    PHENOMENON      : "Invisible/degenerate 3D holographic items, `NaN`/`Infinity` projection blowups, or out-of-bounds vertex buffer overflows from malformed JSON nodes"
+    ROOT_CAUSE      : "Parsing JSON coordinate/scale arrays without checking `isfinite()`, allowing zero-scale transforms (`scale == 0.0f`), or allocating GPU vertex buffers without capping maximum node counts."
+    INVARIANT_RULE  : "Validate every JSON float with `isfinite()`, clamp scale vectors away from zero (`>= 1e-4f`), enforce a deterministic node cap (`MAX_HOLO_NODES`), and reject schema-incomplete JSON items cleanly without fallback mock geometry."
+}
+
+::SECTION_58_UAC_ELEVATION_AND_PRIVILEGE_BOUNDARIES::
+@FAULT_NODE [ERR-UAC-001] {
+    DOMAIN          : "Windows UAC Token Elevation Inspection & Least-Privilege Execution (OpenProcessToken / GetTokenInformation)"
+    PHENOMENON      : "Infinite UAC self-relaunch loops, `ERROR_ELEVATION_REQUIRED` (740) on `CreateProcessW`, or UIPI drag-and-drop message blocking between elevated and standard windows"
+    ROOT_CAUSE      : "Relaunching via `ShellExecuteExW(L\"runas\")` without verifying `TokenElevation` state first, or expecting standard-privilege Explorer windows to send `WM_DROPFILES` to an elevated GUI without `ChangeWindowMessageFilterEx`."
+    INVARIANT_RULE  : "Query `GetTokenInformation(..., TokenElevation, ...)` before requesting UAC elevation, pass `SEE_MASK_NOASYNC` when elevating, and explicitly allow `WM_DROPFILES` and `WM_COPYDATA` via `ChangeWindowMessageFilterEx` if elevated."
+}
+
+::SECTION_59_TELEMETRY_CHECKPOINTING_AND_STATE_RECOVERY::
+@FAULT_NODE [ERR-CHK-001] {
+    DOMAIN          : "Datalake Ingestion Checkpoints & Crash-Consistent Cursor Journals (e:\\dl)"
+    PHENOMENON      : "Duplicate telemetry ingestion or skipped file slices after power loss or unexpected host termination"
+    ROOT_CAUSE      : "Advancing the ingestion cursor in memory or writing checkpoint files before downstream database/HTTP acknowledgments complete."
+    INVARIANT_RULE  : "Commit checkpoint offsets atomically (`.tmp` -> `FlushFileBuffers` -> `MoveFileExW`) strictly after downstream persistence returns HTTP 200 or SQLite `COMMIT` success."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F19 {
+    59. HOLO_JSON_FINITE   : Verify `isfinite()` on all 3D JSON transforms, clamp non-zero scales, and reject invalid nodes with zero mock fallback.
+    60. UAC_TOKEN_GUARD    : Inspect `TokenElevation` before `runas` relaunch and register `ChangeWindowMessageFilterEx` for cross-privilege IPC/drops.
+    61. POST_ACK_CURSOR    : Persist datalake checkpoint cursors atomically only after confirmed downstream write completion.
+}
+::AVIS_MANIFEST_END::
