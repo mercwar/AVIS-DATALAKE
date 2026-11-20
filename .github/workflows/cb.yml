@@ -22,7 +22,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           gh auth setup-git
 
-          DATALAKE_URL="https://github.com"
+          DATALAKE_URL=$(gh repo view mercwar/AVIS-DATALAKE --json url --jq '.url + ".git"')
           DATALAKE_BRANCH=$(gh repo view mercwar/AVIS-DATALAKE --json defaultBranchRef --jq '.defaultBranchRef.name')
 
           gh repo list mercwar \
@@ -33,7 +33,9 @@ jobs:
               if [ -n "$branch" ] && [ "$branch" != "null" ]; then
                 echo "Linking AVIS-DATALAKE into $name ($branch)..."
                 WORKDIR=$(mktemp -d)
-                git clone --depth 1 --branch "$branch" "https://x-access-token:${GH_TOKEN}@://github.com{name}.git" "$WORKDIR" || continue
+                AUTH_URL="${url/https:\/\//https:\/\/x-access-token:${GH_TOKEN}@}.git"
+
+                git clone --depth 1 --branch "$branch" "$AUTH_URL" "$WORKDIR" || continue
 
                 if ! git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url" >/dev/null 2>&1; then
                   git -C "$WORKDIR" submodule add -f -b "$DATALAKE_BRANCH" "$DATALAKE_URL" "AVIS-DATALAKE" || true
@@ -43,7 +45,7 @@ jobs:
                 git -C "$WORKDIR" submodule update --init --remote || true
                 git -C "$WORKDIR" add -A
                 git -C "$WORKDIR" commit -m "Link AVIS-DATALAKE folder" || true
-                git -C "$WORKDIR" push "https://x-access-token:${GH_TOKEN}@://github.com{name}.git" "HEAD:${branch}" || true
+                git -C "$WORKDIR" push "$AUTH_URL" "HEAD:${branch}" || true
 
                 rm -rf "$WORKDIR"
               fi
