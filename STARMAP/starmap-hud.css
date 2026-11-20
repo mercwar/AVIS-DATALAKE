@@ -1,0 +1,167 @@
+/* =====================================================================
+   MODERN SCI-FI BLACK-GLASS HUD & MODAL ARCHITECTURE
+   ===================================================================== */
+
+.mech-win-command {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    rgba(230, 198, 120, 0.07) 0%,
+    rgba(10, 13, 18, 0.88) 24%,
+    rgba(10, 13, 18, 0.88) 76%,
+    rgba(124, 232, 255, 0.07) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hud-hairline);
+  border-top: 2px solid rgba(124, 232, 255, 0.62);
+  border-radius: 4px;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.mech-win-tree {
+  position: relative;
+  background: rgba(10, 13, 18, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hud-hairline);
+  border-left: 2px solid var(--cyan-accent);
+  border-radius: 4px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.76),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.mech-win-telemetry {
+  position: relative;
+  background: rgba(10, 13, 18, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hud-hairline);
+  border-right: 2px solid var(--gold-accent);
+  border-radius: 4px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.76),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.mech-win-dock {
+  position: relative;
+  background: rgba(10, 13, 18, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hud-hairline);
+  border-radius: 4px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.mech-win-tooltip {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  min-width: 230px;
+  max-width: 295px;
+  background: rgba(8, 11, 16, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(124, 232, 255, 0.36);
+  border-top: 2px solid var(--cyan-accent);
+  border-radius: 3px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85);
+}
+
+.mech-win-modal-index {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(124, 232, 255, 0.05) 0%,
+    rgba(9, 12, 18, 0.97) 18%,
+    rgba(7, 9, 14, 0.99) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(124, 232, 255, 0.34);
+  border-top: 2px solid var(--emerald-accent);
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.88);
+}
+
+.mech-win-modal-readme {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(196, 155, 255, 0.06) 0%,
+    rgba(10, 11, 18, 0.97) 20%,
+    rgba(7, 8, 13, 0.99) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(230, 198, 120, 0.34);
+  border-top: 2px solid var(--violet-accent);
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.88);
+}
+
+.mech-win-modal-repo {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 15, 22, 0.97) 0%,
+    rgba(7, 9, 14, 0.99) 100%
+  );
+  border: 1px solid rgba(124, 232, 255, 0.32);
+  border-top: 2px solid var(--cyan-accent);
+  border-radius: 6px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.88);
+}
+
+.mech-subpanel {
+  background: rgba(12, 16, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 3px;
+}
+
+.mech-btn {
+  border-radius: 3px;
+  transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+}
+
+.hazard-bar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan-accent), rgba(124, 232, 255, 0.1));
+}
+
+.hazard-bar-amber {
+  height: 2px;
+  background: linear-gradient(90deg, rgba(230, 198, 120, 0.1), var(--gold-accent));
+}
+
+.repo-tab-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+  background: rgba(12, 16, 24, 0.75);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.repo-tab-btn:hover {
+  color: #f0f4f8;
+  border-color: rgba(124, 232, 255, 0.45);
+}
+
+.repo-tab-btn.active {
+  color: #08090b;
+  background: var(--cyan-accent);
+  border-color: var(--cyan-accent);
+  font-weight: 700;
+}
