@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F09"
+    VOLUME          : "09_GRAPHICS_SPATIAL_VECTORS_AND_AUDIO_DSP"
+    VERSION         : "1.8.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F08 (File 08)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:37:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_27_OPENGL_AND_RENDER_PIPELINE::
+@FAULT_NODE [ERR-GFX-001] {
+    DOMAIN          : "OpenGL Context Binding, Shader Compilation & VAO/VBO Lifecycles"
+    PHENOMENON      : "Black viewport, `GL_INVALID_OPERATION` (0x0502), or silent shader link failure"
+    ROOT_CAUSE      : "Issuing `gl*` calls before `wglMakeCurrent` binds the rendering context, or omitting `glGetShaderiv(..., GL_COMPILE_STATUS)` / `glGetProgramiv(..., GL_LINK_STATUS)` checks."
+    INVARIANT_RULE  : "Verify valid `HGLRC` context activation prior to loading extensions (`wglGetProcAddress`), log full `glGetShaderInfoLog` on compile/link errors, and bind VAO before configuring `glVertexAttribPointer`."
+}
+
+::SECTION_28_SPATIAL_VECTORS_AND_CAMERA_KINEMATICS::
+@FAULT_NODE [ERR-KIN-001] {
+    DOMAIN          : "Track-Locked Camera Kinematics, Roll Angles & Gimbal Singularity Avoidance"
+    PHENOMENON      : "NaN view matrix propagation, sudden 180-degree camera flip at +/-90° pitch, or uncontrolled roll drift"
+    ROOT_CAUSE      : "Normalizing zero-length direction vectors (`cross(forward, world_up) == 0`) or applying Euler angles without clamping pitch or decoupling track tangent alignment from manual look/roll offsets."
+    INVARIANT_RULE  : "Guard vector normalization against `length_sq < 1e-8f`, compose camera orientation from track-spline forward tangent multiplied by local yaw/pitch/roll quaternions, and clamp pitch within `[-89.0f, +89.0f]`."
+}
+
+::SECTION_29_AUDIO_STREAMING_AND_WASAPI_BUFFERS::
+@FAULT_NODE [ERR-AUD-001] {
+    DOMAIN          : "Real-Time Audio Output & WASAPI / WaveOut Buffer Scheduling"
+    PHENOMENON      : "Audio crackling/underruns, blocking main loop stalls, or `AUDCLNT_E_DEVICE_INVALIDATED` crashes on headset unplug"
+    ROOT_CAUSE      : "Performing disk I/O or mutex locks inside the high-priority audio callback thread, or failing to re-initialize the audio client upon device topology change."
+    INVARIANT_RULE  : "Feed audio callbacks exclusively from a lock-free SPSC ring buffer, handle `AUDCLNT_E_DEVICE_INVALIDATED` by tearing down and rebinding the default endpoint, and match sample rate/bit depth via `IsFormatSupported`."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F09 {
+    29. GL_CONTEXT_GUARD   : Confirm active `HGLRC` binding and inspect shader/program info logs prior to draw submission.
+    30. QUATERNION_CLAMP   : Guard against zero-length cross products and compose track-aligned base orientation with local look/roll quaternions.
+    31. LOCKFREE_AUDIO_IO  : Isolate audio callbacks via lock-free ring buffers and handle device invalidation events gracefully.
+}
+::AVIS_MANIFEST_END::
