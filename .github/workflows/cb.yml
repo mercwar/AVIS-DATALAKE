@@ -1,0 +1,50 @@
+name: Link All Mercwar Repos Back to AVIS-DATALAKE
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *' # Runs daily at 00:30 UTC (after AVIS-DATALAKE syncs)
+
+jobs:
+  link-back-to-datalake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add AVIS-DATALAKE folder to every mercwar repo
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "Error: GH_PAT secret is required to push to other repositories."
+            exit 1
+          fi
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@://github.com"
+          git config --global url."https://x-access-token:${GH_TOKEN}@://github.com".insteadOf "https://://github.com"
+
+          DATALAKE_URL="https://://github.commercwar/AVIS-DATALAKE.git"
+          DATALAKE_BRANCH=$(gh repo view mercwar/AVIS-DATALAKE --json defaultBranchRef --jq '.defaultBranchRef.name')
+
+          gh repo list mercwar \
+            --limit 200 \
+            --json name,url,defaultBranchRef,isEmpty,isArchived \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false) | "\(.name) \(.url) \(.defaultBranchRef.name)"' \
+          | while read -r name url branch; do
+              if [ -n "$branch" ] && [ "$branch" != "null" ]; then
+                echo "Linking AVIS-DATALAKE into $name ($branch)..."
+                WORKDIR=$(mktemp -d)
+                git clone --depth 1 --branch "$branch" "$url" "$WORKDIR" || continue
+
+                if ! git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url" >/dev/null 2>&1; then
+                  git -C "$WORKDIR" submodule add -f -b "$DATALAKE_BRANCH" "$DATALAKE_URL" "AVIS-DATALAKE" || true
+                fi
+
+                git -C "$WORKDIR" submodule sync --recursive
+                git -C "$WORKDIR" submodule update --init --recursive --remote || true
+                git -C "$WORKDIR" add -A
+                git -C "$WORKDIR" commit -m "Link AVIS-DATALAKE folder" || true
+                git -C "$WORKDIR" push || true
+
+                rm -rf "$WORKDIR"
+              fi
+            done
