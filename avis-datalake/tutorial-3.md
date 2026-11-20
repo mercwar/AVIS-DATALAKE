@@ -24,7 +24,9 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
-This tutorial walks through the modular components required to construct, serialize, and transmit a strict schema home record containing an HTML "Hello" payload directly to your `/avis.php` endpoint for data lake storage and GitHub synchronization.
+* * [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
+    
+##### This tutorial walks through the modular components required to construct, serialize, and transmit a strict schema home record containing an HTML "Hello" payload directly to your `/avis.php` endpoint for data lake storage and GitHub synchronization.
 
 ---
 
@@ -347,7 +349,8 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
-
+* [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
+  
 ### 📜 All files and repositories
 
 ```
