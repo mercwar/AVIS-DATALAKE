@@ -1,1 +1,45 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F11"
+    VOLUME          : "11_WINHTTP_PHP85_AND_EDGE_MV3_BRIDGES"
+    VERSION         : "2.0.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F10 (File 10)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:39:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_33_WINHTTP_AND_TLS_CLIENT_STACK::
+@FAULT_NODE [ERR-HTTP-001] {
+    DOMAIN          : "Native WinHTTP Request Lifecycle & TLS Handshake (WinHttpOpen / WinHttpSendRequest)"
+    PHENOMENON      : "`ERROR_WINHTTP_SECURE_FAILURE` (12175), truncated `WinHttpQueryDataAvailable` loops, or leaked `HINTERNET` handles"
+    ROOT_CAUSE      : "Allocating static read buffers without querying `WinHttpQueryDataAvailable` per chunk, omitting `WINHTTP_FLAG_SECURE` on HTTPS endpoints, or closing handles out of reverse hierarchy order."
+    INVARIANT_RULE  : "Loop `WinHttpQueryDataAvailable` + `WinHttpReadData` until `dwSize == 0`, enforce TLS 1.2+ (`WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2 | WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_3`), and close `hRequest -> hConnect -> hSession` in strict reverse order."
+}
+
+::SECTION_34_PHP85_RUNTIME_AND_LOCAL_DISPATCH::
+@FAULT_NODE [ERR-PHP-001] {
+    DOMAIN          : "PHP 8.5+ NTS Win32 Built-In Server & CLI Execution (Sentinel / avis.php)"
+    PHENOMENON      : "Fatal `Call to undefined function` on missing optional extensions, `max_execution_time` timeout on large datalake scans, or broken relative `require` paths"
+    ROOT_CAUSE      : "Invoking `php.exe` from arbitrary working directories without anchoring includes to `__DIR__`, or calling optional C extensions without `function_exists()` / `extension_loaded()` guards."
+    INVARIANT_RULE  : "Anchor all file includes to `__DIR__`, guard optional extension calls via `extension_loaded()`, configure `set_time_limit(0)` for CLI workers, and emit `JSON_THROW_ON_ERROR` on all `json_encode`/`json_decode` calls."
+}
+
+::SECTION_35_EDGE_MV3_AND_NATIVE_MESSAGING::
+@FAULT_NODE [ERR-EXT-001] {
+    DOMAIN          : "Microsoft Edge Manifest V3 Add-Ons & Native Messaging Host Bridges (`chrome.runtime.connectNative`)"
+    PHENOMENON      : "`Native host has exited` disconnect errors, 1MB payload truncation, or `stdout` stream corruption"
+    ROOT_CAUSE      : "Writing debug logs to `stdout` instead of `stderr` in the C native host, forgetting to set `_setmode(_fileno(stdout), _O_BINARY)` on Windows (causing `\\n` -> `\\r\\n` 4-byte header corruption), or exceeding the 1MB host-to-browser message cap."
+    INVARIANT_RULE  : "Switch `stdin` and `stdout` to `_O_BINARY` immediately at `main()` entry, route all diagnostics strictly to `stderr`, prefix every UTF-8 JSON message with a native 32-bit unsigned length header, and keep host-to-extension chunks under 1,048,576 bytes."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F11 {
+    35. WINHTTP_CHUNK_LOOP : Drain `WinHttpQueryDataAvailable` dynamically until zero bytes remain and close `HINTERNET` handles in reverse order.
+    36. PHP85_DIR_ANCHOR   : Anchor all PHP paths via `__DIR__`, verify `extension_loaded()`, and enforce `JSON_THROW_ON_ERROR`.
+    37. NATIVE_MSG_BINARY  : Force `_O_BINARY` on `stdin`/`stdout` in Edge Native Messaging C hosts and isolate all logs to `stderr`.
+}
+::AVIS_MANIFEST_END::
 
