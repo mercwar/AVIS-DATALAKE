@@ -23,7 +23,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
-
+* [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
 Welcome to the official technical specification and operational repository for the **AVIS Telemetry Datalake and Starmap System**. This ecosystem provides a deterministic, schema-driven ingestion pipeline, spatial coordinate mapping, and multi-tier endpoint routing designed to ingest structured telemetry, coordinate matrices, and node operational logs across modern and legacy web application frameworks.
 
 ---
@@ -248,6 +248,12 @@ For backend model validation and automated testing suites, the fully nested mast
   }
 }
 ```
+Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
+* [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
+* [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
+* [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
+* [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
+Welcome to the official technical specification and operational repository for the **AVIS Telemetry Datalake and Starmap System**. This ecosystem provides a deterministic, schema-driven ingestion pipeline, spatial coordinate mapping, and multi-tier endpoint routing designed to ingest structured telemetry, coordinate matrices, and node operational logs across modern and legacy web application frameworks.
 
 ### 📜 All files and repositories
 
