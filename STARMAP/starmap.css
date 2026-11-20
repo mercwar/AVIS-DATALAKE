@@ -19,7 +19,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: var(--bg-void);
+      background: url(../images/adl-sg-bg.png);
       color: #e2e8f0;
       font-family: 'Rajdhani', sans-serif;
     }
