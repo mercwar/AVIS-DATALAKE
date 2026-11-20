@@ -18,11 +18,12 @@ jobs:
             exit 1
           fi
 
+          AUTH_B64=$(printf "x-access-token:%s" "$GH_TOKEN" | base64 -w 0)
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@://github.com"
-          git config --global url."https://x-access-token:${GH_TOKEN}@://github.com".insteadOf "https://://github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global http.https://github.com "AUTHORIZATION: basic ${AUTH_B64}"
 
-          DATALAKE_URL="https://://github.commercwar/AVIS-DATALAKE.git"
+          DATALAKE_URL="https://github.com/mercwar/AVIS-DATALAKE.git"
           DATALAKE_BRANCH=$(gh repo view mercwar/AVIS-DATALAKE --json defaultBranchRef --jq '.defaultBranchRef.name')
 
           gh repo list mercwar \
@@ -34,6 +35,16 @@ jobs:
                 echo "Linking AVIS-DATALAKE into $name ($branch)..."
                 WORKDIR=$(mktemp -d)
                 git clone --depth 1 --branch "$branch" "$url" "$WORKDIR" || continue
+
+                # Clean up any broken submodule entry from previous failed runs
+                if git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url" >/dev/null 2>&1; then
+                  CURRENT_SUB_URL=$(git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url")
+                  if [ "$CURRENT_SUB_URL" != "$DATALAKE_URL" ]; then
+                    git -C "$WORKDIR" submodule deinit -f "AVIS-DATALAKE" || true
+                    git -C "$WORKDIR" rm -f "AVIS-DATALAKE" || true
+                    rm -rf "$WORKDIR/.git/modules/AVIS-DATALAKE"
+                  fi
+                fi
 
                 if ! git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url" >/dev/null 2>&1; then
                   git -C "$WORKDIR" submodule add -f -b "$DATALAKE_BRANCH" "$DATALAKE_URL" "AVIS-DATALAKE" || true
