@@ -1,11 +1,14 @@
-name: Link Public Repos & Deploy Pages
+name: Link Public Repos & Full Deploy Pages
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   push:
-    branches: [main]
+    branches: ["main"]
+    paths-ignore:
+      - '.gitmodules'
+      - '_config.yml'
 
 permissions:
   contents: write
@@ -13,90 +16,193 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
-  build-site:
+  link-public-repos:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          submodules: false
-
-      - name: Generate repo redirect folders
+      - name: Create, update, and verify public repo folder links in AVIS-DATALAKE
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           set -euo pipefail
 
+          if [ -z "$GH_TOKEN" ]; then
+            echo "Error: GH_PAT secret is missing."
+            exit 1
+          fi
+
           OWNER="mercwar"
+          REPO="AVIS-DATALAKE"
+          BRANCH="main"
 
-          rm -rf _site
-          mkdir -p _site
+          HEAD_SHA=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
+          BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+          RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
 
-          cat > _site/index.html <<'HTML'
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>AVIS DATALAKE</title>
-          </head>
-          <body>
-            <h1>Public Repositories</h1>
-            <ul>
-          HTML
+          EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
+          PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
-          gh repo list "$OWNER" \
-            --visibility public \
-            --limit 500 \
-            --json name,isArchived,isPrivate,isEmpty,url \
-            --jq '.[] | select(.isPrivate==false and .isArchived==false and .isEmpty==false)' |
-          jq -c . |
-          while read repo; do
+          LINK_ITEMS="[]"
+          EXPECTED_MAP="{}"
+          GITMODULES=""
+          EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules\n  - _site/'
+          CREATED_COUNT=0
+          UPDATED_COUNT=0
 
-            NAME=$(echo "$repo" | jq -r '.name')
-            URL=$(echo "$repo" | jq -r '.url')
+          while IFS=$'\t' read -r name branch is_empty is_private is_archived; do
+            [ -z "$name" ] && continue
+            [ "$name" = "$REPO" ] && continue
+            [ "$is_empty" = "true" ] && continue
+            [ "$is_private" = "true" ] && continue
+            [ "$is_archived" = "true" ] && continue
+            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
 
-            mkdir -p "_site/$NAME"
+            REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
+            if [ -z "$REPO_SHA" ]; then
+              echo "Skipping $name (could not resolve $branch)."
+              continue
+            fi
 
-            cat > "_site/$NAME/index.html" <<HTML
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta http-equiv="refresh" content="0; url=$URL">
-            <script>
-              window.location.replace("$URL");
-            </script>
-          </head>
-          <body>
-            Redirecting to
-            <a href="$URL">$URL</a>
-          </body>
-          </html>
-          HTML
+            CURRENT_SHA=$(echo "$EXISTING_LINKS" | jq -r --arg p "$name" '.[$p] // empty')
+            if [ -z "$CURRENT_SHA" ]; then
+              echo "Creating missing folder link: $name -> $REPO_SHA ($branch)"
+              CREATED_COUNT=$((CREATED_COUNT + 1))
+            elif [ "$CURRENT_SHA" != "$REPO_SHA" ]; then
+              echo "Updating folder link: $name -> $REPO_SHA ($branch)"
+              UPDATED_COUNT=$((UPDATED_COUNT + 1))
+            fi
 
-            echo "<li><a href=\"./$NAME/\">$NAME</a></li>" >> _site/index.html
+            LINK_ITEMS=$(echo "$LINK_ITEMS" | jq \
+              --arg path "$name" \
+              --arg sha "$REPO_SHA" \
+              '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
 
+            EXPECTED_MAP=$(echo "$EXPECTED_MAP" | jq \
+              --arg path "$name" \
+              --arg sha "$REPO_SHA" \
+              '. + { ($path): $sha }')
+
+            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n\tbranch = %s\n\n' "$name" "$name" "$OWNER" "$name" "$branch")
+            EXCLUDES+=$'\n  - '"${name}/"
+          done < <(
+            gh repo list "$OWNER" \
+              --visibility public \
+              --limit 200 \
+              --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
+              --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // ""), (.isEmpty | tostring), (.isPrivate | tostring), (.isArchived | tostring)] | @tsv'
+          )
+
+          if [ "$(echo "$LINK_ITEMS" | jq 'length')" -eq 0 ]; then
+            echo "No public repos found to link."
+            exit 0
+          fi
+
+          FINAL_TREE=$(jq -n \
+            --argjson preserved "$PRESERVED_ITEMS" \
+            --argjson links "$LINK_ITEMS" \
+            --arg gm "$GITMODULES" \
+            --arg cfg "$EXCLUDES" \
+            '$preserved + $links + [
+              { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+              { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
+            ]')
+
+          NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
+            gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
+
+          if [ "$NEW_TREE" != "$BASE_TREE" ]; then
+            NEW_COMMIT=$(jq -n \
+              --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
+              --arg tree "$NEW_TREE" \
+              --arg parent "$HEAD_SHA" \
+              '{ message: $msg, tree: $tree, parents: [$parent] }' | \
+              gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
+
+            gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
+            echo "Committed folder links -> ${NEW_COMMIT}"
+          else
+            echo "No tree changes needed."
+          fi
+
+          # Verify all folder links exist on live branch
+          echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
+          LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
+          LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
+          LIVE_LINKS=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}" --jq '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
+
+          MISSING_OR_BAD=0
+          for repo_name in $(echo "$EXPECTED_MAP" | jq -r 'keys[]'); do
+            expected_sha=$(echo "$EXPECTED_MAP" | jq -r --arg k "$repo_name" '.[$k]')
+            actual_sha=$(echo "$LIVE_LINKS" | jq -r --arg k "$repo_name" '.[$k] // empty')
+            if [ -z "$actual_sha" ]; then
+              echo "FAIL: Missing 160000 folder link for '$repo_name'"
+              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
+            elif [ "$actual_sha" != "$expected_sha" ]; then
+              echo "FAIL: SHA mismatch for '$repo_name' (expected $expected_sha, got $actual_sha)"
+              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
+            else
+              echo "OK: $repo_name -> $actual_sha"
+            fi
           done
 
-          cat >> _site/index.html <<'HTML'
-            </ul>
-          </body>
-          </html>
-          HTML
+          if [ "$MISSING_OR_BAD" -gt 0 ]; then
+            echo "ERROR: $MISSING_OR_BAD folder link(s) failed verification!"
+            exit 1
+          fi
+          echo "All $(echo "$EXPECTED_MAP" | jq 'length') folder links verified!"
+
+  build:
+    needs: link-public-repos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout root files only (ignore submodules)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          submodules: false
+
+      - name: Verify folder links in checkout & clean workspace for full Jekyll build
+        run: |
+          GITLINK_COUNT=$(git ls-files --stage | awk '$1 == "160000"' | wc -l)
+          echo "Verified $GITLINK_COUNT folder links in checked-out commit."
+          if [ "$GITLINK_COUNT" -eq 0 ]; then
+            echo "ERROR: No 160000 folder links found in checked-out tree!"
+            exit 1
+          fi
+
+          # Remove empty 160000 stub folders & .gitmodules from runner disk so Jekyll ignores them completely
+          while read -r sub_path; do
+            [ -n "$sub_path" ] && rm -rf "$sub_path"
+          done < <(git ls-files --stage | awk '$1 == "160000" { print $4 }')
+          rm -f .gitmodules
+
+          # Remove .git so actions/checkout post-job cleanup exits cleanly with 0 warnings
+          rm -rf .git
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Build with Jekyll (Full GitHub Pages Build)
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: ./_site
 
-      - name: Deploy Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
