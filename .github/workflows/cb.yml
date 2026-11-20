@@ -51,7 +51,7 @@ jobs:
           while IFS=$'\t' read -r name branch; do
             [ -z "$name" ] && continue
             [ "$name" = "$TARGET_REPO" ] && continue
-            [ -z "$branch" ] || [ "$branch" = "null" ] && branch="main"
+            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
 
             HEAD_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
             if [[ ! "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]; then
@@ -146,7 +146,7 @@ jobs:
 
             LIVE_HEAD=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha')
             LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${name}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
-            VERIFY_SHA=$(gh api "repos/${OWNER}/${name}/git/trees/${LIVE_TREE_SHA}" --jq '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
+            VERIFY_SHA=$(gh api "repos/${OWNER}/${name}/git/trees/${LIVE_TREE_SHA}" --jq '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha // empty')
 
             if [ "$VERIFY_SHA" = "$TARGET_SHA" ]; then
               echo "[$name] VERIFIED -> AVIS-DATALAKE @ $VERIFY_SHA ($branch)"
