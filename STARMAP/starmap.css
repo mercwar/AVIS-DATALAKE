@@ -22,17 +22,24 @@ html, body {
   height: 100%;
   overflow: hidden;
   background-color: var(--bg-void);
-  background-image: url('../images/adl-sg-bg.png');
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   color: var(--hud-white);
   font-family: 'Rajdhani', sans-serif;
   -webkit-font-smoothing: antialiased;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
 }
 
+    .font-orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Fullscreen 3D Canvas */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
@@ -97,41 +104,14 @@ html, body {
       right: 22px;
       bottom: 0;
       height: 2px;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(255, 217, 125, 0.75) 0px,
-        rgba(255, 217, 125, 0.75) 14px,
-        transparent 14px,
-        transparent 20px,
-        rgba(0, 240, 255, 0.65) 20px,
-        rgba(0, 240, 255, 0.65) 30px,
-        transparent 30px,
-        transparent 36px
-      );
+      background:transparent;
       pointer-events: none;
     }
 
     /* 2. Left Recursive Protocol Drawer (.mech-win-tree): Vertical beveled left-docked window with notched top-right & matrix grid */
     .mech-win-tree {
       position: relative;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(0, 240, 255, 0.025) 0px,
-          rgba(0, 240, 255, 0.025) 1px,
-          transparent 1px,
-          transparent 22px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.02) 0px,
-          rgba(0, 240, 255, 0.02) 1px,
-          transparent 1px,
-          transparent 22px
-        ),
-        linear-gradient(180deg, rgba(6, 14, 26, 0.94) 0%, rgba(4, 9, 18, 0.96) 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background:transparent;
       border-left: 3px solid #00f0ff;
       border-right: 1px solid rgba(0, 240, 255, 0.3);
       clip-path: polygon(
@@ -154,34 +134,14 @@ html, body {
       top: 56px;
       bottom: 64px;
       width: 5px;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(0, 240, 255, 0.72) 0px,
-        rgba(0, 240, 255, 0.72) 8px,
-        transparent 8px,
-        transparent 16px
-      );
+      background:transparent;;
       pointer-events: none;
     }
 
     /* 3. Right System Telemetry HUD (.mech-win-telemetry): Stepped angular mecha visor panel with amber/gold accent rails */
     .mech-win-telemetry {
       position: relative;
-      background:
-        linear-gradient(160deg, rgba(255, 157, 0, 0.09) 0%, rgba(7, 12, 22, 0.94) 38%, rgba(4, 10, 20, 0.96) 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-right: 3px solid #ff9d00;
-      border-left: 1px solid rgba(255, 217, 125, 0.34);
-      clip-path: polygon(
-        16px 0,
-        100% 0,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        18px 100%,
-        0 calc(100% - 18px),
-        0 16px
-      );
+      background:transparent;
       box-shadow:
         -10px 12px 36px rgba(0, 0, 0, 0.85),
         inset -4px 0 18px rgba(255, 157, 0, 0.16);
@@ -193,35 +153,14 @@ html, body {
       top: 48px;
       height: 150px;
       width: 6px;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(255, 157, 0, 0.88) 0px,
-        rgba(255, 157, 0, 0.88) 3px,
-        transparent 3px,
-        transparent 10px
-      );
+      background:transparent;
       pointer-events: none;
     }
 
     /* 4. Bottom Camera & Constellation Tactical Dock (.mech-win-dock): Low-profile octagonal flight-deck console */
     .mech-win-dock {
       position: relative;
-      background:
-        linear-gradient(90deg, rgba(0, 240, 255, 0.1), rgba(6, 12, 22, 0.95) 50%, rgba(255, 157, 0, 0.1));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-top: 1px solid rgba(0, 240, 255, 0.45);
-      border-bottom: 2px solid #00f0ff;
-      clip-path: polygon(
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 10px,
-        100% calc(100% - 6px),
-        calc(100% - 12px) 100%,
-        12px 100%,
-        0 calc(100% - 6px),
-        0 10px
-      );
+      background:transparent;
       box-shadow:
         0 -4px 24px rgba(0, 0, 0, 0.84),
         0 0 16px rgba(0, 240, 255, 0.16);
