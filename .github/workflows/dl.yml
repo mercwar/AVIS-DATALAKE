@@ -51,14 +51,15 @@ jobs:
             --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
             --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
 
-          for existing_name in $(echo "$EXISTING_LINKS" | jq -r 'keys[]'); do
+          while IFS= read -r existing_name; do
+            [ -z "$existing_name" ] && continue
             if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
               def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // empty' 2>/dev/null || true)
               if [ -n "$def_branch" ]; then
                 REPO_ROWS+=$'\n'"${existing_name}"$'\t'"${def_branch}"
               fi
             fi
-          done
+          done < <(echo "$EXISTING_LINKS" | jq -r 'keys[]')
 
           LINK_ITEMS="[]"
           EXPECTED_MAP="{}"
@@ -140,7 +141,8 @@ jobs:
           LIVE_LINKS=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}" --jq '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
 
           MISSING_OR_BAD=0
-          for repo_name in $(echo "$EXPECTED_MAP" | jq -r 'keys[]'); do
+          while IFS= read -r repo_name; do
+            [ -z "$repo_name" ] && continue
             expected_sha=$(echo "$EXPECTED_MAP" | jq -r --arg k "$repo_name" '.[$k]')
             actual_sha=$(echo "$LIVE_LINKS" | jq -r --arg k "$repo_name" '.[$k] // empty')
             if [ -z "$actual_sha" ]; then
@@ -152,7 +154,7 @@ jobs:
             else
               echo "OK: $repo_name -> $actual_sha"
             fi
-          done
+          done < <(echo "$EXPECTED_MAP" | jq -r 'keys[]')
 
           if [ "$MISSING_OR_BAD" -gt 0 ]; then
             echo "ERROR: $MISSING_OR_BAD folder link(s) failed verification!"
