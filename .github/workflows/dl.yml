@@ -12,7 +12,7 @@ jobs:
   link-public-repos:
     runs-on: ubuntu-latest
     steps:
-      - name: Place public repo pointer links in AVIS-DATALAKE (no clones)
+      - name: Place public repo pointer links and .gitmodules in AVIS-DATALAKE
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -29,9 +29,14 @@ jobs:
 
           HEAD_SHA=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
           BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+          RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
 
-          TREE_ITEMS="[]"
-          EXCLUDES=$'exclude:\n  - .github/'
+          # Keep existing root files/folders, stripping old 160000 gitlinks, .gitmodules, and _config.yml
+          PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
+
+          LINK_ITEMS="[]"
+          GITMODULES=""
+          EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules'
 
           while IFS=$'\t' read -r name branch is_empty is_private is_archived; do
             [ -z "$name" ] && continue
@@ -48,12 +53,13 @@ jobs:
             fi
 
             echo "Linking pointer: $name -> $REPO_SHA ($branch)"
-            TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+            LINK_ITEMS=$(echo "$LINK_ITEMS" | jq \
               --arg path "$name" \
               --arg sha "$REPO_SHA" \
               '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
 
-            EXCLUDES="${EXCLUDES}"$'\n'"  - ${name}/"
+            GITMODULES+=$'[submodule "'"${name}"$'"]\n\tpath = '"${name}"$'\n\turl = https://github.com'"${OWNER}/${name}"$'.git\n'
+            EXCLUDES+=$'\n  - '"${name}/"
           done < <(
             gh repo list "$OWNER" \
               --visibility public \
@@ -62,19 +68,22 @@ jobs:
               --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // ""), (.isEmpty | tostring), (.isPrivate | tostring), (.isArchived | tostring)] | @tsv'
           )
 
-          if [ "$(echo "$TREE_ITEMS" | jq 'length')" -eq 0 ]; then
+          if [ "$(echo "$LINK_ITEMS" | jq 'length')" -eq 0 ]; then
             echo "No public repos to link."
             exit 0
           fi
 
-          TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+          FINAL_TREE=$(jq -n \
+            --argjson preserved "$PRESERVED_ITEMS" \
+            --argjson links "$LINK_ITEMS" \
+            --arg gm "$GITMODULES" \
             --arg cfg "$EXCLUDES" \
-            '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
+            '$preserved + $links + [
+              { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+              { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
+            ]')
 
-          NEW_TREE=$(jq -n \
-            --arg base "$BASE_TREE" \
-            --argjson tree "$TREE_ITEMS" \
-            '{ base_tree: $base, tree: $tree }' | \
+          NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
             gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
 
           if [ "$NEW_TREE" = "$BASE_TREE" ]; then
@@ -90,4 +99,4 @@ jobs:
             gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
 
           gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
-          echo "Done! Linked public repo pointers on ${OWNER}/${REPO}@${BRANCH} -> ${NEW_COMMIT}"
+          echo "Done! Linked public repo pointers + .gitmodules on ${OWNER}/${REPO}@${BRANCH} -> ${NEW_COMMIT}"
