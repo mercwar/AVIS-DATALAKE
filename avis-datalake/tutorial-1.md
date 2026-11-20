@@ -1,4 +1,4 @@
-# AVIS-2026 Datalake & Starmap Integration Engine
+#####  💫 AVIS-2026 Datalake & Starmap Integration Engine
 [To publish entry records goto : Stargate](https://cron.iblogger.org/Stargate)
 
 <a target="_self" title="CLICK HERE to ENTER the GATEWAY FREE!" href="https://mercwar.github.io/Constellation/index.html">
@@ -21,7 +21,6 @@ Copy and Paste Personality and intelligence into your favorite llm like google/g
 
 Explore the complete implementation guides and step-by-step tutorials for the AVIS Datalake and Starmap system:
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
-* [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
 
