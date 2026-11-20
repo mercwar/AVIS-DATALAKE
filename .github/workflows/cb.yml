@@ -35,8 +35,13 @@ jobs:
           fi
           echo "Target ${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
 
-          GM_BLOCK=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n' \
-            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
+          # Build clean .gitmodules using git config directly so syntax is 100% canonical
+          TMP_BASE_GM=$(mktemp)
+          git config --file "$TMP_BASE_GM" "submodule.${TARGET_REPO}.path" "${TARGET_REPO}"
+          git config --file "$TMP_BASE_GM" "submodule.${TARGET_REPO}.url" "${TARGET_URL}"
+          git config --file "$TMP_BASE_GM" "submodule.${TARGET_REPO}.branch" "${TARGET_BRANCH}"
+          NEW_GM=$(cat "$TMP_BASE_GM")
+          rm -f "$TMP_BASE_GM"
 
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
@@ -71,25 +76,8 @@ jobs:
 
             CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
 
-            # Validate existing .gitmodules with git config; replace if corrupted
             EXISTING_GM=$(gh api "repos/${OWNER}/${name}/contents/.gitmodules?ref=${branch}" \
               --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
-
-            NEW_GM=$(printf '%s\n' "$GM_BLOCK")
-            if [ -n "$EXISTING_GM" ]; then
-              TMP_GM=$(mktemp)
-              printf '%s\n' "$EXISTING_GM" > "$TMP_GM"
-              if git config --file "$TMP_GM" --list >/dev/null 2>&1; then
-                git config --file "$TMP_GM" --remove-section "submodule.${TARGET_REPO}" >/dev/null 2>&1 || true
-                CLEAN_GM=$(cat "$TMP_GM")
-                if [ -n "$CLEAN_GM" ]; then
-                  NEW_GM=$(printf '%s\n\n%s\n' "$CLEAN_GM" "$GM_BLOCK")
-                fi
-              else
-                echo "[$name] Existing .gitmodules is corrupted — replacing with clean .gitmodules."
-              fi
-              rm -f "$TMP_GM"
-            fi
 
             # Ensure _config.yml excludes AVIS-DATALAKE/ and .gitmodules
             EXISTING_CFG=$(gh api "repos/${OWNER}/${name}/contents/_config.yml?ref=${branch}" \
