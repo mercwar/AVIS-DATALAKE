@@ -1,6 +1,7 @@
 exclude:
   - .github/
   - .gitmodules
+  - _site/
   - robo-knight-inventory/
   - Dark-Com-2/
   - Navigator-MSVC-Academy/
