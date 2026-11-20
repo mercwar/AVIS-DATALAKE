@@ -18,7 +18,7 @@ jobs:
             exit 1
           fi
 
-          DL_URL="https://github.com"
+          DL_URL="https://github.com/mercwar/AVIS-DATALAKE.git"
           DL_SHA=$(gh api "repos/mercwar/AVIS-DATALAKE/git/ref/heads/main" --jq '.object.sha')
           echo "AVIS-DATALAKE main SHA: $DL_SHA"
 
@@ -49,11 +49,15 @@ jobs:
                   /^\[/ { skip=0 }
                   !skip { print }
                 ')
-                GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$CLEAN_GM" "$DL_URL")
+                if [ -n "$(echo "$CLEAN_GM" | tr -d '[:space:]')" ]; then
+                  GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$CLEAN_GM" "$DL_URL")
+                else
+                  GITMODULES=$(printf '[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$DL_URL")
+                fi
                 NEEDS_GM=true
               fi
 
-              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=main" \
+              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=${branch}" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
               NEEDS_CFG=false
