@@ -2,9 +2,34 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
+  - Robo-Knight-Demos/
+  - Dark-Com/
+  - Stargate/
+  - Navigator-GitHub-Academy/
+  - Navigator-AI-Academy/
+  - CVBGOD-EMOJI/
+  - AVIS-DROP/
+  - AVIS-NEWS/
+  - AVIS-SEARCH/
+  - AVIS-ALERT-FVS/
+  - Quasar/
+  - AVIS-DATALAKE-ENGINE/
+  - Robo-Knight-Gallery/
+  - CYHY-CMT/
+  - AVIS-LOGIC-CORE/
+  - AVIS-AI-INI-DIR-MK-SCAN/
+  - CYBORG-LIVE-GIT-BROWSER/
+  - Comics/
+  - CVBGODLY-CONSOLE/
+  - CL2/
+  - AVIS-TRAY-MENU/
+  - ECLIPSE/
+  - NAVIGATOR-LLM-ACADEMY/
   - AI/
-  - AVIS/
+  - Station/
+  - AVIS-DL/
   - Navigator/
+  - AVIS/
   - dc2sql/
   - Powershell/
   - Fire-Star-Alpha/
@@ -19,31 +44,6 @@ exclude:
   - Cyborg/
   - Navigator-MSVC-Academy/
   - bin/
-  - NAVIGATOR-LLM-ACADEMY/
-  - AVIS-DL/
-  - Station/
-  - ECLIPSE/
-  - Comics/
-  - AVIS-TRAY-MENU/
-  - CL2/
-  - CYHY-CMT/
-  - AVIS-LOGIC-CORE/
-  - CVBGODLY-CONSOLE/
-  - AVIS-DATALAKE-ENGINE/
-  - CYBORG-LIVE-GIT-BROWSER/
-  - AVIS-AI-INI-DIR-MK-SCAN/
-  - Robo-Knight-Gallery/
-  - Quasar/
-  - AVIS-ALERT-FVS/
-  - AVIS-SEARCH/
-  - Stargate/
-  - AVIS-NEWS/
-  - AVIS-DROP/
-  - Navigator-GitHub-Academy/
-  - CVBGOD-EMOJI/
-  - Navigator-AI-Academy/
-  - Dark-Com/
-  - Robo-Knight-Demos/
   - Fire-Gem/
   - Robo-Knight-Player/
   - CRON/
