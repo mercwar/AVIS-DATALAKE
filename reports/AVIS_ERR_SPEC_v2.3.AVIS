@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F14"
+    VOLUME          : "14_ANSI_CONSOLES_DPAPI_SECRETS_AND_FS_WATCHERS"
+    VERSION         : "2.3.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F13 (File 13)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:41:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_42_ANSI_VT_SEQUENCES_AND_UTF8_OUTPUT::
+@FAULT_NODE [ERR-VT-001] {
+    DOMAIN          : "Windows Console Virtual Terminal Processing & UTF-8 Glyph Rendering (SetConsoleMode / SetConsoleOutputCP)"
+    PHENOMENON      : "Raw escape codes (`←[38;2;...m`) printing as literal text or broken ASCII box-drawing characters (`???`)"
+    ROOT_CAUSE      : "Emitting ANSI RGB sequences or UTF-8 block glyphs without enabling `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `CP_UTF8` on the active console handle."
+    INVARIANT_RULE  : "Call `SetConsoleOutputCP(CP_UTF8)`, query `GetConsoleMode(hOut, &mode)`, append `ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN`, and check `GetFileType(hOut) == FILE_TYPE_CHAR` before emitting escape sequences."
+}
+
+::SECTION_43_DPAPI_AND_CREDENTIAL_ISOLATION::
+@FAULT_NODE [ERR-SEC-001] {
+    DOMAIN          : "Windows DPAPI Local Token Sealing & Memory Zeroing (CryptProtectData / SecureZeroMemory)"
+    PHENOMENON      : "Plaintext GitHub PATs (`Constellation` / `Sentinel`) lingering in heap memory, crash dumps, or portable config files"
+    ROOT_CAUSE      : "Storing tokens in `.json`/`.AVIS` manifests or wiping secret buffers with `memset()` (which MSVC dead-store optimization removes)."
+    INVARIANT_RULE  : "Seal local machine/user secrets via `CryptProtectData(..., CRYPTPROTECT_UI_FORBIDDEN)` when persistence is required, keep runtime tokens in isolated heap buffers, and scrub them immediately after use with `SecureZeroMemory()`."
+}
+
+::SECTION_44_REALTIME_DIRECTORY_WATCHERS::
+@FAULT_NODE [ERR-MON-001] {
+    DOMAIN          : "NTFS Directory Change Monitoring & Debounced Ingestion (ReadDirectoryChangesW)"
+    PHENOMENON      : "Missed file events during burst writes, `ERROR_NOTIFY_ENUM_DIR` buffer overflows, or reading files before writer closes handle"
+    ROOT_CAUSE      : "Using undersized notification buffers (`< 64KB`) or triggering ingestion immediately on `FILE_ACTION_ADDED` while the writer still holds an exclusive lock."
+    INVARIANT_RULE  : "Allocate a 64KB DWORD-aligned notification buffer, handle `ERROR_NOTIFY_ENUM_DIR` by falling back to a full directory reconciliation scan, and debounce file events until `CreateFileW` opens with `FILE_SHARE_READ`."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F14 {
+    44. VT_UTF8_CAPABILITY : Enable `CP_UTF8` and `ENABLE_VIRTUAL_TERMINAL_PROCESSING` only when `GetFileType` confirms a live character console.
+    45. ZERO_PLAINTEXT_SEC : Seal persisted tokens with Windows DPAPI and scrub sensitive runtime buffers exclusively via `SecureZeroMemory()`.
+    46. DEBOUNCED_WATCHERS : Back `ReadDirectoryChangesW` with 64KB DWORD-aligned buffers, overflow rescan fallbacks, and write-completion locks.
+}
+::AVIS_MANIFEST_END::
