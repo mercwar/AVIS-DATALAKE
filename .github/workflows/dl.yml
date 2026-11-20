@@ -1,0 +1,41 @@
+name: Link All Mercwar Repos into AVIS-DATALAKE
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-datalake-folders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout mercwar/AVIS-DATALAKE
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Link all mercwar repositories and forks
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          gh repo list mercwar \
+            --limit 200 \
+            --json name,url,defaultBranchRef,isEmpty \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false) | "\(.name) \(.url) \(.defaultBranchRef.name)"' \
+          | while read -r name url branch; do
+              if [ -n "$branch" ] && [ "$branch" != "null" ]; then
+                git submodule add -f -b "$branch" "$url" "$name" || true
+              fi
+            done
+
+          git submodule update --remote --merge || true
+          git add .gitmodules *
+          git commit -m "Link mercwar repositories into AVIS-DATALAKE" || exit 0
+          git push
