@@ -1,4 +1,4 @@
-# Tutorial: Pushing Starmap Home Records to the AVIS Datalake via `avis.php`
+#####  🌈 Tutorial:  Starmap entry Records for Cron AVIS-DATALAKE via `avis.php`
 
 [To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
