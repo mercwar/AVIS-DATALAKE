@@ -9,127 +9,41 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 2: Backend Integration & Multi-Tier Endpoint Routing](tutorial-2.md) — Configuring server-side receivers across ASP.NET Core, Generic Handlers, and Classic ASP vectors.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
-This tutorial covers setting up server-side receivers across your multi-tier application stack to capture, parse, and persist incoming AVIS telemetry and Starmap coordinate payloads from `/api/avis`, `/avis.ashx`, `/uplink.aspx`, and `/avis.asp`.
+
+
+<a target="_self" title="https://github.com/mercwar/AI">
+<img 
+    src="https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png" 
+    alt="Mercwar AI" 
+    style="width:100%; height:auto;"
+/>
+</a>
 
 ---
 
-## Step 1: ASP.NET Core Web API Ingress Controller (`/api/avis`)
+To explaine now in deatail ...
 
-For modern asynchronous programmatic pipelines sending `application/json`, implement a strongly-typed API controller using the master DTO model.
+Using a command line you submit a record to the avis-dl, the record is saves in a github pages artifact as normally it would be.
+The listing is github/mercwar and its cron.iblogger.org that services this host. So you now have the ability to upload for your users to 
+the avis datalake and here is how. 
 
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Avis.Datalake.Models;
-using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-[ApiController]
-[Route("api/avis")]
-public class AvisIngressController : ControllerBase
-{
-    [HttpPost]
-    public async Task<IActionResult> IngestTelemetry([FromBody] AvisIngressPayload payload)
-    {
-        if (payload == null || string.IsNullOrEmpty(payload.Id))
-        {
-            return BadRequest(new { status = "error", message = "Invalid payload or missing mandatory transaction ID." });
-        }
-
-        // Ensure target datalake directory exists
-        string targetDir = payload.Location?.DirPath ?? @"C:\MercwarAI\AVIS-DATALAKE\";
-        Directory.CreateDirectory(targetDir);
-
-        string fileName = $"{payload.Id}_{payload.Location?.FileName ?? "manifest.json"}";
-        string fullPath = Path.Combine(targetDir, fileName);
-
-        // Serialize and persist to local NVMe data lake layer
-        string jsonOutput = JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
-        await System.IO.File.WriteAllTextAsync(fullPath, jsonOutput);
-
-        return Ok(new { 
-            status = "success", 
-            transaction_id = payload.Id, 
-            routed_endpoint = "/api/avis",
-            storage_target = fullPath 
-        });
-    }
-}
-
-```
-
+- You users click on a simple html page in the avis datalake , through NEXUS, or another link .
+- Your html/javascript form will post to the avis datalake by way of your local server or dc2url or Stargate entry.
+- Stargate entry means you have an access point now to host file i.o requests.
+- Now that your user is on the stargate page and has opened the html overhead content you see that your javascript is what is running now
+- Because the javascript is running on that server even though it has been loaded from git hub, this `avis.php` file will now function.
+- Your users will smbit data to you to be stored in datalake records.
+- Example: [Here](https://mercwar.github.io/AVIS-DL/dl%2F2026%2F11%2F19%2F9-atom-node-01-stream.html)
+- This example can be submitted with dc2url or through the avis datalake or your own Stargate entry
 ---
 
-## Step 2: ASP.NET Generic Handler (`/avis.ashx`)
-
-For traditional form-urlencoded transmissions, use an `IHttpHandler` to map form parameters directly into the namespace hierarchy.
-
-```csharp
-using System;
-using System.Web;
-using System.IO;
-
-public class AvisHandler : IHttpHandler
-{
-    public void ProcessRequest(HttpContext context)
-    {
-        context.Response.ContentType = "application/json";
-
-        string transactionId = context.Request.Form["id"] ?? Guid.NewGuid().ToString();
-        string method = context.Request.Form["method"] ?? "add";
-        string hostNode = context.Request.Form["home[host_node]"] ?? "UNKNOWN-NODE";
-        string dirPath = context.Request.Form["location[dir_path]"] ?? @"C:\MercwarAI\AVIS-DATALAKE\";
-
-        try
-        {
-            Directory.CreateDirectory(dirPath);
-            string logEntry = $"[{DateTime.UtcNow:O}] ID: {transactionId} | Method: {method} | Node: {hostNode}\n";
-            File.AppendAllText(Path.Combine(dirPath, "handler_telemetry.log"), logEntry);
-
-            context.Response.Write($"{{\"status\":\"success\",\"id\":\"{transactionId}\",\"method\":\"{method}\"}}");
-        }
-        catch (Exception ex)
-        {
-            context.Response.StatusCode = 500;
-            context.Response.Write($"{{\"status\":\"error\",\"message\":\"{ex.Message}\"}}");
-        }
-    }
-
-    public bool IsReusable => false;
-}
-
-```
-
----
-
-## Step 3: Classic ASP Vector Receiver (`/avis.asp`)
-
-For legacy infrastructure integration points, capture incoming form vectors using standard VBScripting.
-
-```vbscript
-<%
-Response.ContentType = "application/json"
-
-Dim txId, methodAction, hostNode, targetDir
-txId = Request.Form("id")
-methodAction = Request.Form("method")
-hostNode = Request.Form("home[host_node]")
-targetDir = Request.Form("location[dir_path]")
-
-If Len(Trim(txId)) = 0 Then
-    txId = "LEGACY-" & Year(Now) & Month(Now) & Day(Now) & "-" & Timer()
-End If
-
-If Len(Trim(methodAction)) = 0 Then
-    methodAction = "add"
-End If
-
-' Response payload emission acknowledging ingestion
-Response.Write("{ ""status"": ""success"", ""id"": """ & txId & """, ""method"": """ & methodAction & """, " & _
-               """node"": """ & hostNode & """, ""tier"": ""classic_asp"" }")
-%>
-
-```
+<a target="_self" title="https://github.com/mercwar/Stargate">
+<img 
+    src="https://github.com/mercwar/AVIS-DATALAKE/blob/main/images/image_d2a07390.png" 
+    alt="Mercwar Stargate" 
+    style="width:100%; height:auto;"
+/>
+</a>
 [To publish entry records goto : Stargate](https://github.com/mercwar/Stargate)
 
 
