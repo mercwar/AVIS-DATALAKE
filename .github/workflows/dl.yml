@@ -1,12 +1,23 @@
-name: Link Public Repos into AVIS-DATALAKE
+name: Link Public Repos & Deploy Pages
 
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - '.gitmodules'
+      - '_config.yml'
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   link-public-repos:
@@ -31,10 +42,7 @@ jobs:
           BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
           RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
 
-          # Map existing 160000 folder links: {"repo_name": "sha"}
           EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
-
-          # Keep existing real files/folders, stripping old 160000 links, .gitmodules, and _config.yml
           PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
           LINK_ITEMS="[]"
@@ -113,3 +121,34 @@ jobs:
 
           gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
           echo "Done! ${CREATED_COUNT} created, ${UPDATED_COUNT} updated -> ${NEW_COMMIT}"
+
+  deploy:
+    needs: link-public-repos
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout updated main branch (skip submodules)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          submodules: false
+
+      - name: Remove empty submodule stub folders before packaging
+        run: |
+          if [ -f .gitmodules ]; then
+            git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | xargs -r rm -rf
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
