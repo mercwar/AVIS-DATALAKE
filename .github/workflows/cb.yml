@@ -26,16 +26,17 @@ jobs:
           OWNER="mercwar"
           TARGET_REPO="AVIS-DATALAKE"
           TARGET_BRANCH="main"
+          TARGET_URL="https://github.com/${OWNER}/${TARGET_REPO}.git"
 
           TARGET_SHA=$(gh api "repos/${OWNER}/${TARGET_REPO}/git/ref/heads/${TARGET_BRANCH}" --jq '.object.sha')
           if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Error: Could not resolve valid 40-char SHA for ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH}: $TARGET_SHA"
             exit 1
           fi
-          echo "Target ${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
+          echo "Target ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
 
-          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n\tbranch = %s\n\n' \
-            "$TARGET_REPO" "$TARGET_REPO" "$OWNER" "$TARGET_REPO" "$TARGET_BRANCH")
+          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\tupdate = none\n' \
+            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
 
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
@@ -68,17 +69,16 @@ jobs:
               continue
             fi
 
-            CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
+            CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha // empty')
 
-            # Preserve all root entries except AVIS-DATALAKE, AVIS-DATALAKE.md, .gitmodules, and _config.yml (no base_tree)
-            PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != "AVIS-DATALAKE.md" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
+            EXISTING_GM=$(gh api "repos/${OWNER}/${name}/contents/.gitmodules?ref=${branch}" \
+              --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
-            # Ensure _config.yml excludes AVIS-DATALAKE/ and .gitmodules
             EXISTING_CFG=$(gh api "repos/${OWNER}/${name}/contents/_config.yml?ref=${branch}" \
               --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
             if [ -z "$EXISTING_CFG" ]; then
-              NEW_CFG=$'exclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/'
+              NEW_CFG=$'exclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/\n'
             elif printf '%s\n' "$EXISTING_CFG" | grep -q '^exclude:'; then
               NEW_CFG="$EXISTING_CFG"
               printf '%s\n' "$NEW_CFG" | grep -q 'AVIS-DATALAKE/' || \
@@ -86,8 +86,16 @@ jobs:
               printf '%s\n' "$NEW_CFG" | grep -q '\.gitmodules' || \
                 NEW_CFG=$(printf '%s\n' "$NEW_CFG" | sed '/^exclude:/a\  - .gitmodules')
             else
-              NEW_CFG=$(printf '%s\n\nexclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/' "$EXISTING_CFG")
+              NEW_CFG=$(printf '%s\n\nexclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/\n' "$EXISTING_CFG")
             fi
+
+            if [ "$CURRENT_LINK_SHA" = "$TARGET_SHA" ] && [ "$EXISTING_GM" = "$NEW_GM" ] && [ "$EXISTING_CFG" = "$NEW_CFG" ]; then
+              echo "[$name] OK (already up to date) -> $TARGET_SHA"
+              OK_COUNT=$((OK_COUNT + 1))
+              continue
+            fi
+
+            PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != "AVIS-DATALAKE.md" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
             FINAL_TREE=$(jq -n \
               --argjson preserved "$PRESERVED_ITEMS" \
@@ -111,7 +119,7 @@ jobs:
             fi
 
             if [ "$NEW_TREE" = "$BASE_TREE" ]; then
-              echo "[$name] OK (already up to date) -> $TARGET_SHA"
+              echo "[$name] OK (tree unchanged) -> $TARGET_SHA"
               OK_COUNT=$((OK_COUNT + 1))
               continue
             fi
