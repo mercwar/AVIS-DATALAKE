@@ -9,7 +9,7 @@ jobs:
   link-back-to-datalake:
     runs-on: ubuntu-latest
     steps:
-      - name: Add AVIS-DATALAKE folder to every mercwar repo
+      - name: Add AVIS-DATALAKE link to main branch of each repo (Zero Clones)
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -18,35 +18,77 @@ jobs:
             exit 1
           fi
 
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          gh auth setup-git
-
-          DATALAKE_URL=$(gh repo view mercwar/AVIS-DATALAKE --json url --jq '.url + ".git"')
-          DATALAKE_BRANCH=$(gh repo view mercwar/AVIS-DATALAKE --json defaultBranchRef --jq '.defaultBranchRef.name')
+          DL_URL="https://github.com"
+          DL_SHA=$(gh api "repos/mercwar/AVIS-DATALAKE/git/ref/heads/main" --jq '.object.sha')
 
           gh repo list mercwar \
             --limit 200 \
-            --json name,url,defaultBranchRef,isEmpty,isArchived \
-            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false) | "\(.name) \(.url) \(.defaultBranchRef.name)"' \
-          | while read -r name url branch; do
-              if [ -n "$branch" ] && [ "$branch" != "null" ]; then
-                echo "Linking AVIS-DATALAKE into $name ($branch)..."
-                WORKDIR=$(mktemp -d)
-                AUTH_URL="${url/https:\/\//https:\/\/x-access-token:${GH_TOKEN}@}.git"
+            --json name,isEmpty,isArchived \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false) | .name' \
+          | while read -r name; do
+              # Only target the 'main' branch
+              HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/main" --jq '.object.sha' 2>/dev/null) || continue
+              BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
 
-                git clone --depth 1 --branch "$branch" "$AUTH_URL" "$WORKDIR" || continue
+              # Check existing pointer & .gitmodules on main
+              EXISTING_SHA=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
+                --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .sha' 2>/dev/null || true)
 
-                if ! git -C "$WORKDIR" config -f .gitmodules --get "submodule.AVIS-DATALAKE.url" >/dev/null 2>&1; then
-                  git -C "$WORKDIR" submodule add -f -b "$DATALAKE_BRANCH" "$DATALAKE_URL" "AVIS-DATALAKE" || true
-                fi
+              GITMODULES=$(gh api "repos/mercwar/${name}/contents/.gitmodules?ref=main" \
+                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
-                git -C "$WORKDIR" submodule sync
-                git -C "$WORKDIR" submodule update --init --remote || true
-                git -C "$WORKDIR" add -A
-                git -C "$WORKDIR" commit -m "Link AVIS-DATALAKE folder" || true
-                git -C "$WORKDIR" push "$AUTH_URL" "HEAD:${branch}" || true
-
-                rm -rf "$WORKDIR"
+              NEEDS_GM=false
+              if ! echo "$GITMODULES" | grep -q '\[submodule "AVIS-DATALAKE"\]'; then
+                GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$GITMODULES" "$DL_URL")
+                NEEDS_GM=true
               fi
+
+              # Exclude AVIS-DATALAKE from Jekyll if _config.yml exists
+              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=main" \
+                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
+
+              NEEDS_CFG=false
+              if [ -n "$CFG" ] && ! echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
+                if echo "$CFG" | grep -q '^exclude:'; then
+                  CFG=$(echo "$CFG" | sed '/^exclude:/a\  - AVIS-DATALAKE')
+                else
+                  CFG=$(printf '%s\n\nexclude:\n  - AVIS-DATALAKE\n' "$CFG")
+                fi
+                NEEDS_CFG=true
+              fi
+
+              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_GM" = "false" ] && [ "$NEEDS_CFG" = "false" ]; then
+                echo "[$name] Already up to date."
+                continue
+              fi
+
+              TREE_ITEMS=$(jq -n \
+                --arg gm "$GITMODULES" \
+                --arg sha "$DL_SHA" \
+                '[
+                  { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+                  { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $sha }
+                ]')
+
+              if [ "$NEEDS_CFG" = "true" ]; then
+                TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                  --arg cfg "$CFG" \
+                  '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
+              fi
+
+              NEW_TREE=$(jq -n \
+                --arg base "$BASE_TREE" \
+                --argjson tree "$TREE_ITEMS" \
+                '{ base_tree: $base, tree: $tree }' \
+                | gh api "repos/mercwar/${name}/git/trees" --input - --jq '.sha')
+
+              NEW_COMMIT=$(jq -n \
+                --arg msg "Link AVIS-DATALAKE folder" \
+                --arg tree "$NEW_TREE" \
+                --arg parent "$HEAD_SHA" \
+                '{ message: $msg, tree: $tree, parents: [$parent] }' \
+                | gh api "repos/mercwar/${name}/git/commits" --input - --jq '.sha')
+
+              gh api -X PATCH "repos/mercwar/${name}/git/refs/heads/main" -f sha="$NEW_COMMIT" >/dev/null
+              echo "[$name] Linked AVIS-DATALAKE on main -> $NEW_COMMIT"
             done
