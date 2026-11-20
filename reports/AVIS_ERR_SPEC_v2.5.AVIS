@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F16"
+    VOLUME          : "16_RAW_INPUT_CAB_EXTRACTION_AND_GDI_D2D_RESOURCES"
+    VERSION         : "2.5.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F15 (File 15)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:42:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_48_RAW_INPUT_AND_HID_CAPTURE::
+@FAULT_NODE [ERR-INP-001] {
+    DOMAIN          : "Win32 Raw Input & Low-Level Keyboard/Mouse Hooks (RegisterRawInputDevices / WM_INPUT)"
+    PHENOMENON      : "Dropped high-polling-rate mouse deltas, stuck modifier keys on Alt-Tab, or `GetRawInputData` buffer size mismatches"
+    ROOT_CAUSE      : "Assuming a fixed `sizeof(RAWINPUT)` buffer without querying required byte size first, or failing to reset held key-state arrays upon `WM_KILLFOCUS`."
+    INVARIANT_RULE  : "Query `GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER))` before stack/buffer allocation, mask `RI_MOUSE_MOVE_RELATIVE` vs `RI_MOUSE_MOVE_ABSOLUTE`, and clear input state vectors on `WM_KILLFOCUS`."
+}
+
+::SECTION_49_CABINET_AND_ARCHIVE_EXTRACTION::
+@FAULT_NODE [ERR-ARC-001] {
+    DOMAIN          : "CAB / ZIP Archive Extraction & Path Traversal Containment (SetupIterateCabinetW)"
+    PHENOMENON      : "Zip-Slip / Cab-Slip arbitrary file overwrite outside `e:\\dl` target root, or partial extraction on locked destination files"
+    ROOT_CAUSE      : "Concatenating archive member filenames directly onto the extraction directory without canonicalizing `..` segments or drive prefixes."
+    INVARIANT_RULE  : "Canonicalize every target extraction path via `GetFullPathNameW`, verify it strictly starts with the normalized destination root prefix, and write extracted payloads atomically."
+}
+
+::SECTION_50_GDI_AND_D2D_RESOURCE_LIFECYCLES::
+@FAULT_NODE [ERR-GDI-001] {
+    DOMAIN          : "Win32 GDI Object Exhaustion & Direct2D Device Loss Recovery (SelectObject / D2DERR_RECREATE_TARGET)"
+    PHENOMENON      : "Window rendering turning solid black/white after 10,000 GDI handle limit exhaustion, or permanent render freeze after display sleep/RDP reconnect"
+    ROOT_CAUSE      : "Calling `DeleteObject()` on an `HBRUSH`/`HPEN`/`HFONT` while still selected into an `HDC`, or failing to release and rebuild device-dependent Direct2D resources on `D2DERR_RECREATE_TARGET`."
+    INVARIANT_RULE  : "Always restore the original GDI object (`SelectObject(hdc, hOld)`) prior to calling `DeleteObject()`, track GDI handle counts, and handle `D2DERR_RECREATE_TARGET` by releasing and recreating render targets and brushes."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F16 {
+    50. RAW_INPUT_DYNAMIC  : Query `GetRawInputData` byte size dynamically and purge active key/button state maps on `WM_KILLFOCUS`.
+    51. ARCHIVE_ROOT_LOCK  : Canonicalize archive entry paths and enforce strict root-prefix containment before disk extraction.
+    52. GDI_D2D_RECLAIM    : Deselect GDI objects before `DeleteObject()` and rebuild Direct2D targets on `D2DERR_RECREATE_TARGET`.
+}
+::AVIS_MANIFEST_END::
