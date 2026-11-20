@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F18"
+    VOLUME          : "18_TASK_SCHEDULER_WINMM_MIDI_AND_ENV_PATHS"
+    VERSION         : "2.7.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F17 (File 17)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:43:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_54_TASK_SCHEDULER_AND_BACKGROUND_TRIGGERS::
+@FAULT_NODE [ERR-TSK-001] {
+    DOMAIN          : "Windows Task Scheduler Registration & Unattended Execution (schtasks.exe / ITaskService)"
+    PHENOMENON      : "Task failing silently with `0x80070002` (file not found) or popping transient black console windows on trigger"
+    ROOT_CAUSE      : "Registering relative script paths without setting `StartIn` (`WorkingDirectory`), or launching `.bat`/`.ps1` files directly instead of a `/SUBSYSTEM:WINDOWS` native C launcher."
+    INVARIANT_RULE  : "Specify full canonical paths for both executable and working directory, target native GUI-subsystem binaries (`wWinMain`) to prevent console flashes, and verify exit status via `schtasks /query /fo LIST /v`."
+}
+
+::SECTION_55_WINMM_MIDI_AND_MULTIMEDIA_TIMING::
+@FAULT_NODE [ERR-MID-001] {
+    DOMAIN          : "Windows Multimedia MIDI Playback & High-Precision Sleep Granularity (midiOutOpen / timeBeginPeriod)"
+    PHENOMENON      : "Sluggish 15.6ms tempo jitter during MIDI playback, stuck sustaining notes on exit, or system-wide power drain"
+    ROOT_CAUSE      : "Relying on default 15.6ms Windows scheduler ticks without `timeBeginPeriod(1)`, omitting matching `timeEndPeriod(1)` on shutdown, or closing `HMIDIOUT` without sending All-Notes-Off (`0x7B`)."
+    INVARIANT_RULE  : "Pair `timeBeginPeriod(1)` strictly with `timeEndPeriod(1)` on cleanup, validate Standard MIDI File (`MThd`) header lengths before parsing tracks, and broadcast channel All-Notes-Off (`CC 123`) plus `midiOutReset()` prior to `midiOutClose()`."
+}
+
+::SECTION_56_ENVIRONMENT_EXPANSION_AND_BINARY_ANCHORING::
+@FAULT_NODE [ERR-ENV-001] {
+    DOMAIN          : "Executable Self-Location & Environment Variable Expansion (GetModuleFileNameW / ExpandEnvironmentStringsW)"
+    PHENOMENON      : "Broken relative asset/config lookups when launched from Explorer, Run dialog, or external working directories"
+    ROOT_CAUSE      : "Using `GetCurrentDirectoryW()` (which reflects the caller's working directory rather than the binary's folder) or failing to handle `GetModuleFileNameW` truncation (`ERROR_INSUFFICIENT_BUFFER`)."
+    INVARIANT_RULE  : "Resolve the host binary's directory exclusively via `GetModuleFileNameW(NULL, ...)` stripped at the final backslash, and size `ExpandEnvironmentStringsW` buffers dynamically from its returned character count."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F18 {
+    56. TASK_GUI_ANCHOR    : Bind scheduled tasks to full canonical paths and GUI-subsystem binaries to eliminate console flashes.
+    57. MIDI_RESET_HYGIENE : Pair `timeBeginPeriod(1)`/`timeEndPeriod(1)` and issue `midiOutReset()` + CC 123 before closing MIDI handles.
+    58. BINARY_ROOT_ANCHOR : Anchor all asset/datalake paths relative to `GetModuleFileNameW(NULL, ...)` rather than `GetCurrentDirectoryW()`.
+}
+::AVIS_MANIFEST_END::
