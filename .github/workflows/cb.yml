@@ -21,11 +21,41 @@ jobs:
           DL_URL="https://github.com"
           DL_SHA=$(gh api "repos/mercwar/AVIS-DATALAKE/git/ref/heads/main" --jq '.object.sha')
 
+          PAGES_WF=$(cat <<'EOF'
+          name: Deploy Pages (No Submodules)
+          on:
+            push:
+              branches: [ main ]
+            workflow_dispatch:
+          permissions:
+            contents: read
+            pages: write
+            id-token: write
+          jobs:
+            deploy:
+              environment:
+                name: github-pages
+                url: ${{ steps.deployment.outputs.page_url }}
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                  with:
+                    submodules: false
+                - uses: actions/configure-pages@v5
+                - uses: actions/upload-pages-artifact@v3
+                  with:
+                    path: '.'
+                - id: deployment
+                  uses: actions/deploy-pages@v4
+          EOF
+          )
+          PAGES_WF=$(echo "$PAGES_WF" | sed 's/^          //')
+
           gh repo list mercwar \
             --limit 200 \
-            --json name,isEmpty,isArchived,isPrivate \
-            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false and .isPrivate == false) | .name' \
-          | while read -r name; do
+            --json name,isEmpty,isArchived,isPrivate,hasPages \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false and .isPrivate == false) | "\(.name) \(.hasPages)"' \
+          | while read -r name has_pages; do
               HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/main" --jq '.object.sha' 2>/dev/null) || continue
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
 
@@ -36,16 +66,26 @@ jobs:
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
               NEEDS_GM=false
-              if ! echo "$GITMODULES" | grep -q '\[submodule "AVIS-DATALAKE"\]'; then
-                GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$GITMODULES" "$DL_URL")
+              if ! echo "$GITMODULES" | grep -q "url = ${DL_URL}"; then
+                # Remove any broken/old AVIS-DATALAKE entry before adding the valid one
+                CLEAN_GM=$(echo "$GITMODULES" | awk '
+                  /^\[submodule "AVIS-DATALAKE"\]/ { skip=1; next }
+                  /^\[/ { skip=0 }
+                  !skip { print }
+                ')
+                GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$CLEAN_GM" "$DL_URL")
                 NEEDS_GM=true
               fi
 
+              # Ensure _config.yml excludes AVIS-DATALAKE so Jekyll never scans it
               CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=main" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
               NEEDS_CFG=false
-              if [ -n "$CFG" ] && ! echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
+              if [ -z "$CFG" ]; then
+                CFG=$(printf 'exclude:\n  - AVIS-DATALAKE\n')
+                NEEDS_CFG=true
+              elif ! echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
                 if echo "$CFG" | grep -q '^exclude:'; then
                   CFG=$(echo "$CFG" | sed '/^exclude:/a\  - AVIS-DATALAKE')
                 else
@@ -54,8 +94,19 @@ jobs:
                 NEEDS_CFG=true
               fi
 
-              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_GM" = "false" ] && [ "$NEEDS_CFG" = "false" ]; then
-                echo "[$name] Already linked."
+              # If Pages is enabled, enforce submodules: false workflow so Pages never clones the 50 nested repos
+              NEEDS_WF=false
+              if [ "$has_pages" = "true" ]; then
+                CUR_WF=$(gh api "repos/mercwar/${name}/contents/.github/workflows/pages.yml?ref=main" \
+                  --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
+                if [ "$CUR_WF" != "$PAGES_WF" ]; then
+                  NEEDS_WF=true
+                fi
+                gh api -X PUT "repos/mercwar/${name}/pages" -f build_type="workflow" >/dev/null 2>&1 || true
+              fi
+
+              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_GM" = "false" ] && [ "$NEEDS_CFG" = "false" ] && [ "$NEEDS_WF" = "false" ]; then
+                echo "[$name] Already linked and clean."
                 continue
               fi
 
@@ -71,6 +122,12 @@ jobs:
                 TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
                   --arg cfg "$CFG" \
                   '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
+              fi
+
+              if [ "$NEEDS_WF" = "true" ]; then
+                TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
+                  --arg wf "$PAGES_WF" \
+                  '. + [{ path: ".github/workflows/pages.yml", mode: "100644", type: "blob", content: $wf }]')
               fi
 
               NEW_TREE=$(jq -n \
