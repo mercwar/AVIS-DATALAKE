@@ -1,0 +1,183 @@
+ :root {
+      --bg-void: #03050a;
+      --panel-bg: rgba(7, 12, 22, 0.84);
+      --panel-border: rgba(56, 189, 248, 0.25);
+      --cyan-accent: #00f0ff;
+      --violet-accent: #b84dff;
+      --amber-accent: #ff9d00;
+      --emerald-accent: #00ff9d;
+      --gold-accent: #ffd97d;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-void);
+      color: #e2e8f0;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Fullscreen 3D Canvas */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    /* Subtle Tactical Scanline & Vignette Overlay */
+    .tactical-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        radial-gradient(circle at center, transparent 55%, rgba(2, 4, 9, 0.78) 100%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 240, 255, 0.015) 0px,
+          rgba(0, 240, 255, 0.015) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+    }
+
+    /* Glassmorphic EVE Tactical Panels */
+    .eve-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.65),
+        inset 0 0 18px rgba(0, 240, 255, 0.04);
+    }
+
+    .eve-panel-corner {
+      position: relative;
+    }
+    .eve-panel-corner::before,
+    .eve-panel-corner::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f0ff;
+      border-style: solid;
+      pointer-events: none;
+    }
+    .eve-panel-corner::before {
+      top: -1px;
+      left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .eve-panel-corner::after {
+      bottom: -1px;
+      right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    /* Custom Scrollbars for Recursive Tree */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(5, 10, 20, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 240, 255, 0.3);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 240, 255, 0.6);
+    }
+
+    /* Floating 3D HTML Labels Layer */
+    #labels-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    .star-label {
+      position: absolute;
+      transform: translate(-50%, -140%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(3, 6, 14, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+      transition: opacity 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .star-label:hover {
+      z-index: 20;
+      border-color: #00f0ff;
+      background: rgba(8, 18, 36, 0.95);
+      transform: translate(-50%, -145%) scale(1.06);
+    }
+    .star-label.is-hub {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffd97d;
+      border-color: rgba(255, 217, 125, 0.6);
+      box-shadow: 0 0 12px rgba(255, 217, 125, 0.28);
+    }
+    .star-label.is-selected {
+      z-index: 25;
+      border-color: #ffffff;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.65);
+      background: rgba(12, 26, 48, 0.96);
+    }
+
+    /* Hover Tooltip */
+    #hover-tooltip {
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.14s ease;
+      min-width: 220px;
+      max-width: 290px;
+    }
+
+    /* Pulse indicator */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+    .live-dot {
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+
+    /* Allow text selection inside telemetry values */
+    .selectable-text {
+      user-select: text;
+    }
