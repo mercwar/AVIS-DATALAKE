@@ -1,29 +1,18 @@
-name: Link Public Repos & Full Deploy Pages
+name: Install AVIS-DATALAKE Link in Public Repos
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
-  push:
-    branches: ["main"]
-    paths-ignore:
-      - '.gitmodules'
-      - '_config.yml'
+    - cron: '30 0 * * *'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
-  link-public-repos:
+  install-datalake-link:
     runs-on: ubuntu-latest
     steps:
-      - name: Create, update, and verify public repo folder links in AVIS-DATALAKE
+      - name: Install and verify AVIS-DATALAKE folder link in each public repo
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -35,15 +24,19 @@ jobs:
           fi
 
           OWNER="mercwar"
-          REPO="AVIS-DATALAKE"
-          BRANCH="main"
+          TARGET_REPO="AVIS-DATALAKE"
+          TARGET_BRANCH="main"
+          TARGET_URL="https://github.com/${OWNER}/${TARGET_REPO}.git"
 
-          HEAD_SHA=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
-          BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
-          RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
+          TARGET_SHA=$(gh api "repos/${OWNER}/${TARGET_REPO}/git/ref/heads/${TARGET_BRANCH}" --jq '.object.sha')
+          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Error: Could not resolve valid 40-char SHA for ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH}: $TARGET_SHA"
+            exit 1
+          fi
+          echo "Target ${OWNER}/${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
 
-          EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
-          PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
+          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\tupdate = none\n' \
+            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
 
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
@@ -51,173 +44,120 @@ jobs:
             --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
             --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
 
-          if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "AI"; then
-            AI_BRANCH=$(gh api "repos/${OWNER}/AI" --jq '.default_branch // "main"' 2>/dev/null || echo "main")
-            REPO_ROWS+=$'\n'"AI"$'\t'"${AI_BRANCH}"
-          fi
-
-          while IFS= read -r existing_name; do
-            [ -z "$existing_name" ] && continue
-            if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
-              def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // "main"' 2>/dev/null || echo "main")
-              REPO_ROWS+=$'\n'"${existing_name}"$'\t'"${def_branch}"
-            fi
-          done < <(echo "$EXISTING_LINKS" | jq -r 'keys[]')
-
-          LINK_ITEMS="[]"
-          EXPECTED_MAP="{}"
-          GITMODULES=""
-          EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules\n  - _site/'
-          CREATED_COUNT=0
           UPDATED_COUNT=0
+          OK_COUNT=0
+          FAILED_COUNT=0
 
           while IFS=$'\t' read -r name branch; do
             [ -z "$name" ] && continue
-            [ "$name" = "$REPO" ] && continue
+            [ "$name" = "$TARGET_REPO" ] && continue
             [ -z "$branch" ] || [ "$branch" = "null" ] && branch="main"
 
-            REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
-            if [ -z "$REPO_SHA" ]; then
-              REPO_SHA=$(echo "$EXISTING_LINKS" | jq -r --arg p "$name" '.[$p] // empty')
-            fi
-            if [ -z "$REPO_SHA" ]; then
-              echo "Skipping $name (no SHA resolved)."
+            HEAD_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
+            if [[ ! "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "[$name] Skipped (could not resolve $branch)."
               continue
             fi
 
-            CURRENT_SHA=$(echo "$EXISTING_LINKS" | jq -r --arg p "$name" '.[$p] // empty')
-            if [ -z "$CURRENT_SHA" ]; then
-              echo "Creating missing folder link: $name -> $REPO_SHA ($branch)"
-              CREATED_COUNT=$((CREATED_COUNT + 1))
-            elif [ "$CURRENT_SHA" != "$REPO_SHA" ]; then
-              echo "Updating folder link: $name -> $REPO_SHA ($branch)"
-              UPDATED_COUNT=$((UPDATED_COUNT + 1))
+            BASE_TREE=$(gh api "repos/${OWNER}/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+            RAW_TREE=$(gh api "repos/${OWNER}/${name}/git/trees/${BASE_TREE}")
+
+            COLLISION=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode != "160000") | .mode')
+            if [ -n "$COLLISION" ]; then
+              echo "[$name] ERROR: Path 'AVIS-DATALAKE' already exists as mode $COLLISION."
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
             fi
 
-            LINK_ITEMS=$(echo "$LINK_ITEMS" | jq \
-              --arg path "$name" \
-              --arg sha "$REPO_SHA" \
-              '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
+            CURRENT_LINK_SHA=$(echo "$RAW_TREE" | jq -r '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha // empty')
 
-            EXPECTED_MAP=$(echo "$EXPECTED_MAP" | jq \
-              --arg path "$name" \
-              --arg sha "$REPO_SHA" \
-              '. + { ($path): $sha }')
+            EXISTING_GM=$(gh api "repos/${OWNER}/${name}/contents/.gitmodules?ref=${branch}" \
+              --jq '.content // empty' 2>/dev/null | tr -d '\n' | base64 -d 2>/dev/null || true)
 
-            if [ "$name" = "AI" ]; then
-              REPO_URL="https://github.com/mercwar/AI.git"
+            EXISTING_CFG=$(gh api "repos/${OWNER}/${name}/contents/_config.yml?ref=${branch}" \
+              --jq '.content // empty' 2>/dev/null | tr -d '\n' | base64 -d 2>/dev/null || true)
+
+            if [ -z "$EXISTING_CFG" ]; then
+              NEW_CFG=$'exclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/\n'
+            elif printf '%s\n' "$EXISTING_CFG" | grep -q '^exclude:'; then
+              NEW_CFG="$EXISTING_CFG"
+              printf '%s\n' "$NEW_CFG" | grep -q 'AVIS-DATALAKE/' || \
+                NEW_CFG=$(printf '%s\n' "$NEW_CFG" | sed '/^exclude:/a\  - AVIS-DATALAKE/')
+              printf '%s\n' "$NEW_CFG" | grep -q '\.gitmodules' || \
+                NEW_CFG=$(printf '%s\n' "$NEW_CFG" | sed '/^exclude:/a\  - .gitmodules')
             else
-              REPO_URL="https://github.com/${OWNER}/${name}.git"
+              NEW_CFG=$(printf '%s\n\nexclude:\n  - .github/\n  - .gitmodules\n  - AVIS-DATALAKE/\n' "$EXISTING_CFG")
             fi
 
-            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\n' "$name" "$name" "$REPO_URL" "$branch")
-            EXCLUDES+=$'\n  - '"${name}/"
-          done <<< "$REPO_ROWS"
+            if [ "$CURRENT_LINK_SHA" = "$TARGET_SHA" ] && [ "$EXISTING_GM" = "$NEW_GM" ] && [ "$EXISTING_CFG" = "$NEW_CFG" ]; then
+              echo "[$name] OK (already up to date) -> $TARGET_SHA"
+              OK_COUNT=$((OK_COUNT + 1))
+              continue
+            fi
 
-          FINAL_TREE=$(jq -n \
-            --argjson preserved "$PRESERVED_ITEMS" \
-            --argjson links "$LINK_ITEMS" \
-            --arg gm "$GITMODULES" \
-            --arg cfg "$EXCLUDES" \
-            '$preserved + $links + [
-              { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
-              { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
-            ]')
+            PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.path != "AVIS-DATALAKE" and .path != "AVIS-DATALAKE.md" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
 
-          NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
-            gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
+            FINAL_TREE=$(jq -n \
+              --argjson preserved "$PRESERVED_ITEMS" \
+              --arg tsha "$TARGET_SHA" \
+              --arg gm "$NEW_GM" \
+              --arg cfg "$NEW_CFG" \
+              '$preserved + [
+                { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $tsha },
+                { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+                { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
+              ]')
 
-          if [ "$NEW_TREE" != "$BASE_TREE" ]; then
-            NEW_COMMIT=$(jq -n \
-              --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
+            TREE_RESP=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
+              gh api "repos/${OWNER}/${name}/git/trees" --input - 2>&1 || true)
+            NEW_TREE=$(echo "$TREE_RESP" | jq -r '.sha // empty' 2>/dev/null || true)
+
+            if [[ ! "$NEW_TREE" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "[$name] ERROR creating Git tree: $TREE_RESP"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
+            fi
+
+            if [ "$NEW_TREE" = "$BASE_TREE" ]; then
+              echo "[$name] OK (tree unchanged) -> $TARGET_SHA"
+              OK_COUNT=$((OK_COUNT + 1))
+              continue
+            fi
+
+            COMMIT_RESP=$(jq -n \
+              --arg msg "Link AVIS-DATALAKE folder into repository" \
               --arg tree "$NEW_TREE" \
               --arg parent "$HEAD_SHA" \
               '{ message: $msg, tree: $tree, parents: [$parent] }' | \
-              gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
+              gh api "repos/${OWNER}/${name}/git/commits" --input - 2>&1 || true)
+            NEW_COMMIT=$(echo "$COMMIT_RESP" | jq -r '.sha // empty' 2>/dev/null || true)
 
-            gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
-            echo "Committed folder links -> ${NEW_COMMIT}"
-          else
-            echo "No tree changes needed."
-          fi
-
-          echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
-          LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
-          LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
-          LIVE_TREE_JSON=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}")
-          LIVE_LINKS=$(echo "$LIVE_TREE_JSON" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
-
-          MISSING_OR_BAD=0
-          while IFS= read -r repo_name; do
-            [ -z "$repo_name" ] && continue
-            expected_sha=$(echo "$EXPECTED_MAP" | jq -r --arg k "$repo_name" '.[$k]')
-            actual_sha=$(echo "$LIVE_LINKS" | jq -r --arg k "$repo_name" '.[$k] // empty')
-            if [ -z "$actual_sha" ]; then
-              echo "FAIL: Missing 160000 folder link for '$repo_name'"
-              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
-            elif [ "$actual_sha" != "$expected_sha" ]; then
-              echo "FAIL: SHA mismatch for '$repo_name' (expected $expected_sha, got $actual_sha)"
-              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
-            else
-              echo "OK: $repo_name -> $actual_sha"
+            if [[ ! "$NEW_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "[$name] ERROR creating commit: $COMMIT_RESP"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
             fi
-          done < <(echo "$EXPECTED_MAP" | jq -r 'keys[]')
 
-          if [ "$MISSING_OR_BAD" -gt 0 ]; then
-            echo "ERROR: $MISSING_OR_BAD folder link(s) failed verification!"
+            if ! PATCH_ERR=$(gh api -X PATCH "repos/${OWNER}/${name}/git/refs/heads/${branch}" -f sha="$NEW_COMMIT" 2>&1); then
+              echo "[$name] ERROR updating ref heads/${branch}: $PATCH_ERR"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
+            fi
+
+            LIVE_HEAD=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha')
+            LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${name}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
+            VERIFY_SHA=$(gh api "repos/${OWNER}/${name}/git/trees/${LIVE_TREE_SHA}" --jq '.tree[] | select(.path == "AVIS-DATALAKE" and .mode == "160000") | .sha')
+
+            if [ "$VERIFY_SHA" = "$TARGET_SHA" ]; then
+              echo "[$name] VERIFIED -> AVIS-DATALAKE @ $VERIFY_SHA ($branch)"
+              UPDATED_COUNT=$((UPDATED_COUNT + 1))
+            else
+              echo "[$name] FAIL: Live verification mismatch (expected $TARGET_SHA, got ${VERIFY_SHA:-none})"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          done <<< "$REPO_ROWS"
+
+          echo "Summary: ${UPDATED_COUNT} installed/updated, ${OK_COUNT} already current, ${FAILED_COUNT} failed."
+          if [ "$FAILED_COUNT" -gt 0 ]; then
             exit 1
           fi
-          echo "All $(echo "$EXPECTED_MAP" | jq 'length') folder links verified!"
-
-  build:
-    needs: link-public-repos
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download root repository archive (zero git/submodule execution)
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          mkdir -p src _site
-          gh api "repos/mercwar/AVIS-DATALAKE/tarball/main" > repo.tar.gz
-          tar -xzf repo.tar.gz --strip-components=1 -C src
-          rm -f repo.tar.gz src/.gitmodules
-          gh api "repos/mercwar/AVIS-DATALAKE/git/trees/main" --jq '.tree[] | select(.mode == "160000") | .path' | while read -r sub_path; do
-            [ -n "$sub_path" ] && rm -rf "src/${sub_path}"
-          done
-
-      - name: Setup Ruby and Bundler
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-          working-directory: ./src
-
-      - name: Build Jekyll site from ./src
-        run: |
-          cd src
-          if [ -f Gemfile ]; then
-            bundle install --jobs 4 --retry 3
-            bundle exec jekyll build --source . --destination "../_site"
-          else
-            gem install jekyll bundler --no-document
-            jekyll build --source . --destination "../_site"
-          fi
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./_site
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
