@@ -185,6 +185,10 @@ jobs:
           fi
           rsync -a "${EXCLUDES[@]}" ./ _site/
 
+          # Remove .git so actions/checkout post-job cleanup skips git submodule foreach
+          rm -rf .git
+
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
