@@ -52,7 +52,7 @@ jobs:
             --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
             --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
 
-          # Force-check any existing 160000 link (such as robo-knight-inventory) via direct API lookup
+          # Force-check any existing 160000 link via direct API lookup
           for existing_name in $(echo "$EXISTING_LINKS" | jq -r 'keys[]'); do
             if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
               def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // empty' 2>/dev/null || true)
@@ -99,7 +99,8 @@ jobs:
               --arg sha "$REPO_SHA" \
               '. + { ($path): $sha }')
 
-            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n\tbranch = %s\n\n' "$name" "$name" "$OWNER" "$name" "$branch")
+            REPO_URL="https://github.com/${OWNER}/${name}.git"
+            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\tupdate = none\n\n' "$name" "$name" "$REPO_URL" "$branch")
             EXCLUDES+=$'\n  - '"${name}/"
           done <<< "$REPO_ROWS"
 
