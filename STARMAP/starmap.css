@@ -1,11 +1,13 @@
- :root {
-  --bg-void: #03050a;
-  --panel-bg: rgba(6, 12, 22, 0.9);
-  --cyan-accent: #00f0ff;
-  --violet-accent: #b84dff;
-  --amber-accent: #ff9d00;
-  --emerald-accent: #00ff9d;
-  --gold-accent: #ffd97d;
+:root {
+  --bg-void: #08090b;
+  --panel-bg: rgba(12, 14, 16, 0.22);
+  --hud-white: rgba(240, 244, 248, 0.9);
+  --hud-hairline: rgba(255, 255, 255, 0.22);
+  --cyan-accent: #7ce8ff;
+  --violet-accent: #c49bff;
+  --amber-accent: #ffb020;
+  --emerald-accent: #52e5a5;
+  --gold-accent: #e6c678;
 }
 
 * {
@@ -25,16 +27,21 @@ html, body {
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: #e2e8f0;
+  color: var(--hud-white);
   font-family: 'Rajdhani', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
 }
 
 .font-orbitron {
   font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.08em;
 }
 
 .font-mono-tech {
   font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
 }
 
 /* Fullscreen 3D Canvas */
@@ -55,184 +62,245 @@ canvas {
   background: transparent;
 }
 
-/* Hex-Grid & Tactical Scanline Overlay */
+/* Optical Combiner Glass & Collimated Reticle Overlay */
 .tactical-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 2;
   background:
-    radial-gradient(circle at center, transparent 52%, rgba(2, 4, 9, 0.84) 100%),
+    /* Subtle optical lens edge falloff (neutral dark, zero blue tint) */
+    radial-gradient(
+      circle at center,
+      transparent 62%,
+      rgba(6, 7, 9, 0.28) 86%,
+      rgba(4, 5, 7, 0.55) 100%
+    ),
+    /* Ultra-fine neutral sensor scanlines */
     repeating-linear-gradient(
       0deg,
-      rgba(0, 240, 255, 0.015) 0px,
-      rgba(0, 240, 255, 0.015) 1px,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 1px,
       transparent 1px,
-      transparent 3px
+      transparent 4px
+    ),
+    /* Faint precision optical grid dots */
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 0
     );
+  background-size: 100% 100%, 100% 4px, 48px 48px;
 }
 
-    /* =====================================================================
-       DISTINCT SPECIALIZED ROBOTIC CSS WINDOW ARCHITECTURES
-       ===================================================================== */
+/* Collimated Glass Corner Registration Brackets */
+.tactical-overlay::before,
+.tactical-overlay::after {
+  content: '';
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  height: 14px;
+  pointer-events: none;
+}
 
-    /* 1. Top Command Bridge Bar (.mech-win-command): Dual-chamfered trapezoid HUD bar with cyan top laser edge & hazard rail */
-    .mech-win-command {
-      position: relative;
-      background:
-        linear-gradient(90deg, rgba(255, 217, 125, 0.14) 0%, rgba(7, 15, 28, 0.94) 22%, rgba(6, 12, 23, 0.92) 78%, rgba(0, 240, 255, 0.14) 100%);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border-top: 2px solid rgba(0, 240, 255, 0.72);
-      border-bottom: 1px solid rgba(255, 217, 125, 0.45);
-      clip-path: polygon(
-        16px 0,
-        calc(100% - 16px) 0,
-        100% 10px,
-        100% calc(100% - 10px),
-        calc(100% - 16px) 100%,
-        16px 100%,
-        0 calc(100% - 10px),
-        0 10px
-      );
-      box-shadow:
-        0 8px 28px rgba(0, 0, 0, 0.82),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14),
-        0 0 18px rgba(0, 240, 255, 0.14);
-    }
-    .mech-win-command::before {
-      content: '';
-      position: absolute;
-      left: 22px;
-      right: 22px;
-      bottom: 0;
-      height: 2px;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(255, 217, 125, 0.75) 0px,
-        rgba(255, 217, 125, 0.75) 14px,
-        transparent 14px,
-        transparent 20px,
-        rgba(0, 240, 255, 0.65) 20px,
-        rgba(0, 240, 255, 0.65) 30px,
-        transparent 30px,
-        transparent 36px
-      );
-      pointer-events: none;
-    }
+.tactical-overlay::before {
+  top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  mask-image: linear-gradient(90deg, #000 0, #000 28px, transparent 28px, transparent calc(100% - 28px), #000 calc(100% - 28px), #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 28px, transparent 28px, transparent calc(100% - 28px), #000 calc(100% - 28px), #000 100%);
+}
 
-    /* 2. Left Recursive Protocol Drawer (.mech-win-tree): Vertical beveled left-docked window with notched top-right & matrix grid */
-    .mech-win-tree {
-      position: relative;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(0, 240, 255, 0.025) 0px,
-          rgba(0, 240, 255, 0.025) 1px,
-          transparent 1px,
-          transparent 22px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.02) 0px,
-          rgba(0, 240, 255, 0.02) 1px,
-          transparent 1px,
-          transparent 22px
-        ),
-        linear-gradient(180deg, rgba(6, 14, 26, 0.14) 0%, rgba(4, 9, 18, 0.26) 100%);
+.tactical-overlay::after {
+  bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  mask-image: linear-gradient(90deg, #000 0, #000 28px, transparent 28px, transparent calc(100% - 28px), #000 calc(100% - 28px), #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 28px, transparent 28px, transparent calc(100% - 28px), #000 calc(100% - 28px), #000 100%);
+}
 
-      border-left: 3px solid #00f0ff;
-      border-right: 1px solid rgba(0, 240, 255, 0.3);
-      clip-path: polygon(
-        0 18px,
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 18px,
-        100% calc(100% - 24px),
-        calc(100% - 24px) 100%,
-        0 100%
-      );
-      box-shadow:
-        10px 12px 36px rgba(0, 0, 0, 0.85),
-        inset 4px 0 16px rgba(0, 240, 255, 0.14);
-    }
-    .mech-win-tree::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 56px;
-      bottom: 64px;
-      width: 5px;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(0, 240, 255, 0.72) 0px,
-        rgba(0, 240, 255, 0.72) 8px,
-        transparent 8px,
-        transparent 16px
-      );
-      pointer-events: none;
-    }
+/* =====================================================================
+   PRECISION OPTICAL HUD WINDOW ARCHITECTURES (REALISTIC GLASS & RETICLES)
+   ===================================================================== */
 
-    /* 3. Right System Telemetry HUD (.mech-win-telemetry): Stepped angular mecha visor panel with amber/gold accent rails */
-    .mech-win-telemetry {
-      position: relative;
-      background:
-        linear-gradient(160deg, rgba(255, 157, 0, 0.09) 0%, rgba(7, 12, 22, 0.24) 38%, rgba(4, 10, 20, 0.36) 100%);
+/* 1. Top Command Bridge Bar (.mech-win-command): Optical glass header with precision calibration ticks */
+.mech-win-command {
+  position: relative;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(12, 14, 16, 0.18) 40%,
+      rgba(8, 10, 12, 0.24) 100%
+    );
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  border-top: 1px solid rgba(255, 255, 255, 0.32);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  clip-path: polygon(
+    12px 0,
+    calc(100% - 12px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
 
-      border-right: 3px solid #ff9d00;
-      border-left: 1px solid rgba(255, 217, 125, 0.34);
-      clip-path: polygon(
-        16px 0,
-        100% 0,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        18px 100%,
-        0 calc(100% - 18px),
-        0 16px
-      );
-      box-shadow:
-        -10px 12px 36px rgba(0, 0, 0, 0.85),
-        inset -4px 0 18px rgba(255, 157, 0, 0.16);
-    }
-    .mech-win-telemetry::before {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 48px;
-      height: 150px;
-      width: 6px;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(255, 157, 0, 0.88) 0px,
-        rgba(255, 157, 0, 0.88) 3px,
-        transparent 3px,
-        transparent 10px
-      );
-      pointer-events: none;
-    }
+/* Precision ruler ticks along bottom rail */
+.mech-win-command::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.45) 0px,
+    rgba(255, 255, 255, 0.45) 1px,
+    transparent 1px,
+    transparent 12px,
+    rgba(0, 240, 255, 0.6) 12px,
+    rgba(0, 240, 255, 0.6) 1px,
+    transparent 13px,
+    transparent 48px
+  );
+  pointer-events: none;
+}
 
-    /* 4. Bottom Camera & Constellation Tactical Dock (.mech-win-dock): Low-profile octagonal flight-deck console */
-    .mech-win-dock {
-      position: relative;
-      background:
-        linear-gradient(90deg, rgba(0, 240, 255, 0.1), rgba(6, 12, 22, 0.25) 50%, rgba(255, 157, 0, 0.1));
+/* 2. Left Recursive Protocol Drawer (.mech-win-tree): Smoked telemetry glass with subtle coordinate crosshairs */
+.mech-win-tree {
+  position: relative;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.12) 1px, transparent 0),
+    linear-gradient(
+      160deg,
+      rgba(18, 20, 24, 0.16) 0%,
+      rgba(10, 12, 14, 0.24) 100%
+    );
+  background-size: 24px 24px, 100% 100%;
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  clip-path: polygon(
+    0 14px,
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%
+  );
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 1px 0 0 rgba(255, 255, 255, 0.15);
+}
 
-      border-top: 1px solid rgba(0, 240, 255, 0.45);
-      border-bottom: 2px solid #00f0ff;
-      clip-path: polygon(
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 10px,
-        100% calc(100% - 6px),
-        calc(100% - 12px) 100%,
-        12px 100%,
-        0 calc(100% - 6px),
-        0 10px
-      );
-      box-shadow:
-        0 -4px 24px rgba(0, 0, 0, 0.84),
-        0 0 16px rgba(0, 240, 255, 0.16);
-    }
+/* Micro-gauge index rail on left edge */
+.mech-win-tree::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 48px;
+  bottom: 48px;
+  width: 4px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.4) 0px,
+    rgba(255, 255, 255, 0.4) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  pointer-events: none;
+}
+
+/* 3. Right System Telemetry HUD (.mech-win-telemetry): Clean optical visor with hairline amber status marker */
+.mech-win-telemetry {
+  position: relative;
+  background:
+    linear-gradient(
+      200deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(14, 16, 18, 0.16) 35%,
+      rgba(8, 10, 12, 0.25) 100%
+    );
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  border-right: 1px solid rgba(255, 255, 255, 0.35);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    14px 100%,
+    0 calc(100% - 14px),
+    0 14px
+  );
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Precision altitude/telemetry vernier ticks on right edge */
+.mech-win-telemetry::before {
+  content: '';
+  position: absolute;
+  right: 3px;
+  top: 48px;
+  height: 140px;
+  width: 5px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 176, 32, 0.75) 0px,
+    rgba(255, 176, 32, 0.75) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  pointer-events: none;
+}
+
+/* 4. Bottom Camera & Constellation Tactical Dock (.mech-win-dock): Low-profile instrument bezel */
+.mech-win-dock {
+  position: relative;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(10, 12, 14, 0.26) 0%,
+      rgba(20, 22, 26, 0.14) 100%
+    );
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  clip-path: polygon(
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 8px,
+    100% calc(100% - 5px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 5px),
+    0 8px
+  );
+  box-shadow:
+    0 -4px 20px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
 
     /* 5. Hover Target Scanner Tooltip (.mech-win-tooltip): Compact target-lock box with sharp L-brackets */
     .mech-win-tooltip {
@@ -272,187 +340,225 @@ canvas {
       border-bottom: 2px solid #ffd97d;
       border-right: 2px solid #ffd97d;
     }
+/* =====================================================================
+   MODERN OPTICAL HUD MODALS, CONTROLS & TELEMETRY LABELS
+   ===================================================================== */
 
-    /* 6a. Pop-Up File Viewer Modal — index.html (.mech-win-modal-index): Cyan/emerald cyber-viewport frame */
-    .mech-win-modal-index {
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(0, 240, 255, 0.1) 0%, rgba(5, 13, 24, 0.98) 18%, rgba(4, 9, 17, 0.99) 100%);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(0, 240, 255, 0.65);
-      border-top: 3px solid #00ff9d;
-      clip-path: polygon(
-        22px 0,
-        calc(100% - 22px) 0,
-        100% 22px,
-        100% calc(100% - 22px),
-        calc(100% - 22px) 100%,
-        22px 100%,
-        0 calc(100% - 22px),
-        0 22px
-      );
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.94),
-        0 0 34px rgba(0, 240, 255, 0.25),
-        inset 0 0 28px rgba(0, 255, 157, 0.08);
-    }
+/* 6a. Pop-Up File Viewer Modal — index.html (.mech-win-modal-index): Smoked optical viewport */
+.mech-win-modal-index {
+  position: relative;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(12, 14, 18, 0.78) 16%,
+      rgba(8, 10, 13, 0.86) 100%
+    );
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-top: 1px solid rgba(124, 232, 255, 0.65);
+  clip-path: polygon(
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    14px 100%,
+    0 calc(100% - 14px),
+    0 14px
+  );
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
 
-    /* 6b. Pop-Up File Viewer Modal — README.md (.mech-win-modal-readme): Violet/gold holo-codex frame */
-    .mech-win-modal-readme {
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(184, 77, 255, 0.12) 0%, rgba(12, 10, 24, 0.98) 20%, rgba(7, 8, 17, 0.99) 100%);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 217, 125, 0.62);
-      border-top: 3px solid #b84dff;
-      clip-path: polygon(
-        0 18px,
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 18px,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        18px 100%,
-        0 calc(100% - 18px)
-      );
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.94),
-        0 0 34px rgba(184, 77, 255, 0.25),
-        inset 0 0 28px rgba(255, 217, 125, 0.08);
-    }
+/* 6b. Pop-Up File Viewer Modal — README.md (.mech-win-modal-readme): Neutral technical specification sheet */
+.mech-win-modal-readme {
+  position: relative;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(14, 15, 19, 0.78) 16%,
+      rgba(9, 10, 13, 0.86) 100%
+    );
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-top: 1px solid rgba(230, 198, 120, 0.65);
+  clip-path: polygon(
+    0 14px,
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
 
-    .mech-subpanel {
-      background: rgba(8, 16, 30, 0.78);
-      border: 1px solid rgba(56, 189, 248, 0.22);
-      clip-path: polygon(
-        8px 0,
-        calc(100% - 8px) 0,
-        100% 8px,
-        100% calc(100% - 8px),
-        calc(100% - 8px) 100%,
-        8px 100%,
-        0 calc(100% - 8px),
-        0 8px
-      );
-    }
+/* Inset Data Module */
+.mech-subpanel {
+  background: rgba(14, 16, 20, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    0 calc(100% - 6px),
+    0 6px
+  );
+}
 
-    .mech-btn {
-      clip-path: polygon(
-        6px 0,
-        calc(100% - 6px) 0,
-        100% 6px,
-        100% calc(100% - 6px),
-        calc(100% - 6px) 100%,
-        6px 100%,
-        0 calc(100% - 6px),
-        0 6px
-      );
-      transition: all 0.16s ease;
-    }
+/* Precision Tactile Switch */
+.mech-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  clip-path: polygon(
+    5px 0,
+    calc(100% - 5px) 0,
+    100% 5px,
+    100% calc(100% - 5px),
+    calc(100% - 5px) 100%,
+    5px 100%,
+    0 calc(100% - 5px),
+    0 5px
+  );
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+.mech-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
+}
 
-    .hazard-bar {
-      height: 4px;
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0, 240, 255, 0.45),
-        rgba(0, 240, 255, 0.45) 6px,
-        rgba(6, 12, 22, 0.9) 6px,
-        rgba(6, 12, 22, 0.9) 12px
-      );
-    }
+/* Modern Precision Scale Dividers (Replaces thick cartoon hazard stripes) */
+.hazard-bar {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.35) 0px,
+    rgba(255, 255, 255, 0.35) 1px,
+    transparent 1px,
+    transparent 8px,
+    rgba(124, 232, 255, 0.55) 8px,
+    rgba(124, 232, 255, 0.55) 1px,
+    transparent 9px,
+    transparent 32px
+  );
+}
 
-    .hazard-bar-amber {
-      height: 4px;
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(255, 157, 0, 0.55),
-        rgba(255, 157, 0, 0.55) 6px,
-        rgba(6, 12, 22, 0.9) 6px,
-        rgba(6, 12, 22, 0.9) 12px
-      );
-    }
+.hazard-bar-amber {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.35) 0px,
+    rgba(255, 255, 255, 0.35) 1px,
+    transparent 1px,
+    transparent 8px,
+    rgba(255, 176, 32, 0.65) 8px,
+    rgba(255, 176, 32, 0.65) 1px,
+    transparent 9px,
+    transparent 32px
+  );
+}
 
-    @keyframes radar-spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .radar-core {
-      animation: radar-spin 7s linear infinite;
-    }
+@keyframes radar-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.radar-core {
+  animation: radar-spin 9s linear infinite;
+}
 
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.84); }
-    }
-    .live-dot {
-      animation: pulse-glow 2s infinite ease-in-out;
-    }
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.88); }
+}
+.live-dot {
+  animation: pulse-glow 2.2s infinite ease-in-out;
+}
 
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(5, 10, 20, 0.7);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(0, 240, 255, 0.35);
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 240, 255, 0.7);
-    }
+/* Ultra-Minimal Optical Scrollbars */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
 
-    /* Floating 3D HTML Labels Layer */
-    #labels-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 3;
-      overflow: hidden;
-    }
+/* Floating 3D HTML Labels Layer */
+#labels-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
 
-    .star-label {
-      position: absolute;
-      transform: translate(-50%, -145%);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.04em;
-      padding: 1px 6px;
-      background: rgba(3, 8, 18, 0.78);
-      border: 1px solid rgba(0, 240, 255, 0.22);
-      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-      white-space: nowrap;
-      transition: opacity 0.18s ease, transform 0.14s ease, border-color 0.18s ease;
-      pointer-events: auto;
-      cursor: pointer;
-    }
-    .star-label:hover {
-      z-index: 20;
-      border-color: #00f0ff;
-      background: rgba(8, 22, 42, 0.96);
-      transform: translate(-50%, -152%) scale(1.06);
-    }
-    .star-label.is-hub {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 10.5px;
-      font-weight: 700;
-      color: #ffd97d;
-      border-color: rgba(255, 217, 125, 0.7);
-      box-shadow: 0 0 14px rgba(255, 217, 125, 0.32);
-    }
-    .star-label.is-selected {
-      z-index: 25;
-      border-color: #ffffff;
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.75);
-      background: rgba(12, 28, 52, 0.98);
-    }
+.star-label {
+  position: absolute;
+  transform: translate(-50%, -145%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  color: rgba(240, 244, 248, 0.92);
+  background: rgba(10, 12, 15, 0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: 2px solid rgba(124, 232, 255, 0.7);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  white-space: nowrap;
+  transition: opacity 0.16s ease, transform 0.14s ease, border-color 0.16s ease, background 0.16s ease;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.star-label:hover {
+  z-index: 20;
+  border-color: rgba(255, 255, 255, 0.65);
+  border-left-color: #7ce8ff;
+  background: rgba(16, 18, 22, 0.72);
+  transform: translate(-50%, -152%) scale(1.04);
+}
+.star-label.is-hub {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #f5dfa8;
+  background: rgba(14, 15, 18, 0.48);
+  border-color: rgba(230, 198, 120, 0.42);
+  border-left: 2px solid #e6c678;
+}
+.star-label.is-selected {
+  z-index: 25;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.85);
+  border-left: 2px solid #7ce8ff;
+  background: rgba(18, 22, 28, 0.82);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
 
-    .selectable-text {
-      user-select: text;
-    }
+.selectable-text {
+  user-select: text;
+}
 
     /* Rendered Markdown Styles inside README Modal */
     .md-render h1 { font-family: 'Orbitron', sans-serif; font-size: 1.45rem; font-weight: 800; color: #ffd97d; border-bottom: 1px solid rgba(255, 217, 125, 0.3); padding-bottom: 0.4rem; margin: 0.75rem 0; }
