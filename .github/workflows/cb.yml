@@ -9,7 +9,7 @@ jobs:
   callback-link-datalake:
     runs-on: ubuntu-latest
     steps:
-      - name: Place 1 AVIS-DATALAKE link in each public repo
+      - name: Place AVIS-DATALAKE pointer link in each public repo
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -18,7 +18,6 @@ jobs:
             exit 1
           fi
 
-          DL_URL="https://github.com/mercwar/AVIS-DATALAKE.git"
           DL_SHA=$(gh api "repos/mercwar/AVIS-DATALAKE/git/ref/heads/main" --jq '.object.sha')
           echo "AVIS-DATALAKE main SHA: $DL_SHA"
 
@@ -34,28 +33,17 @@ jobs:
                 echo "[$name] Skipped (could not read $branch)."
                 continue
               }
+
+              LAST_MSG=$(gh api "repos/mercwar/${name}/commits/${HEAD_SHA}" --jq '.commit.message' 2>/dev/null || true)
+              if echo "$LAST_MSG" | grep -q "Link AVIS-DATALAKE folder"; then
+                echo "[$name] Skipped (HEAD is already a Link AVIS-DATALAKE folder commit)."
+                continue
+              fi
+
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
 
               EXISTING_SHA=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
                 --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .sha' 2>/dev/null || true)
-
-              GITMODULES=$(gh api "repos/mercwar/${name}/contents/.gitmodules?ref=${branch}" \
-                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
-
-              NEEDS_GM=false
-              if ! echo "$GITMODULES" | grep -q "url = ${DL_URL}"; then
-                CLEAN_GM=$(echo "$GITMODULES" | awk '
-                  /^\[submodule "AVIS-DATALAKE"\]/ { skip=1; next }
-                  /^\[/ { skip=0 }
-                  !skip { print }
-                ')
-                if [ -n "$(echo "$CLEAN_GM" | tr -d '[:space:]')" ]; then
-                  GITMODULES=$(printf '%s\n[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$CLEAN_GM" "$DL_URL")
-                else
-                  GITMODULES=$(printf '[submodule "AVIS-DATALAKE"]\n\tpath = AVIS-DATALAKE\n\turl = %s\n\tbranch = main\n\tshallow = true\n' "$DL_URL")
-                fi
-                NEEDS_GM=true
-              fi
 
               CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=${branch}" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
@@ -73,16 +61,14 @@ jobs:
                 NEEDS_CFG=true
               fi
 
-              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_GM" = "false" ] && [ "$NEEDS_CFG" = "false" ]; then
+              if [ "$EXISTING_SHA" = "$DL_SHA" ] && [ "$NEEDS_CFG" = "false" ]; then
                 echo "[$name] Already linked on $branch."
                 continue
               fi
 
               TREE_ITEMS=$(jq -n \
-                --arg gm "$GITMODULES" \
                 --arg sha "$DL_SHA" \
                 '[
-                  { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
                   { path: "AVIS-DATALAKE", mode: "160000", type: "commit", sha: $sha }
                 ]')
 
