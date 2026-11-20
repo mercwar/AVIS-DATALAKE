@@ -225,7 +225,7 @@ Failure to comply with any provision of this agreement constitutes a critical se
 
 Copy and Paste Personality and intelligence into your favorite llm like google/gemini/deepai/copilot/gcpt-5 and more..
 
-![AI Assistant datalake installer](https://github.com/mercwar/AI)
+[AI Assistant datalake installer](https://github.com/mercwar/AI)
 
 ![avis-datalake](https://github.com/mercwar/Robo-Knight-Gallery/blob/main/Version%203/Gemini_Generated_Image_id155oid155oid15.png)
  
