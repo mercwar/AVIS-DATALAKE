@@ -3,7 +3,7 @@ name: Link All Mercwar Repos Back to AVIS-DATALAKE
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 0 * * *' # Runs daily at 00:30 UTC (after AVIS-DATALAKE syncs)
+    - cron: '30 0 * * *'
 
 jobs:
   link-back-to-datalake:
@@ -14,15 +14,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "Error: GH_PAT secret is required to push to other repositories."
+            echo "Error: GH_PAT secret is missing."
             exit 1
           fi
 
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global user.email "github-actions[bot]@://github.com"
+          git config --global url."https://x-access-token:${GH_TOKEN}@://github.com".insteadOf "https://://github.com"
 
-          DATALAKE_URL="https://github.com"
+          DATALAKE_URL="https://://github.commercwar/AVIS-DATALAKE.git"
           DATALAKE_BRANCH=$(gh repo view mercwar/AVIS-DATALAKE --json defaultBranchRef --jq '.defaultBranchRef.name')
 
           gh repo list mercwar \
