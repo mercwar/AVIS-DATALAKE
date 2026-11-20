@@ -1,0 +1,44 @@
+::AVIS_MANIFEST_BEGIN::
+@HEADER {
+    DOC_ID          : "AVIS-ERR-SPEC-2026.11-F17"
+    VOLUME          : "17_WIC_IMAGE_CODECS_TRAY_SHELL_AND_PORT_BINDING"
+    VERSION         : "2.6.0-MERCWAR-CORE"
+    PREV_REF        : "AVIS-ERR-SPEC-2026.11-F16 (File 16)"
+    ISSUER          : "GOOGLE_AI_RUNTIME"
+    AUTHORITY       : "SOVEREIGN_WORKSPACE_DIAGNOSTICS"
+    TIMESTAMP       : "2026-11-19T19:42:00-05:00"
+    STRICT_MODE     : TRUE
+    NO_MOCK_DATA    : TRUE
+}
+
+::SECTION_51_WIC_IMAGE_DECODING_AND_ICON_PIPELINES::
+@FAULT_NODE [ERR-IMG-001] {
+    DOMAIN          : "Windows Imaging Component (WIC) Decoding & ICO/PNG Pixel Format Conversion (IWICFormatConverter)"
+    PHENOMENON      : "Inverted Red/Blue channels, pitch stride misalignment crashes on non-power-of-two widths, or unclosed file locks on source images"
+    ROOT_CAUSE      : "Assuming `width * 4` row stride instead of 4-byte DWORD-aligned `((width * 32 + 31) / 32) * 4`, or passing `GUID_WICPixelFormat32bppRGBA` instead of Win32-native `GUID_WICPixelFormat32bppPBGRA`."
+    INVARIANT_RULE  : "Convert all decoded frames through `IWICFormatConverter` to `GUID_WICPixelFormat32bppPBGRA`, compute DWORD-aligned row stride explicitly, and decode from an `IStream` or release `IWICBitmapDecoder` immediately after `CopyPixels()`."
+}
+
+::SECTION_52_SYSTEM_TRAY_AND_EXPLORER_RESTART_RECOVERY::
+@FAULT_NODE [ERR-TRY-001] {
+    DOMAIN          : "Win32 Notification Area Icons & Explorer.exe Crash Recovery (Shell_NotifyIconW)"
+    PHENOMENON      : "System tray icon vanishing permanently after `explorer.exe` restarts, or `NIM_ADD` failing during early Windows logon"
+    ROOT_CAUSE      : "Registering the tray icon once at startup without listening for the dynamic `RegisterWindowMessageW(L\"TaskbarCreated\")` broadcast."
+    INVARIANT_RULE  : "Cache `UINT wmTaskbarCreated = RegisterWindowMessageW(L\"TaskbarCreated\")` at window creation, re-issue `Shell_NotifyIconW(NIM_ADD, &nid)` inside `WndProc` whenever `uMsg == wmTaskbarCreated`, and invoke `NIM_DELETE` on exit."
+}
+
+::SECTION_53_LOCAL_PORT_BINDING_AND_LOOPBACK_ISOLATION::
+@FAULT_NODE [ERR-PRT-001] {
+    DOMAIN          : "Localhost Micro-Server Port Binding & Loopback Security (PHP 8.5 Built-in Server / Winsock)"
+    PHENOMENON      : "`WSAEADDRINUSE` (10048) startup collisions, Windows Defender Firewall UAC prompts, or unintended LAN exposure"
+    ROOT_CAUSE      : "Binding local telemetry/UI servers to `0.0.0.0` (all interfaces) or hardcoding a single static port without fallback probing."
+    INVARIANT_RULE  : "Bind local-only servers strictly to `127.0.0.1` (eliminating external exposure and firewall prompts), probe an explicit deterministic port range (`49152..49250`) on `WSAEADDRINUSE`, and persist the bound port to a runtime lockfile."
+}
+
+::MASTER_VERIFICATION_GATE::
+@GATE_CHECK_F17 {
+    53. PBGRA_STRIDE_ALIGN : Normalize WIC image pipelines to `GUID_WICPixelFormat32bppPBGRA` with DWORD-aligned stride calculations.
+    54. TASKBAR_REHYDRATE  : Listen for `RegisterWindowMessageW(L\"TaskbarCreated\")` to restore system tray icons across Explorer restarts.
+    55. LOOPBACK_PORT_LOCK : Bind local services strictly to `127.0.0.1` with deterministic port probing and runtime lockfile discovery.
+}
+::AVIS_MANIFEST_END::
