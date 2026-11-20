@@ -28,9 +28,6 @@
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/artifact.cyborg_ping.php</loc>
   </url>
   <url>
-    <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/index.html</loc>
-  </url>
-  <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/CYBORG/cy_session.c</loc>
   </url>
   <url>
@@ -2663,6 +2660,9 @@
   </url>
   <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/artifact.tar</loc>
+  </url>
+  <url>
+    <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/gateway.html</loc>
   </url>
   <url>
     <loc>https://github.com/mercwar/AVIS-DATALAKE/blob/main/config/ram_deploy.yml</loc>
