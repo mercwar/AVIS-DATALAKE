@@ -1,53 +1,54 @@
 exclude:
   - .github/
-  - Cyborg/
+  - .gitmodules
+  - robo-knight-inventory/
   - Dark-Com-2/
   - Navigator-MSVC-Academy/
-  - robo-knight-inventory/
-  - NEXUS/
-  - mercwar/
+  - Cyborg/
   - Mercwar-AI/
-  - Fire-Star-Alpha/
-  - Nebula/
+  - bin/
   - Robo-Knight-Gallery/
   - Constellation/
+  - NEXUS/
+  - Fire-Star-Alpha/
+  - Powershell/
+  - Nebula/
+  - AVIS/
+  - dc2php/
   - AI/
   - dc2sql/
-  - dc2php/
-  - Powershell/
-  - Navigator/
   - Comics/
-  - AVIS/
+  - Navigator/
   - Sentinel/
-  - bin/
   - AVIS-DATALAKE-ENGINE/
   - NAVIGATOR-LLM-ACADEMY/
   - AVIS-DL/
   - CYHY-CMT/
   - Station/
-  - AVIS-LOGIC-CORE/
   - ECLIPSE/
   - Quasar/
-  - JOE-TRON-LLMA/
+  - AVIS-LOGIC-CORE/
   - CL2/
   - CVBGODLY-CONSOLE/
   - AVIS-TRAY-MENU/
   - CYBORG-LIVE-GIT-BROWSER/
   - AVIS-AI-INI-DIR-MK-SCAN/
   - AVIS-ALERT-FVS/
+  - Stargate/
   - AVIS-SEARCH/
   - AVIS-NEWS/
   - AVIS-DROP/
-  - Stargate/
   - Navigator-AI-Academy/
   - Navigator-GitHub-Academy/
   - Dark-Com/
-  - CVBGOD-EMOJI/
   - CRON/
+  - CVBGOD-EMOJI/
   - Fire-Gem/
   - Robo-Knight-Demos/
   - GGML-LLAMA-MSVC-INSTALLER/
   - CYBORG-PROJECT-EXPLORER/
-  - JMC-ANDROID-APP-DEMO/
   - Robo-Knight-Player/
   - dc2url/
+  - JMC-ANDROID-APP-DEMO/
+  - mercwar/
+  - JOE-TRON-LLMA/
