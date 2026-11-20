@@ -1,35 +1,115 @@
-name: Deploy Pages (No Submodule Clones)
+name: Link Public Repos into AVIS-DATALAKE
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  link-public-repos:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout root only (skip submodules)
-        uses: actions/checkout@v4
-        with:
-          submodules: false
+      - name: Create or update missing public repo folder links in AVIS-DATALAKE
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+          if [ -z "$GH_TOKEN" ]; then
+            echo "Error: GH_PAT secret is missing."
+            exit 1
+          fi
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+          OWNER="mercwar"
+          REPO="AVIS-DATALAKE"
+          BRANCH="main"
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          HEAD_SHA=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
+          BASE_TREE=$(gh api "repos/${OWNER}/${REPO}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
+          RAW_TREE=$(gh api "repos/${OWNER}/${REPO}/git/trees/${BASE_TREE}")
+
+          # Map existing 160000 folder links: {"repo_name": "sha"}
+          EXISTING_LINKS=$(echo "$RAW_TREE" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
+
+          # Keep existing real files/folders, stripping old 160000 links, .gitmodules, and _config.yml
+          PRESERVED_ITEMS=$(echo "$RAW_TREE" | jq '[.tree[] | select(.mode != "160000" and .path != ".gitmodules" and .path != "_config.yml") | {path, mode, type, sha}]')
+
+          LINK_ITEMS="[]"
+          GITMODULES=""
+          EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules'
+          CREATED_COUNT=0
+          UPDATED_COUNT=0
+
+          while IFS=$'\t' read -r name branch is_empty is_private is_archived; do
+            [ -z "$name" ] && continue
+            [ "$name" = "$REPO" ] && continue
+            [ "$is_empty" = "true" ] && continue
+            [ "$is_private" = "true" ] && continue
+            [ "$is_archived" = "true" ] && continue
+            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
+
+            REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
+            if [ -z "$REPO_SHA" ]; then
+              echo "Skipping $name (could not resolve $branch)."
+              continue
+            fi
+
+            CURRENT_SHA=$(echo "$EXISTING_LINKS" | jq -r --arg p "$name" '.[$p] // empty')
+            if [ -z "$CURRENT_SHA" ]; then
+              echo "Creating missing folder link: $name -> $REPO_SHA ($branch)"
+              CREATED_COUNT=$((CREATED_COUNT + 1))
+            elif [ "$CURRENT_SHA" != "$REPO_SHA" ]; then
+              echo "Updating folder link: $name -> $REPO_SHA ($branch)"
+              UPDATED_COUNT=$((UPDATED_COUNT + 1))
+            fi
+
+            LINK_ITEMS=$(echo "$LINK_ITEMS" | jq \
+              --arg path "$name" \
+              --arg sha "$REPO_SHA" \
+              '. + [{ path: $path, mode: "160000", type: "commit", sha: $sha }]')
+
+            GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = https://github.com\n' "$name" "$name" "$OWNER" "$name")$'\n'
+            EXCLUDES+=$'\n  - '"${name}/"
+          done < <(
+            gh repo list "$OWNER" \
+              --visibility public \
+              --limit 200 \
+              --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
+              --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // ""), (.isEmpty | tostring), (.isPrivate | tostring), (.isArchived | tostring)] | @tsv'
+          )
+
+          if [ "$(echo "$LINK_ITEMS" | jq 'length')" -eq 0 ]; then
+            echo "No public repos found to link."
+            exit 0
+          fi
+
+          FINAL_TREE=$(jq -n \
+            --argjson preserved "$PRESERVED_ITEMS" \
+            --argjson links "$LINK_ITEMS" \
+            --arg gm "$GITMODULES" \
+            --arg cfg "$EXCLUDES" \
+            '$preserved + $links + [
+              { path: ".gitmodules", mode: "100644", type: "blob", content: $gm },
+              { path: "_config.yml", mode: "100644", type: "blob", content: $cfg }
+            ]')
+
+          NEW_TREE=$(jq -n --argjson tree "$FINAL_TREE" '{ tree: $tree }' | \
+            gh api "repos/${OWNER}/${REPO}/git/trees" --input - --jq '.sha')
+
+          if [ "$NEW_TREE" = "$BASE_TREE" ]; then
+            echo "All folder links already exist and are up to date."
+            exit 0
+          fi
+
+          NEW_COMMIT=$(jq -n \
+            --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
+            --arg tree "$NEW_TREE" \
+            --arg parent "$HEAD_SHA" \
+            '{ message: $msg, tree: $tree, parents: [$parent] }' | \
+            gh api "repos/${OWNER}/${REPO}/git/commits" --input - --jq '.sha')
+
+          gh api -X PATCH "repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}" -f sha="$NEW_COMMIT" >/dev/null
+          echo "Done! ${CREATED_COUNT} created, ${UPDATED_COUNT} updated -> ${NEW_COMMIT}"
