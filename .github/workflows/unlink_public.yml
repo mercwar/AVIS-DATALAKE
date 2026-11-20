@@ -1,15 +1,13 @@
-name: Fix Public Repos Pages (Stop Submodule Clones)
+name: Fix All 50 Repos (Stop Recursive Submodule Clones)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '45 0 * * *'
 
 jobs:
-  fix-public-pages:
+  stop-recursive-clones:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure Pages & Jekyll Exclusions Across Public Repos
+      - name: Remove AVIS-DATALAKE submodule from the 50 repos & fix Pages
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
@@ -18,98 +16,61 @@ jobs:
             exit 1
           fi
 
-          PAGES_YML=$(cat <<'EOF'
-          name: Deploy Static Pages (No Submodules)
-          on:
-            push:
-              branches: [ main ]
-            workflow_dispatch:
-          permissions:
-            contents: read
-            pages: write
-            id-token: write
-          jobs:
-            deploy:
-              environment:
-                name: github-pages
-                url: ${{ steps.deployment.outputs.page_url }}
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                  with:
-                    submodules: false
-                - uses: actions/configure-pages@v5
-                - uses: actions/upload-pages-artifact@v3
-                  with:
-                    path: '.'
-                - id: deployment
-                  uses: actions/deploy-pages@v4
-          EOF
-          )
-          # Strip leading 10 spaces from heredoc indentation
-          PAGES_YML=$(echo "$PAGES_YML" | sed 's/^          //')
-
           gh repo list mercwar \
             --limit 200 \
-            --json name,isEmpty,isArchived,isPrivate,hasPages \
-            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false and .isPrivate == false) | "\(.name) \(.hasPages)"' \
-          | while read -r name has_pages; do
-              HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/main" --jq '.object.sha' 2>/dev/null) || continue
+            --json name,defaultBranchRef,isEmpty,isArchived,isPrivate \
+            --jq '.[] | select(.name != "AVIS-DATALAKE" and .isEmpty == false and .isArchived == false and .isPrivate == false) | "\(.name) \(.defaultBranchRef.name)"' \
+          | while read -r name branch; do
+              [ -z "$branch" ] || [ "$branch" = "null" ] && continue
+
+              HEAD_SHA=$(gh api "repos/mercwar/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null) || continue
               BASE_TREE=$(gh api "repos/mercwar/${name}/git/commits/${HEAD_SHA}" --jq '.tree.sha')
 
-              TREE_ITEMS="[]"
+              # Check if AVIS-DATALAKE submodule exists in this repo's root tree
+              HAS_DL=$(gh api "repos/mercwar/${name}/git/trees/${BASE_TREE}" \
+                --jq '.tree[] | select(.path == "AVIS-DATALAKE") | .path' 2>/dev/null || true)
 
-              # 1. If _config.yml exists, exclude AVIS-DATALAKE so Jekyll never traverses it
-              CFG=$(gh api "repos/mercwar/${name}/contents/_config.yml?ref=main" \
+              if [ -z "$HAS_DL" ]; then
+                echo "[$name] Clean (no AVIS-DATALAKE submodule)."
+                continue
+              fi
+
+              echo "[$name] Removing recursive AVIS-DATALAKE submodule on $branch..."
+
+              # Build new tree without AVIS-DATALAKE (setting sha: null deletes the entry via Git Data API)
+              TREE_UPDATES='[{"path": "AVIS-DATALAKE", "mode": "160000", "type": "commit", "sha": null}]'
+
+              # Clean AVIS-DATALAKE section out of .gitmodules if present
+              GM=$(gh api "repos/mercwar/${name}/contents/.gitmodules?ref=${branch}" \
                 --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
 
-              if [ -n "$CFG" ] && ! echo "$CFG" | grep -q 'AVIS-DATALAKE'; then
-                if echo "$CFG" | grep -q '^exclude:'; then
-                  CFG=$(echo "$CFG" | sed '/^exclude:/a\  - AVIS-DATALAKE')
+              if [ -n "$GM" ]; then
+                CLEAN_GM=$(echo "$GM" | awk '
+                  /^\[submodule "AVIS-DATALAKE"\]/ { skip=1; next }
+                  /^\[/ { skip=0 }
+                  !skip { print }
+                ')
+                if [ -z "$(echo "$CLEAN_GM" | tr -d '[:space:]')" ]; then
+                  # Delete .gitmodules if it is now empty
+                  TREE_UPDATES=$(echo "$TREE_UPDATES" | jq '. + [{"path": ".gitmodules", "mode": "100644", "type": "blob", "sha": null}]')
                 else
-                  CFG=$(printf '%s\n\nexclude:\n  - AVIS-DATALAKE\n' "$CFG")
+                  TREE_UPDATES=$(echo "$TREE_UPDATES" | jq --arg gm "$CLEAN_GM" '. + [{"path": ".gitmodules", "mode": "100644", "type": "blob", "content": $gm}]')
                 fi
-                TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
-                  --arg cfg "$CFG" \
-                  '. + [{ path: "_config.yml", mode: "100644", type: "blob", content: $cfg }]')
-              fi
-
-              # 2. If Pages is enabled, install submodules: false workflow & switch build_type to workflow
-              if [ "$has_pages" = "true" ]; then
-                EXISTING_WF=$(gh api "repos/mercwar/${name}/contents/.github/workflows/pages.yml?ref=main" \
-                  --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)
-
-                if [ "$EXISTING_WF" != "$PAGES_YML" ]; then
-                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq \
-                    --arg wf "$PAGES_YML" \
-                    '. + [{ path: ".github/workflows/pages.yml", mode: "100644", type: "blob", content: $wf }]')
-                fi
-
-                # Switch GitHub Pages source from legacy branch build to GitHub Actions workflow
-                gh api -X PUT "repos/mercwar/${name}/pages" \
-                  -f build_type="workflow" >/dev/null 2>&1 || true
-              fi
-
-              # Skip if no file changes are needed for this repo
-              ITEM_COUNT=$(echo "$TREE_ITEMS" | jq 'length')
-              if [ "$ITEM_COUNT" -eq 0 ]; then
-                echo "[$name] Already clean."
-                continue
               fi
 
               NEW_TREE=$(jq -n \
                 --arg base "$BASE_TREE" \
-                --argjson tree "$TREE_ITEMS" \
+                --argjson tree "$TREE_UPDATES" \
                 '{ base_tree: $base, tree: $tree }' \
                 | gh api "repos/mercwar/${name}/git/trees" --input - --jq '.sha')
 
               NEW_COMMIT=$(jq -n \
-                --arg msg "Fix Pages build: disable submodule cloning and exclude AVIS-DATALAKE" \
+                --arg msg "Remove recursive AVIS-DATALAKE submodule to stop 50-repo Pages clones" \
                 --arg tree "$NEW_TREE" \
                 --arg parent "$HEAD_SHA" \
                 '{ message: $msg, tree: $tree, parents: [$parent] }' \
                 | gh api "repos/mercwar/${name}/git/commits" --input - --jq '.sha')
 
-              gh api -X PATCH "repos/mercwar/${name}/git/refs/heads/main" -f sha="$NEW_COMMIT" >/dev/null
-              echo "[$name] Fixed Pages & exclusions -> $NEW_COMMIT"
+              gh api -X PATCH "repos/mercwar/${name}/git/refs/heads/${branch}" -f sha="$NEW_COMMIT" >/dev/null
+              echo "[$name] Fixed -> $NEW_COMMIT"
             done
