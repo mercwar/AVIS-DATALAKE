@@ -1,328 +1,461 @@
-<!DOCTYPE html>
+ 
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AVIS-DATALAKE STARGATE</title>
+   <title>AVIS-DATALAKE STARGATE</title>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Three.js & OrbitControls (r128) -->
+
+  <!-- Google Fonts: Orbitron, Rajdhani & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Three.js r128 & OrbitControls -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Tech Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="STARMAP/starmap.css">
-
+<link rel="stylesheet" href="STARMAP/starmap.css" />
 </head>
 <body>
-  <!-- 3D WebGL Viewport -->
+
+  <!-- 3D WebGL Star Map Container -->
   <div id="canvas-container"></div>
 
-  <!-- Tactical Vignette & Subtle Scanline -->
-  <div class="tactical-vignette"></div>
+  <!-- Tactical Scanline & Vignette Layer -->
+  <div class="tactical-overlay"></div>
 
-  <!-- Projected 3D Star Labels -->
+  <!-- Floating 3D Star Nameplate Layer -->
   <div id="labels-layer"></div>
 
-  <!-- Hover Telemetry Tooltip -->
-  <div id="hover-tooltip" class="eve-panel rounded-lg p-3 text-xs shadow-2xl">
-    <div class="flex items-center justify-between gap-2 border-b border-slate-700/70 pb-1.5 mb-1.5">
-      <span id="tt-name" class="font-mono-tech font-bold text-sm text-white truncate">SYSTEM</span>
-      <span id="tt-sec" class="font-mono-tech text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">1.0 SEC</span>
+  <!-- 5. HOVER TARGET SCANNER TOOLTIP (.mech-win-tooltip) -->
+  <div id="hover-tooltip" class="mech-win-tooltip p-3 text-xs">
+    <div class="flex items-center justify-between gap-2 border-b border-cyan-500/30 pb-1.5 mb-1.5">
+      <span id="tt-name" class="font-orbitron font-bold text-white text-[11px] tracking-wider">NODE</span>
+      <span id="tt-mode" class="font-mono-tech text-[9.5px] px-1.5 py-0.5 bg-cyan-500/15 text-cyan-300 border border-cyan-400/40">160000</span>
     </div>
-    <div class="space-y-1 text-[11px] font-mono-tech">
-      <div class="flex justify-between gap-2">
-        <span class="text-slate-400">SECTOR:</span>
-        <span id="tt-sector" class="text-slate-200 text-right truncate">Central Command</span>
-      </div>
-      <div class="flex justify-between gap-2">
-        <span class="text-slate-400">GIT MODE:</span>
-        <span id="tt-mode" class="text-amber-300">160000 commit</span>
-      </div>
-      <div class="flex justify-between gap-2">
-        <span class="text-slate-400">JUMPS:</span>
-        <span id="tt-links" class="text-emerald-300">4 filaments</span>
-      </div>
-    </div>
-    <div class="mt-2 pt-1 border-t border-slate-800 text-[10px] text-cyan-400/90 font-mono-tech">
-      [CLICK TO LOCK & WARP CAMERA]
+    <div id="tt-sector" class="font-mono-tech text-[10px] uppercase tracking-wider text-amber-300 mb-1">SECTOR</div>
+    <div id="tt-desc" class="text-slate-300 text-[11px] leading-snug mb-1.5">Description</div>
+    <div class="flex items-center justify-between font-mono-tech text-[9.5px] text-slate-400 pt-1 border-t border-slate-800">
+      <span id="tt-coords">X:0 Y:0 Z:0</span>
+      <span class="text-cyan-400">[CLICK TO WARP]</span>
     </div>
   </div>
 
-  <!-- TOP NAVIGATION & MAP CONTROLS BAR -->
+  <!-- 1. TOP COMMAND BRIDGE BAR (.mech-win-command) -->
   <header class="fixed top-2.5 left-2.5 right-2.5 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-    <!-- Brand & Telemetry Header -->
-    <div class="eve-panel eve-panel-corner rounded-xl px-3.5 py-2 flex items-center gap-3 pointer-events-auto">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 live-dot shadow-[0_0_10px_#fbbf24]"></span>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-sm sm:text-base font-bold tracking-wider text-white uppercase">
-              MERCWAR // AVIS-DATALAKE
-            </h1>
-            <span class="hidden md:inline-block font-mono-tech text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-400/30">
-             AVIS STARGATE v1.0
-            </span>
-          </div>
-          <p class="font-mono-tech text-[10px] text-slate-400">
-            55 SYSTEMS • 51 GITLINKS (160000) • 3 BLOBS (100644) • RECURSIVE PROTOCOL
-          </p>
+    <!-- Brand & Telemetry Core -->
+    <div class="mech-win-command px-4 py-2 flex items-center gap-3 pointer-events-auto">
+      <div class="relative w-8 h-8 flex items-center justify-center shrink-0">
+        <svg class="w-8 h-8 text-cyan-400 radar-core" viewBox="0 0 36 36" fill="none">
+          <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 2" />
+          <circle cx="18" cy="18" r="7" stroke="#ffd97d" stroke-width="1.5" />
+          <line x1="18" y1="2" x2="18" y2="11" stroke="#00f0ff" stroke-width="1.5" />
+        </svg>
+        <span class="w-2 h-2 rounded-full bg-amber-400 live-dot absolute"></span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-orbitron font-extrabold text-xs sm:text-sm tracking-widest text-white">
+            AVIS-DATALAKE <span class="text-cyan-400">//</span> NEW EDEN
+          </h1>
+          <span class="font-mono-tech text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-200 border border-amber-400/50">
+            55 NODES
+          </span>
         </div>
-      </div>
-
-      <!-- Mobile Drawer Toggles -->
-      <div class="flex items-center gap-1.5 lg:hidden ml-auto">
-        <button id="toggle-left-drawer" class="px-2.5 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-200 font-mono-tech text-[11px]">
-          INDEX
-        </button>
-        <button id="toggle-right-drawer" class="px-2.5 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-200 font-mono-tech text-[11px]">
-          TELEMETRY
-        </button>
+        <p class="font-mono-tech text-[10px] text-slate-400 tracking-wider">
+          MERCWAR GALACTIC GITLINK TOPOLOGY • PROTOCOL v4.2
+        </p>
       </div>
     </div>
 
-    <!-- Constellation Sector Filter Pills -->
-    <div id="sector-filters" class="eve-panel rounded-xl p-1.5 flex flex-wrap items-center gap-1 pointer-events-auto overflow-x-auto max-w-full">
-      <button data-sector="ALL" class="sector-pill active px-2.5 py-1 rounded-lg font-mono-tech text-[11px] font-semibold bg-cyan-500/25 text-white border border-cyan-400/60 transition">
-        ALL SECTORS (55)
+    <!-- Constellation Sector Quick-Filter Pills -->
+    <div id="sector-filters" class="mech-win-command px-3 py-1.5 flex flex-wrap items-center gap-1 pointer-events-auto overflow-x-auto max-w-full">
+      <button data-sector="ALL" class="sector-pill mech-btn active px-2.5 py-1 font-mono-tech text-[10.5px] font-semibold bg-cyan-500/25 text-white border border-cyan-400/70">
+        ALL SECTORS
       </button>
-      <button data-sector="HUB" class="sector-pill px-2.5 py-1 rounded-lg font-mono-tech text-[11px] text-amber-300 hover:bg-amber-500/15 border border-transparent transition">
-        ● HUB (4)
+      <button data-sector="HUB" class="sector-pill mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] text-amber-200 bg-slate-900/80 border border-amber-400/35 hover:border-amber-300">
+        HUB CORE
       </button>
-      <button data-sector="AVIS_CORE" class="sector-pill px-2.5 py-1 rounded-lg font-mono-tech text-[11px] text-[#00f0ff] hover:bg-cyan-500/15 border border-transparent transition">
-        ● AVIS CORE (12)
+      <button data-sector="AVIS_CORE" class="sector-pill mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] text-cyan-300 bg-slate-900/80 border border-cyan-400/35 hover:border-cyan-300">
+        I. AVIS CORE
       </button>
-      <button data-sector="CYBORG_3D" class="sector-pill px-2.5 py-1 rounded-lg font-mono-tech text-[11px] text-[#c77dff] hover:bg-purple-500/15 border border-transparent transition">
-        ● CYBORG/3D (12)
+      <button data-sector="CYBORG_3D" class="sector-pill mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] text-purple-300 bg-slate-900/80 border border-purple-400/35 hover:border-purple-300">
+        II. CYBORG / 3D
       </button>
-      <button data-sector="ENGINES_CLI" class="sector-pill px-2.5 py-1 rounded-lg font-mono-tech text-[11px] text-[#ff9d00] hover:bg-orange-500/15 border border-transparent transition">
-        ● ENGINES/CLI (17)
+      <button data-sector="ENGINES_LLM" class="sector-pill mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] text-orange-300 bg-slate-900/80 border border-orange-400/35 hover:border-orange-300">
+        III. ENGINES & LLM
       </button>
-      <button data-sector="ACADEMIES_ROBO" class="sector-pill px-2.5 py-1 rounded-lg font-mono-tech text-[11px] text-[#00ff9d] hover:bg-emerald-500/15 border border-transparent transition">
-        ● ACADEMIES/ROBO (10)
+      <button data-sector="ACADEMIES_ROBO" class="sector-pill mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] text-emerald-300 bg-slate-900/80 border border-emerald-400/35 hover:border-emerald-300">
+        IV. ACADEMIES & ROBO
       </button>
     </div>
 
-    <!-- Visual & Camera Controls -->
-    <div class="eve-panel rounded-xl p-1.5 flex items-center gap-1.5 pointer-events-auto">
-      <button id="btn-toggle-labels" class="toggle-chip active px-2.5 py-1 rounded-lg font-mono-tech text-[11px] bg-slate-800/90 text-cyan-300 border border-cyan-400/40 hover:bg-slate-700 transition" title="Toggle Star Labels">
-        LABELS: ON
+    <!-- Live GitHub Sync & Drawer Toggles -->
+    <div class="mech-win-command px-3 py-1.5 flex items-center gap-1.5 pointer-events-auto">
+      <button id="btn-sync-live" class="mech-btn px-2.5 py-1 font-mono-tech text-[10.5px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/50 hover:bg-emerald-500/30 flex items-center gap-1.5" title="Fetch Live Recursive Git Tree from GitHub API for Active Repo">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
+        <span>⚡ LIVE GIT TREE</span>
       </button>
-      <button id="btn-toggle-lanes" class="toggle-chip active px-2.5 py-1 rounded-lg font-mono-tech text-[11px] bg-slate-800/90 text-cyan-300 border border-cyan-400/40 hover:bg-slate-700 transition" title="Toggle Filament Jump-Lanes">
-        LANES: ON
+      <button id="btn-toggle-left" class="mech-btn px-2 py-1 font-mono-tech text-[10.5px] bg-slate-900/90 text-cyan-300 border border-cyan-400/40 hover:bg-slate-800" title="Toggle Recursive Explorer">
+        TREE
       </button>
-      <button id="btn-toggle-rings" class="toggle-chip active px-2.5 py-1 rounded-lg font-mono-tech text-[11px] bg-slate-800/90 text-cyan-300 border border-cyan-400/40 hover:bg-slate-700 transition" title="Toggle Orbital Grids">
-        GRIDS: ON
-      </button>
-      <button id="btn-toggle-orbit" class="toggle-chip active px-2.5 py-1 rounded-lg font-mono-tech text-[11px] bg-slate-800/90 text-emerald-300 border border-emerald-400/40 hover:bg-slate-700 transition" title="Toggle Auto-Orbit">
-        ORBIT: ON
-      </button>
-      <button id="btn-reset-view" class="px-2.5 py-1 rounded-lg font-mono-tech text-[11px] font-semibold bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 border border-amber-400/50 transition" title="Reset Camera Overview (Esc)">
-        OVERVIEW [ESC]
+      <button id="btn-toggle-right" class="mech-btn px-2 py-1 font-mono-tech text-[10.5px] bg-slate-900/90 text-amber-300 border border-amber-400/40 hover:bg-slate-800" title="Toggle Telemetry HUD">
+        HUD
       </button>
     </div>
   </header>
 
-  <!-- LEFT TACTICAL DRAWER: RECURSIVE REPOSITORY / FOLDER / FILE PAGINATED EXPLORER -->
-  <aside id="left-drawer" class="eve-panel eve-panel-corner fixed top-20 bottom-3 left-2.5 w-[340px] max-w-[92vw] z-20 rounded-xl flex flex-col transition-transform duration-300 translate-x-0">
+  <!-- 2. LEFT RECURSIVE PROTOCOL & PAGINATED EXPLORER DRAWER (.mech-win-tree) -->
+  <aside id="left-drawer" class="mech-win-tree fixed top-20 bottom-12 left-2.5 w-[356px] max-w-[92vw] z-20 flex flex-col transition-transform duration-300 translate-x-0">
+    <div class="hazard-bar shrink-0"></div>
+
     <!-- Drawer Header -->
-    <div class="p-3 border-b border-slate-800/90">
-      <div class="flex items-center justify-between mb-2">
+    <div class="px-4 pt-3 pb-2 border-b border-cyan-500/25 shrink-0">
+      <div class="flex items-center justify-between gap-2 mb-2">
         <div class="flex items-center gap-2">
-          <span class="text-cyan-400 font-mono-tech text-xs">◈</span>
-          <h2 class="text-xs font-bold tracking-widest uppercase text-cyan-200">
-            RECURSIVE GITLINK & TREE INDEX
+          <span class="w-2 h-2 bg-cyan-400 rotate-45"></span>
+          <h2 class="font-orbitron font-bold text-xs tracking-wider text-cyan-200">
+            RECURSIVE GIT PROTOCOL
           </h2>
         </div>
-        <span id="tree-total-badge" class="font-mono-tech text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-          0 NODES
+        <span id="tree-sync-status" class="font-mono-tech text-[9.5px] px-1.5 py-0.5 bg-cyan-500/15 text-cyan-300 border border-cyan-400/40">
+          MANIFEST READY
         </span>
       </div>
 
-      <!-- Instant Search & Expand Controls -->
-      <div class="flex items-center gap-1.5 mb-2">
-        <div class="relative flex-1">
-          <input
-            id="tree-search"
-            type="text"
-            placeholder="Filter repos, folders, files..."
-            class="w-full bg-slate-950/90 border border-slate-700/80 focus:border-cyan-400 rounded-lg pl-7 pr-6 py-1.5 text-xs font-mono-tech text-slate-100 placeholder-slate-500 outline-none"
-          />
-          <span class="absolute left-2.5 top-1.5 text-slate-500 font-mono-tech text-xs">⌕</span>
-          <button id="clear-search" class="hidden absolute right-2 top-1.5 text-slate-400 hover:text-white font-mono-tech text-xs">✕</button>
-        </div>
-        <button id="btn-expand-all" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[10px] font-mono-tech text-cyan-300" title="Expand All Recursive Trees">
-          +ALL
-        </button>
-        <button id="btn-collapse-all" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[10px] font-mono-tech text-slate-300" title="Collapse All Trees">
-          -ALL
-        </button>
+      <!-- Search & Sector Dropdown -->
+      <div class="grid grid-cols-12 gap-1.5 mb-2">
+        <input
+          id="tree-search"
+          type="text"
+          placeholder="Filter repos, folders, files..."
+          class="col-span-7 bg-slate-950/90 border border-cyan-500/35 px-2.5 py-1.5 font-mono-tech text-[11px] text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+        />
+        <select
+          id="tree-sector-select"
+          class="col-span-5 bg-slate-950/90 border border-cyan-500/35 px-1.5 py-1.5 font-mono-tech text-[10.5px] text-cyan-200 focus:outline-none focus:border-cyan-400"
+        >
+          <option value="ALL">ALL SECTORS</option>
+          <option value="HUB">HUB CORE</option>
+          <option value="AVIS_CORE">I. AVIS CORE</option>
+          <option value="CYBORG_3D">II. CYBORG / 3D</option>
+          <option value="ENGINES_LLM">III. ENGINES & LLM</option>
+          <option value="ACADEMIES_ROBO">IV. ACADEMIES</option>
+        </select>
       </div>
 
-      <!-- Protocol Breadcrumb -->
-      <div class="flex items-center justify-between text-[10px] font-mono-tech text-slate-400 bg-slate-950/70 px-2 py-1 rounded border border-slate-800/80">
-        <span class="truncate">git://mercwar/AVIS-DATALAKE (recursive)</span>
-        <span id="expanded-count-label" class="text-cyan-400 ml-1 shrink-0">0 OPEN</span>
+      <!-- Expand / Collapse & Page Size Controls -->
+      <div class="flex items-center justify-between gap-1 font-mono-tech text-[10px]">
+        <div class="flex items-center gap-1">
+          <button id="btn-expand-all" class="mech-btn px-2 py-0.5 bg-cyan-500/15 text-cyan-200 border border-cyan-400/35 hover:bg-cyan-500/25">
+            + EXPAND
+          </button>
+          <button id="btn-collapse-all" class="mech-btn px-2 py-0.5 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/40">
+            - COLLAPSE
+          </button>
+        </div>
+        <div class="flex items-center gap-1 text-slate-400">
+          <span>ROWS:</span>
+          <select id="page-size-select" class="bg-slate-950 border border-cyan-500/35 px-1 py-0.5 text-cyan-200 focus:outline-none">
+            <option value="10">10</option>
+            <option value="14" selected>14</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <!-- Paginated Recursive Tree Viewport -->
-    <div id="recursive-tree-list" class="flex-1 overflow-y-auto p-2 space-y-1 font-mono-tech text-xs">
+    <!-- Recursive Tree Viewport -->
+    <div id="tree-list-container" class="flex-1 overflow-y-auto px-3 py-2 space-y-1 font-mono-tech text-[11px]">
       <!-- Populated dynamically via JS -->
     </div>
 
-    <!-- Recursive Pagination Footer -->
-    <div class="p-2.5 border-t border-slate-800/90 bg-slate-950/80 rounded-b-xl">
-      <div class="flex items-center justify-between gap-1 mb-1.5">
-        <button id="page-prev" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-cyan-500/20 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-[11px] font-mono-tech text-cyan-200 transition">
-          ◀ PREV
-        </button>
-        <div class="text-center">
-          <div id="page-indicator" class="font-mono-tech text-[11px] font-semibold text-white">
-            PAGE 1 OF 1
-          </div>
-          <div id="page-range-label" class="font-mono-tech text-[9px] text-slate-400">
-            ITEMS 1–12 OF 55
-          </div>
-        </div>
-        <button id="page-next" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-cyan-500/20 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-[11px] font-mono-tech text-cyan-200 transition">
-          NEXT ▶
-        </button>
+    <!-- Pagination Footer -->
+    <div class="px-3 py-2 border-t border-cyan-500/25 bg-slate-950/80 flex items-center justify-between font-mono-tech text-[10.5px] shrink-0">
+      <button id="btn-prev-page" class="mech-btn px-2.5 py-1 bg-slate-900 text-cyan-300 border border-cyan-400/40 hover:bg-cyan-500/20 disabled:opacity-35 disabled:pointer-events-none">
+        ◀ PREV
+      </button>
+      <div class="text-center">
+        <div id="page-indicator" class="text-white font-semibold">PAGE 1 / 1</div>
+        <div id="item-count-indicator" class="text-[9.5px] text-slate-400">0 VISIBLE ITEMS</div>
       </div>
-
-      <div class="flex items-center justify-between text-[10px] font-mono-tech text-slate-400 pt-1 border-t border-slate-800/70">
-        <span>ROWS / PAGE:</span>
-        <div class="flex items-center gap-1">
-          <button data-pagesize="10" class="page-size-btn px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300">10</button>
-          <button data-pagesize="14" class="page-size-btn active px-1.5 py-0.5 rounded bg-cyan-500/20 border border-cyan-400 text-cyan-200">14</button>
-          <button data-pagesize="25" class="page-size-btn px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300">25</button>
-          <button data-pagesize="50" class="page-size-btn px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300">50</button>
-        </div>
-      </div>
+      <button id="btn-next-page" class="mech-btn px-2.5 py-1 bg-slate-900 text-cyan-300 border border-cyan-400/40 hover:bg-cyan-500/20 disabled:opacity-35 disabled:pointer-events-none">
+        NEXT ▶
+      </button>
     </div>
   </aside>
 
-  <!-- RIGHT TACTICAL HUD: SELECTED SYSTEM TELEMETRY & DIRECT LINKS -->
-  <aside id="right-drawer" class="eve-panel eve-panel-corner fixed top-20 bottom-3 right-2.5 w-[340px] max-w-[92vw] z-20 rounded-xl flex flex-col transition-transform duration-300 translate-x-0">
+  <!-- 3. RIGHT SYSTEM TELEMETRY & DIRECT UPLINKS HUD (.mech-win-telemetry) -->
+  <aside id="right-drawer" class="mech-win-telemetry fixed top-20 bottom-12 right-2.5 w-[356px] max-w-[92vw] z-20 flex flex-col transition-transform duration-300 translate-x-0">
+    <div class="hazard-bar-amber shrink-0"></div>
+
     <!-- Telemetry Header -->
-    <div class="p-3 border-b border-slate-800/90 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span id="sel-sector-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]"></span>
-        <h2 class="text-xs font-bold tracking-widest uppercase text-amber-200">
-          SYSTEM TELEMETRY & UPLINKS
-        </h2>
+    <div class="px-4 pt-3 pb-2.5 border-b border-amber-500/25 shrink-0">
+      <div class="flex items-center justify-between gap-2">
+        <span class="font-mono-tech text-[10px] tracking-widest text-amber-400 uppercase">
+          SYSTEM TELEMETRY LOCK
+        </span>
+        <span id="hud-mode-badge" class="font-mono-tech text-[10px] px-2 py-0.5 bg-amber-500/15 text-amber-200 border border-amber-400/45">
+          160000 commit
+        </span>
       </div>
-      <span id="sel-sec-status" class="font-mono-tech text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40">
-        CORE 1.0
-      </span>
+      <h2 id="hud-title" class="font-orbitron font-extrabold text-base text-white tracking-wide mt-1 truncate selectable-text">
+        AVIS-DATALAKE
+      </h2>
+      <div id="hud-sector" class="font-mono-tech text-[10.5px] text-cyan-300 mt-0.5">
+        CENTRAL COMMAND HUB // ROOT
+      </div>
     </div>
 
-    <!-- Scrollable Telemetry Content -->
-    <div class="flex-1 overflow-y-auto p-3 space-y-3">
-      <!-- Active Star Header Card -->
-      <div class="p-3 rounded-xl bg-slate-950/85 border border-slate-800">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="font-mono-tech text-[10px] text-slate-400 uppercase">ACTIVE STAR SYSTEM</div>
-            <h3 id="sel-title" class="text-lg font-bold tracking-wide text-white break-all leading-tight mt-0.5">
-              AVIS-DATALAKE
-            </h3>
-          </div>
-          <button id="btn-copy-url" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 font-mono-tech text-[10px] text-cyan-300 shrink-0" title="Copy Primary GitHub URL">
-            COPY URL
-          </button>
+    <!-- Scrollable Telemetry Body -->
+    <div class="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <!-- Tactical Description -->
+      <div class="mech-subpanel p-3">
+        <div class="font-mono-tech text-[9.5px] text-slate-400 uppercase tracking-wider mb-1">
+          SUBMODULE / NODE SPECIFICATION
         </div>
-        <p id="sel-desc" class="text-xs text-slate-300 mt-2 leading-relaxed">
-          Central Command Hub aggregating 51 linked submodules (mode 160000), .gitmodules registry, and _config.yml Jekyll exclusions.
+        <p id="hud-desc" class="text-xs text-slate-200 leading-relaxed">
+          Central command hub aggregating 51 linked 160000 gitlink repositories, .gitmodules registry, and _config.yml exclusions.
         </p>
       </div>
 
-      <!-- Technical Gitlink Metadata Grid -->
-      <div class="grid grid-cols-2 gap-2 font-mono-tech text-[11px]">
-        <div class="p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/90">
-          <div class="text-[9px] text-slate-400">CONSTELLATION</div>
-          <div id="sel-sector-name" class="text-cyan-300 font-semibold truncate mt-0.5">Central Hub</div>
-        </div>
-        <div class="p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/90">
-          <div class="text-[9px] text-slate-400">GIT OBJECT MODE</div>
-          <div id="sel-git-mode" class="text-amber-300 font-semibold truncate mt-0.5">040000 root</div>
-        </div>
-        <div class="p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/90 col-span-2">
-          <div class="text-[9px] text-slate-400">.GITMODULES SUBMODULE PATH</div>
-          <div id="sel-submodule-path" class="text-emerald-300 truncate mt-0.5 selectable-text">/ (Root Datalake Index)</div>
-        </div>
-        <div class="p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/90 col-span-2">
-          <div class="text-[9px] text-slate-400">3D GALACTIC COORDINATES (X, Y, Z)</div>
-          <div id="sel-coords" class="text-slate-200 mt-0.5">0.00, 0.00, 0.00 AU</div>
-        </div>
-      </div>
-
-      <!-- Direct Repository & Datalake Tree Links -->
-      <div class="space-y-1.5">
-        <div class="font-mono-tech text-[10px] tracking-wider text-slate-400 uppercase">
-          DIRECT GITHUB PROTOCOLS
-        </div>
-        <a id="link-primary-repo" href="https://github.com/mercwar/AVIS-DATALAKE" target="_blank" rel="noopener noreferrer"
-           class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/50 text-cyan-100 font-mono-tech text-xs transition">
-          <span class="truncate">↗ OPEN REPOSITORY / BLOB</span>
-          <span class="text-[10px] text-cyan-300 shrink-0 ml-2">GITHUB</span>
-        </a>
-        <a id="link-datalake-tree" href="https://github.com/mercwar/AVIS-DATALAKE" target="_blank" rel="noopener noreferrer"
-           class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-200 font-mono-tech text-xs transition">
-          <span class="truncate">↗ INSPECT IN AVIS-DATALAKE</span>
-          <span class="text-[10px] text-amber-300 shrink-0 ml-2">TREE</span>
-        </a>
-        <div class="grid grid-cols-2 gap-1.5 pt-0.5">
-          <a href="https://github.com/mercwar/AVIS-DATALAKE/blob/main/.gitmodules" target="_blank" rel="noopener noreferrer"
-             class="px-2.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-center font-mono-tech text-[10px] text-slate-300 hover:text-cyan-300 transition">
-            .gitmodules ↗
-          </a>
-          <a href="https://github.com/mercwar/AVIS-DATALAKE/blob/main/_config.yml" target="_blank" rel="noopener noreferrer"
-             class="px-2.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-center font-mono-tech text-[10px] text-slate-300 hover:text-cyan-300 transition">
-            _config.yml ↗
-          </a>
-        </div>
-      </div>
-
-      <!-- Internal Recursive Folder/File Manifest for Selected Node -->
-      <div class="space-y-1.5">
-        <div class="flex items-center justify-between">
-          <span class="font-mono-tech text-[10px] tracking-wider text-slate-400 uppercase">
-            NODE RECURSIVE MANIFEST
+      <!-- Direct GitHub Uplinks: 3-Button Row (OPEN REPO, INDEX.HTML, README.MD) -->
+      <div class="mech-subpanel p-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono-tech text-[9.5px] text-amber-300 uppercase tracking-wider">
+            DIRECT GITHUB UPLINKS
           </span>
-          <button id="btn-focus-in-tree" class="font-mono-tech text-[10px] text-cyan-400 hover:underline">
-            LOCATE IN INDEX
+          <span class="font-mono-tech text-[9px] text-slate-400">POP-UP ENABLED</span>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5">
+          <a
+            id="hud-link-repo"
+            href="https://github.com/mercwar/AVIS-DATALAKE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mech-btn py-2 px-1.5 text-center font-mono-tech text-[10px] font-bold bg-amber-500/20 text-amber-200 border border-amber-400/60 hover:bg-amber-500/35 flex flex-col items-center justify-center gap-0.5"
+          >
+            <span>↗ OPEN</span>
+            <span>REPO</span>
+          </a>
+          <button
+            id="hud-btn-index"
+            type="button"
+            class="mech-btn py-2 px-1.5 text-center font-mono-tech text-[10px] font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 hover:bg-emerald-500/35 flex flex-col items-center justify-center gap-0.5"
+          >
+            <span>◈ INDEX</span>
+            <span>.HTML</span>
+          </button>
+          <button
+            id="hud-btn-readme"
+            type="button"
+            class="mech-btn py-2 px-1.5 text-center font-mono-tech text-[10px] font-bold bg-purple-500/20 text-purple-200 border border-purple-400/60 hover:bg-purple-500/35 flex flex-col items-center justify-center gap-0.5"
+          >
+            <span>▤ README</span>
+            <span>.MD</span>
           </button>
         </div>
-        <div id="sel-manifest-list" class="p-2 rounded-lg bg-slate-950/90 border border-slate-800 space-y-1 font-mono-tech text-[11px] max-h-36 overflow-y-auto">
-          <!-- Populated dynamically -->
+      </div>
+
+      <!-- Git Metadata Grid -->
+      <div class="mech-subpanel p-3 font-mono-tech text-[10.5px] space-y-1.5">
+        <div class="flex justify-between gap-2 border-b border-slate-800 pb-1">
+          <span class="text-slate-400">.GITMODULES PATH</span>
+          <span id="hud-path" class="text-cyan-300 selectable-text truncate">/</span>
+        </div>
+        <div class="flex justify-between gap-2 border-b border-slate-800 pb-1">
+          <span class="text-slate-400">SECTOR COORDS</span>
+          <span id="hud-coords" class="text-amber-200">X: 0.0 | Y: 0.0 | Z: 0.0</span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span class="text-slate-400">BRANCH / HEAD</span>
+          <span class="text-emerald-300">origin/HEAD (main)</span>
         </div>
       </div>
 
-      <!-- Connected Filament Jump-Lanes -->
-      <div class="space-y-1.5">
-        <div class="font-mono-tech text-[10px] tracking-wider text-slate-400 uppercase">
-          CONNECTED JUMP-LANE FILAMENTS
+      <!-- Connected Jump-Lane Neighbors -->
+      <div class="mech-subpanel p-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono-tech text-[9.5px] text-cyan-300 uppercase tracking-wider">
+            FILAMENT JUMP-LANE NEIGHBORS
+          </span>
+          <span id="hud-neighbor-count" class="font-mono-tech text-[10px] text-slate-400">0 LINKS</span>
         </div>
-        <div id="sel-neighbors-list" class="flex flex-wrap gap-1.5">
+        <div id="hud-neighbors" class="flex flex-wrap gap-1.5">
           <!-- Populated dynamically -->
         </div>
       </div>
-    </div>
-
-    <!-- Bottom Keyboard Telemetry Hint -->
-    <div class="px-3 py-2 border-t border-slate-800/90 bg-slate-950/80 rounded-b-xl flex items-center justify-between font-mono-tech text-[10px] text-slate-400">
-      <span>[ / ] PAGE STEP</span>
-      <span>DRAG: ORBIT • SCROLL: ZOOM</span>
     </div>
   </aside>
 
-  <!-- Toast Notification Message Box (No alert() used) -->
-  <div id="toast-banner" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
-    <div class="eve-panel px-4 py-2 rounded-full border border-cyan-400/60 font-mono-tech text-xs text-cyan-200 shadow-lg">
-      COPIED TO CLIPBOARD
+  <!-- 4. BOTTOM CAMERA & CONSTELLATION TACTICAL DOCK (.mech-win-dock) -->
+  <nav id="bottom-dock" aria-label="Camera and Constellation Tactical Dock" class="mech-win-dock fixed bottom-2 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 flex flex-wrap items-center justify-center gap-2 max-w-[96vw] pointer-events-auto font-mono-tech text-[10px]">
+    <button id="btn-reset-cam" class="mech-btn px-2.5 py-1 bg-cyan-500/20 text-cyan-200 border border-cyan-400/50 hover:bg-cyan-500/30 font-semibold">
+      ⌖ RESET CAM
+    </button>
+    <button id="btn-toggle-labels" class="mech-btn px-2.5 py-1 bg-slate-900/90 text-cyan-300 border border-cyan-400/40 hover:bg-slate-800">
+      LABELS: ON
+    </button>
+    <button id="btn-toggle-lanes" class="mech-btn px-2.5 py-1 bg-slate-900/90 text-amber-300 border border-amber-400/40 hover:bg-slate-800">
+      JUMP-LANES: ON
+    </button>
+    <button id="btn-toggle-orbit" class="mech-btn px-2.5 py-1 bg-slate-900/90 text-purple-300 border border-purple-400/40 hover:bg-slate-800">
+      AUTO-ORBIT: ON
+    </button>
+    <span class="text-slate-600 hidden md:inline">|</span>
+    <span class="text-slate-400 hidden md:inline">[ / ]: PAGE • ESC: OVERVIEW</span>
+  </nav>
+
+  <!-- 6. POP-UP VIEWER MODAL FOR INDEX.HTML (.mech-win-modal-index) & README.MD (.mech-win-modal-readme) -->
+  <div id="file-viewer-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm">
+    <div id="file-viewer-card" class="mech-win-modal-index w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
+      <!-- Modal Top Tactical Header -->
+      <div class="px-5 py-3 border-b border-slate-700/80 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span id="modal-file-badge" class="font-mono-tech text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 border border-emerald-400/50">
+            WEB TARGET // INDEX.HTML
+          </span>
+          <h3 id="modal-title" class="font-orbitron font-bold text-xs sm:text-sm text-white truncate">
+            mercwar / AVIS-DATALAKE / index.html
+          </h3>
+        </div>
+
+        <!-- Mode Switchers & Close Controls -->
+        <div class="flex items-center gap-1.5 font-mono-tech text-[10.5px]">
+          <button id="modal-tab-primary" class="mech-btn px-2.5 py-1 bg-cyan-500/25 text-white border border-cyan-400/60 font-semibold">
+            LIVE RENDER
+          </button>
+          <button id="modal-tab-raw" class="mech-btn px-2.5 py-1 bg-slate-900 text-slate-300 border border-slate-700 hover:border-cyan-400/50">
+            RAW SOURCE
+          </button>
+          <a
+            id="modal-github-link"
+            href="https://github.com/mercwar/AVIS-DATALAKE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mech-btn px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-400/50 hover:bg-amber-500/35"
+          >
+            ↗ GITHUB
+          </a>
+          <button id="modal-close-btn" class="mech-btn px-2.5 py-1 bg-rose-500/25 text-rose-200 border border-rose-400/60 hover:bg-rose-500/40 font-bold">
+            ✕ ESC
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Status Strip -->
+      <div class="px-5 py-1.5 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between font-mono-tech text-[10px] text-slate-400 shrink-0">
+        <span id="modal-source-url" class="truncate selectable-text">https://raw.githubusercontent.com/mercwar/AVIS-DATALAKE/HEAD/index.html</span>
+        <span id="modal-fetch-status" class="text-cyan-300 shrink-0 ml-2">READY</span>
+      </div>
+<!-- Repository Pop-Up Inspector Modal -->
+  <div id="repo-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div id="repo-modal-window" class="mech-win-modal-repo w-full max-w-5xl h-[84vh] flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-cyan-500/30 bg-slate-950/80">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-2.5 h-2.5 rotate-45 bg-cyan-400 shrink-0"></span>
+          <div class="truncate">
+            <div id="repo-modal-title" class="font-display text-xs md:text-sm font-bold tracking-widest text-cyan-300 truncate">
+              REPOSITORY TELEMETRY
+            </div>
+            <div id="repo-modal-subtitle" class="font-mono-tech text-[10px] text-slate-400 truncate">
+              mercwar/REPO
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="hidden sm:flex items-center gap-1 mr-1">
+            <button id="repo-tab-overview" onclick="setRepoModalTab('overview')" class="repo-tab-btn active">OVERVIEW</button>
+            <button id="repo-tab-tree" onclick="setRepoModalTab('tree')" class="repo-tab-btn">FILE TREE</button>
+            <button id="repo-tab-commits" onclick="setRepoModalTab('commits')" class="repo-tab-btn">COMMITS</button>
+            <button id="repo-tab-embed" onclick="setRepoModalTab('embed')" class="repo-tab-btn">FRAME VIEW</button>
+          </div>
+          <a id="repo-modal-external" href="#" target="_blank" rel="noopener noreferrer"
+             class="px-3 py-1.5 font-mono-tech text-[10px] tracking-wider border border-cyan-400/50 text-cyan-300 hover:bg-cyan-400/15 transition">
+            GITHUB ↗
+          </a>
+          <button onclick="closeRepoModal()"
+                  class="px-2.5 py-1.5 font-mono-tech text-[10px] border border-red-400/40 text-red-300 hover:bg-red-500/20 transition">
+            ESC [X]
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div id="repo-modal-status" class="px-4 py-1.5 font-mono-tech text-[10px] text-cyan-200/80 bg-cyan-950/25 border-b border-cyan-500/15 flex items-center justify-between">
+        <span id="repo-status-text">INITIALIZING REPOSITORY UPLINK...</span>
+        <span id="repo-meta-badges" class="text-slate-400"></span>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-1 overflow-auto p-4 bg-[#030712]/90">
+        <!-- Tab 1: Overview -->
+        <div id="repo-pane-overview" class="space-y-4">
+          <div id="repo-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono-tech"></div>
+          <div class="p-3 border border-cyan-500/20 bg-slate-950/60">
+            <div class="text-[10px] font-display tracking-widest text-cyan-400 mb-1">DESCRIPTION &amp; TOPICS</div>
+            <p id="repo-description" class="font-mono-tech text-xs text-slate-300 mb-2">Loading...</p>
+            <div id="repo-topics" class="flex flex-wrap gap-1.5"></div>
+          </div>
+          <div class="p-3 border border-cyan-500/20 bg-slate-950/60">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-display tracking-widest text-cyan-400">README SNAPSHOT</span>
+              <button id="repo-open-full-readme-btn" class="font-mono-tech text-[10px] text-emerald-300 hover:underline">
+                OPEN IN DOC POPUP →
+              </button>
+            </div>
+            <pre id="repo-readme-preview" class="font-mono-tech text-[11px] text-slate-300 whitespace-pre-wrap max-h-64 overflow-auto leading-relaxed">Loading README...</pre>
+          </div>
+        </div>
+
+        <!-- Tab 2: Recursive File Tree -->
+        <div id="repo-pane-tree" class="hidden space-y-2">
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <input id="repo-tree-filter" type="text" placeholder="Filter files/folders in repo..."
+                   oninput="renderRepoTreePane()"
+                   class="w-full max-w-sm px-2.5 py-1.5 bg-slate-950 border border-cyan-500/30 font-mono-tech text-xs text-cyan-100 focus:outline-none focus:border-cyan-400" />
+            <span id="repo-tree-count" class="font-mono-tech text-[10px] text-slate-400"></span>
+          </div>
+          <div id="repo-tree-list" class="font-mono-tech text-xs divide-y divide-slate-900"></div>
+        </div>
+
+        <!-- Tab 3: Recent Commits -->
+        <div id="repo-pane-commits" class="hidden space-y-2 font-mono-tech text-xs">
+          <div id="repo-commits-list" class="space-y-2"></div>
+        </div>
+
+        <!-- Tab 4: Embedded Frame Fallback -->
+        <div id="repo-pane-embed" class="hidden h-full flex flex-col">
+          <div class="mb-2 font-mono-tech text-[10px] text-amber-300">
+            Note: GitHub sets X-Frame-Options on some pages; if blocked by the browser, use GITHUB ↗ or the OVERVIEW / FILE TREE tabs.
+          </div>
+          <iframe id="repo-modal-iframe" class="w-full flex-1 border border-cyan-500/30 bg-white"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+      <!-- Modal Content Viewport -->
+      <div class="flex-1 relative overflow-hidden bg-slate-950">
+        <!-- Sandboxed Live HTML Preview Iframe -->
+        <iframe
+          id="modal-iframe"
+          sandbox="allow-scripts allow-same-origin"
+          class="w-full h-full border-0 bg-white hidden"
+          title="Live index.html Preview"
+        ></iframe>
+
+        <!-- Rendered Markdown Document Container -->
+        <div id="modal-markdown-view" class="w-full h-full overflow-y-auto p-6 md-render hidden selectable-text"></div>
+
+        <!-- Raw Source Code Viewer -->
+        <pre id="modal-raw-view" class="w-full h-full overflow-auto p-5 font-mono-tech text-xs text-cyan-100 leading-relaxed hidden selectable-text"></pre>
+      </div>
     </div>
   </div>
 
