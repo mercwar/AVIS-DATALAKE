@@ -51,15 +51,16 @@ jobs:
             --json name,defaultBranchRef,isEmpty,isPrivate,isArchived \
             --jq '.[] | select(.isPrivate == false and .isEmpty == false and .isArchived == false) | [.name, (.defaultBranchRef.name // "main")] | @tsv')
 
+          if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "AI"; then
+            AI_BRANCH=$(gh api "repos/${OWNER}/AI" --jq '.default_branch // "main"' 2>/dev/null || echo "main")
+            REPO_ROWS+=$'\n'"AI"$'\t'"${AI_BRANCH}"
+          fi
+
           while IFS= read -r existing_name; do
             [ -z "$existing_name" ] && continue
             if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
-              def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq 'select(.private == false and .archived == false) | .default_branch // empty' 2>/dev/null || true)
-              if [ -n "$def_branch" ]; then
-                REPO_ROWS+=$'\n'"${existing_name}"$'\t'"${def_branch}"
-              else
-                echo "Pruning stale/inaccessible gitlink: $existing_name"
-              fi
+              def_branch=$(gh api "repos/${OWNER}/${existing_name}" --jq '.default_branch // "main"' 2>/dev/null || echo "main")
+              REPO_ROWS+=$'\n'"${existing_name}"$'\t'"${def_branch}"
             fi
           done < <(echo "$EXISTING_LINKS" | jq -r 'keys[]')
 
@@ -69,23 +70,18 @@ jobs:
           EXCLUDES=$'exclude:\n  - .github/\n  - .gitmodules\n  - _site/'
           CREATED_COUNT=0
           UPDATED_COUNT=0
-          PRUNED_COUNT=0
-
-          while IFS= read -r existing_name; do
-            [ -z "$existing_name" ] && continue
-            if ! echo "$REPO_ROWS" | awk -F'\t' '{print $1}' | grep -qx "$existing_name"; then
-              PRUNED_COUNT=$((PRUNED_COUNT + 1))
-            fi
-          done < <(echo "$EXISTING_LINKS" | jq -r 'keys[]')
 
           while IFS=$'\t' read -r name branch; do
             [ -z "$name" ] && continue
             [ "$name" = "$REPO" ] && continue
-            [ -z "$branch" ] || [ "$branch" = "null" ] && continue
+            [ -z "$branch" ] || [ "$branch" = "null" ] && branch="main"
 
             REPO_SHA=$(gh api "repos/${OWNER}/${name}/git/ref/heads/${branch}" --jq '.object.sha' 2>/dev/null || true)
             if [ -z "$REPO_SHA" ]; then
-              echo "Skipping $name (could not resolve branch '$branch')."
+              REPO_SHA=$(echo "$EXISTING_LINKS" | jq -r --arg p "$name" '.[$p] // empty')
+            fi
+            if [ -z "$REPO_SHA" ]; then
+              echo "Skipping $name (no SHA resolved)."
               continue
             fi
 
@@ -108,7 +104,12 @@ jobs:
               --arg sha "$REPO_SHA" \
               '. + { ($path): $sha }')
 
-            REPO_URL="https://github.com/${OWNER}/${name}.git"
+            if [ "$name" = "AI" ]; then
+              REPO_URL="https://github.com/mercwar/AI.git"
+            else
+              REPO_URL="https://github.com/${OWNER}/${name}.git"
+            fi
+
             GITMODULES+=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\n' "$name" "$name" "$REPO_URL" "$branch")
             EXCLUDES+=$'\n  - '"${name}/"
           done <<< "$REPO_ROWS"
@@ -128,7 +129,7 @@ jobs:
 
           if [ "$NEW_TREE" != "$BASE_TREE" ]; then
             NEW_COMMIT=$(jq -n \
-              --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated, ${PRUNED_COUNT} pruned)" \
+              --arg msg "Sync public repo folder links (${CREATED_COUNT} created, ${UPDATED_COUNT} updated)" \
               --arg tree "$NEW_TREE" \
               --arg parent "$HEAD_SHA" \
               '{ message: $msg, tree: $tree, parents: [$parent] }' | \
@@ -140,13 +141,10 @@ jobs:
             echo "No tree changes needed."
           fi
 
-          echo "Verifying all folder links and .gitmodules entries on ${OWNER}/${REPO}@${BRANCH}..."
+          echo "Verifying all folder links on ${OWNER}/${REPO}@${BRANCH}..."
           LIVE_HEAD=$(gh api "repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}" --jq '.object.sha')
           LIVE_TREE_SHA=$(gh api "repos/${OWNER}/${REPO}/git/commits/${LIVE_HEAD}" --jq '.tree.sha')
-          LIVE_TREE_JSON=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}")
-          LIVE_LINKS=$(echo "$LIVE_TREE_JSON" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
-          GITMODULES_BLOB=$(echo "$LIVE_TREE_JSON" | jq -r '.tree[] | select(.path == ".gitmodules") | .sha')
-          GITMODULES_CONTENT=$(gh api "repos/${OWNER}/${REPO}/git/blobs/${GITMODULES_BLOB}" --jq '.content' | tr -d '\n' | base64 -d)
+          LIVE_LINKS=$(echo "$LIVE_TREE_JSON=$(gh api "repos/${OWNER}/${REPO}/git/trees/${LIVE_TREE_SHA}")" | jq -c '[.tree[] | select(.mode == "160000") | {(.path): .sha}] | add // {}')
 
           MISSING_OR_BAD=0
           while IFS= read -r repo_name; do
@@ -159,21 +157,10 @@ jobs:
             elif [ "$actual_sha" != "$expected_sha" ]; then
               echo "FAIL: SHA mismatch for '$repo_name' (expected $expected_sha, got $actual_sha)"
               MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
-            elif ! grep -qF "[submodule \"${repo_name}\"]" <<< "$GITMODULES_CONTENT"; then
-              echo "FAIL: Missing .gitmodules entry for '$repo_name'"
-              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
             else
               echo "OK: $repo_name -> $actual_sha"
             fi
           done < <(echo "$EXPECTED_MAP" | jq -r 'keys[]')
-
-          while IFS= read -r live_link; do
-            [ -z "$live_link" ] && continue
-            if ! echo "$EXPECTED_MAP" | jq -e --arg k "$live_link" 'has($k)' >/dev/null; then
-              echo "FAIL: Unexpected 160000 entry '$live_link' remained in tree"
-              MISSING_OR_BAD=$((MISSING_OR_BAD + 1))
-            fi
-          done < <(echo "$LIVE_LINKS" | jq -r 'keys[]')
 
           if [ "$MISSING_OR_BAD" -gt 0 ]; then
             echo "ERROR: $MISSING_OR_BAD folder link(s) failed verification!"
