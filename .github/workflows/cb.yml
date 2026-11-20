@@ -35,8 +35,8 @@ jobs:
           fi
           echo "Target ${TARGET_REPO}@${TARGET_BRANCH} SHA: ${TARGET_SHA}"
 
-          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n\tbranch = %s\n\n' \
-            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL" "$TARGET_BRANCH")
+          NEW_GM=$(printf '[submodule "%s"]\n\tpath = %s\n\turl = %s\n' \
+            "$TARGET_REPO" "$TARGET_REPO" "$TARGET_URL")
 
           REPO_ROWS=$(gh repo list "$OWNER" \
             --visibility public \
@@ -103,6 +103,7 @@ jobs:
 
             if [[ ! "$NEW_TREE" =~ ^[0-9a-f]{40}$ ]]; then
               echo "[$name] ERROR creating Git tree: $TREE_RESP"
+              gh api "repos/${OWNER}/${name}/git/trees/${BASE_TREE}?recursive=1" --jq '.tree[] | select(.path | endswith(".gitmodules"))' 2>/dev/null || true
               FAILED_COUNT=$((FAILED_COUNT + 1))
               continue
             fi
