@@ -13,7 +13,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
-
+* [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
 
 <a target="_self" title="https://github.com/mercwar/AI">
 <img 
@@ -57,7 +57,7 @@ Explore the complete implementation guides and step-by-step tutorials for the AV
 * [Readme : AVIS-DATALAKE TUTORIAL AND API REFERENCE](README.md) — ACCESSING THE AVIS DATALAKE YOURSELF
 * [Tutorial 1: Initializing Your First Record](tutorial-1.md) — Constructing, validating, and submitting your initial structured data payloads.
 * [Tutorial 3: Stargate Built-in HTML Renderer & Interactive Datalake Integration](tutorial-3.md) — Leveraging local HTML rendering, inspecting node sources, and pushing home records directly to GitHub via `avis.php`.
-
+* [Main : AVIS-DATALAKE](../README.md) — THE AVIS DATALAKE
 ### 📜 All files and repositories
 
 ```
