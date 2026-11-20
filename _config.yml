@@ -2,6 +2,15 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
+  - JMC-ANDROID-APP-DEMO/
+  - dc2url/
+  - CRON/
+  - CYBORG-PROJECT-EXPLORER/
+  - Fire-Gem/
+  - JOE-TRON-LLMA/
+  - mercwar/
+  - GGML-LLAMA-MSVC-INSTALLER/
+  - Robo-Knight-Player/
   - Robo-Knight-Demos/
   - Dark-Com/
   - Stargate/
@@ -44,12 +53,3 @@ exclude:
   - Cyborg/
   - Navigator-MSVC-Academy/
   - bin/
-  - Fire-Gem/
-  - Robo-Knight-Player/
-  - CRON/
-  - GGML-LLAMA-MSVC-INSTALLER/
-  - mercwar/
-  - JOE-TRON-LLMA/
-  - CYBORG-PROJECT-EXPLORER/
-  - JMC-ANDROID-APP-DEMO/
-  - dc2url/

@@ -1,3 +1,57 @@
+[submodule "JMC-ANDROID-APP-DEMO"]
+	path = JMC-ANDROID-APP-DEMO
+	url = https://github.com/mercwar/JMC-ANDROID-APP-DEMO.git
+	branch = main
+	update = none
+
+[submodule "dc2url"]
+	path = dc2url
+	url = https://github.com/mercwar/dc2url.git
+	branch = main
+	update = none
+
+[submodule "CRON"]
+	path = CRON
+	url = https://github.com/mercwar/CRON.git
+	branch = main
+	update = none
+
+[submodule "CYBORG-PROJECT-EXPLORER"]
+	path = CYBORG-PROJECT-EXPLORER
+	url = https://github.com/mercwar/CYBORG-PROJECT-EXPLORER.git
+	branch = main
+	update = none
+
+[submodule "Fire-Gem"]
+	path = Fire-Gem
+	url = https://github.com/mercwar/Fire-Gem.git
+	branch = main
+	update = none
+
+[submodule "JOE-TRON-LLMA"]
+	path = JOE-TRON-LLMA
+	url = https://github.com/mercwar/JOE-TRON-LLMA.git
+	branch = main
+	update = none
+
+[submodule "mercwar"]
+	path = mercwar
+	url = https://github.com/mercwar/mercwar.git
+	branch = main
+	update = none
+
+[submodule "GGML-LLAMA-MSVC-INSTALLER"]
+	path = GGML-LLAMA-MSVC-INSTALLER
+	url = https://github.com/mercwar/GGML-LLAMA-MSVC-INSTALLER.git
+	branch = main
+	update = none
+
+[submodule "Robo-Knight-Player"]
+	path = Robo-Knight-Player
+	url = https://github.com/mercwar/Robo-Knight-Player.git
+	branch = main
+	update = none
+
 [submodule "Robo-Knight-Demos"]
 	path = Robo-Knight-Demos
 	url = https://github.com/mercwar/Robo-Knight-Demos.git
@@ -247,59 +301,5 @@
 [submodule "bin"]
 	path = bin
 	url = https://github.com/mercwar/bin.git
-	branch = main
-	update = none
-
-[submodule "Fire-Gem"]
-	path = Fire-Gem
-	url = https://github.com/mercwar/Fire-Gem.git
-	branch = main
-	update = none
-
-[submodule "Robo-Knight-Player"]
-	path = Robo-Knight-Player
-	url = https://github.com/mercwar/Robo-Knight-Player.git
-	branch = main
-	update = none
-
-[submodule "CRON"]
-	path = CRON
-	url = https://github.com/mercwar/CRON.git
-	branch = main
-	update = none
-
-[submodule "GGML-LLAMA-MSVC-INSTALLER"]
-	path = GGML-LLAMA-MSVC-INSTALLER
-	url = https://github.com/mercwar/GGML-LLAMA-MSVC-INSTALLER.git
-	branch = main
-	update = none
-
-[submodule "mercwar"]
-	path = mercwar
-	url = https://github.com/mercwar/mercwar.git
-	branch = main
-	update = none
-
-[submodule "JOE-TRON-LLMA"]
-	path = JOE-TRON-LLMA
-	url = https://github.com/mercwar/JOE-TRON-LLMA.git
-	branch = main
-	update = none
-
-[submodule "CYBORG-PROJECT-EXPLORER"]
-	path = CYBORG-PROJECT-EXPLORER
-	url = https://github.com/mercwar/CYBORG-PROJECT-EXPLORER.git
-	branch = main
-	update = none
-
-[submodule "JMC-ANDROID-APP-DEMO"]
-	path = JMC-ANDROID-APP-DEMO
-	url = https://github.com/mercwar/JMC-ANDROID-APP-DEMO.git
-	branch = main
-	update = none
-
-[submodule "dc2url"]
-	path = dc2url
-	url = https://github.com/mercwar/dc2url.git
 	branch = main
 	update = none
