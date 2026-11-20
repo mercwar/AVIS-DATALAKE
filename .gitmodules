@@ -202,19 +202,3 @@
 	path = Robo-Knight-Demos
 	url = https://github.com/mercwar/Robo-Knight-Demos
 	branch = main
-[submodule "Darkstar"]
-	path = Darkstar
-	url = https://github.com/mercwar/Darkstar.git
-	branch = main
-[submodule "AI_PUB"]
-	path = AI_PUB
-	url = https://github.com/mercwar/AI_PUB.git
-	branch = main
-[submodule "AI_COPILOT_INSTALL"]
-	path = AI_COPILOT_INSTALL
-	url = https://github.com/mercwar/AI_COPILOT_INSTALL.git
-	branch = main
-[submodule "dc2win"]
-	path = dc2win
-	url = https://github.com/mercwar/dc2win.git
-	branch = main
