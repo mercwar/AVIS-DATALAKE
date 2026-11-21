@@ -795,9 +795,22 @@ This notice applies to **all revisions, updates, forks, snapshots, and derivativ
 
 ### 📜 All files and repositories
 
-```
-© 2026 CVBGOD Systems / MERCWAR Integration Team
-All Rights Reserved.
-Unauthorized use, duplication, or distribution is strictly prohibited.
-```
+
+<div align="center">
+
+---
+
+<p style="color: #66ccff; letter-spacing: 2px; font-weight: bold; margin-bottom: 4px;">
+  &copy; 2026 CVBGOD Systems / MERCWAR Integration Team
+</p>
+<p style="color: #ffd700; font-size: 13px; letter-spacing: 1px; margin: 2px 0;">
+  All Rights Reserved.
+</p>
+<p style="color: #999999; font-size: 12px; margin-top: 4px;">
+  Unauthorized use, duplication, or distribution is strictly prohibited.
+</p>
+
+</div>
+
+
 
