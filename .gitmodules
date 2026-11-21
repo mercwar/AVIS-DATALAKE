@@ -1,3 +1,21 @@
+[submodule "Cyborg"]
+	path = Cyborg
+	url = https://github.com/mercwar/Cyborg.git
+	branch = main
+	update = none
+
+[submodule "mercwar"]
+	path = mercwar
+	url = https://github.com/mercwar/mercwar.git
+	branch = main
+	update = none
+
+[submodule "AI"]
+	path = AI
+	url = https://github.com/mercwar/AI.git
+	branch = main
+	update = none
+
 [submodule "bin"]
 	path = bin
 	url = https://github.com/mercwar/bin.git
@@ -7,12 +25,6 @@
 [submodule "NEXUS"]
 	path = NEXUS
 	url = https://github.com/mercwar/NEXUS.git
-	branch = main
-	update = none
-
-[submodule "Cyborg"]
-	path = Cyborg
-	url = https://github.com/mercwar/Cyborg.git
 	branch = main
 	update = none
 
@@ -115,12 +127,6 @@
 [submodule "Station"]
 	path = Station
 	url = https://github.com/mercwar/Station.git
-	branch = main
-	update = none
-
-[submodule "AI"]
-	path = AI
-	url = https://github.com/mercwar/AI.git
 	branch = main
 	update = none
 
@@ -271,12 +277,6 @@
 [submodule "CYBORG-PROJECT-EXPLORER"]
 	path = CYBORG-PROJECT-EXPLORER
 	url = https://github.com/mercwar/CYBORG-PROJECT-EXPLORER.git
-	branch = main
-	update = none
-
-[submodule "mercwar"]
-	path = mercwar
-	url = https://github.com/mercwar/mercwar.git
 	branch = main
 	update = none
 
