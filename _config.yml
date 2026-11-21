@@ -2,6 +2,7 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
+  - CBORD/
   - JMC-ANDROID-APP-DEMO/
   - dc2url/
   - CRON/

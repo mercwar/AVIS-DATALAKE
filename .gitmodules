@@ -1,3 +1,9 @@
+[submodule "CBORD"]
+	path = CBORD
+	url = https://github.com/mercwar/CBORD.git
+	branch = main
+	update = none
+
 [submodule "JMC-ANDROID-APP-DEMO"]
 	path = JMC-ANDROID-APP-DEMO
 	url = https://github.com/mercwar/JMC-ANDROID-APP-DEMO.git
