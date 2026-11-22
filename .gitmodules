@@ -1,3 +1,15 @@
+[submodule "CYBORD"]
+	path = CYBORD
+	url = https://github.com/mercwar/CYBORD.git
+	branch = main
+	update = none
+
+[submodule "mercwar"]
+	path = mercwar
+	url = https://github.com/mercwar/mercwar.git
+	branch = main
+	update = none
+
 [submodule "CBORD"]
 	path = CBORD
 	url = https://github.com/mercwar/CBORD.git
@@ -301,11 +313,5 @@
 [submodule "AI"]
 	path = AI
 	url = https://github.com/mercwar/AI.git
-	branch = main
-	update = none
-
-[submodule "mercwar"]
-	path = mercwar
-	url = https://github.com/mercwar/mercwar.git
 	branch = main
 	update = none

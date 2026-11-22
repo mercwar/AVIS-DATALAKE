@@ -2,6 +2,8 @@ exclude:
   - .github/
   - .gitmodules
   - _site/
+  - CYBORD/
+  - mercwar/
   - CBORD/
   - JMC-ANDROID-APP-DEMO/
   - dc2url/
@@ -53,4 +55,3 @@ exclude:
   - Cyborg/
   - bin/
   - AI/
-  - mercwar/
